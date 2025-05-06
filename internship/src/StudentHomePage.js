@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SideBar from './Components/SideBar';
+import InternshipList from './Components/InternshipList';
+import internships from './data/internships';
+
+
 
 
 function StudentHomePage() {
@@ -18,6 +22,8 @@ function StudentHomePage() {
         return <p>View evaluation results and feedback.</p>;
       default:
         return <p>Welcome, Student! Use the sidebar to navigate.</p>;
+        case 'available':
+  return <InternshipList internships={internships} />;
     }
   };
 
@@ -38,7 +44,8 @@ function StudentHomePage() {
       {/* Content Area */}
       <div style={styles.contentArea}>
        
-       <SideBar />
+      <SideBar setActivePage={setActivePage} />
+
 
         {/* Main Content */}
         <div style={styles.mainContent}>
