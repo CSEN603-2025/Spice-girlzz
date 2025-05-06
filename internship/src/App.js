@@ -4,6 +4,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-ro
 import Login from './Login';
 import Register from './Register';
 import StudentHomePage from './StudentHomePage';
+import ProfileStudent from './ProfileStudent';
+
 
 
 function App() {
@@ -22,7 +24,8 @@ function App() {
       <Routes>
       <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/student" element={<StudentHomePage />} />      </Routes>
+        <Route path="/student" element={<StudentHomePage />} />  
+        <Route path="/student/profile" element={<ProfileStudent />} />    </Routes>
     </div>
   </Router>
     // <StudentHomePage />

@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import SideBar from './Components/SideBar';
+
 
 function StudentHomePage() {
   const [activePage, setActivePage] = useState('home');
+  const navigate = useNavigate();
+
 
   const renderContent = () => {
     switch (activePage) {
@@ -23,19 +28,17 @@ function StudentHomePage() {
         <h2 style={styles.title}>GUC Internship Portal</h2>
         <div>
           <button style={styles.navBtn}>📧 Mail</button>
-          <button style={styles.navBtn}>👤 Profile</button>
-          <button style={styles.navBtn}>🚪 Logout</button>
+          <button style={styles.navBtn} onClick={() => navigate('/student/profile')}>
+            👤 Profile
+          </button>
+          <button style={styles.navBtn} onClick={() => navigate('/')}>🚪 Logout</button>
         </div>
       </div>
 
       {/* Content Area */}
       <div style={styles.contentArea}>
-        {/* Sidebar */}
-        <div style={styles.sidebar}>
-          <button onClick={() => setActivePage('applied')} style={styles.sideBtn}>Applied Internships</button>
-          <button onClick={() => setActivePage('report')} style={styles.sideBtn}>Submit Report</button>
-          <button onClick={() => setActivePage('evaluate')} style={styles.sideBtn}>Evaluations</button>
-        </div>
+       
+       <SideBar />
 
         {/* Main Content */}
         <div style={styles.mainContent}>
@@ -47,48 +50,13 @@ function StudentHomePage() {
 }
 
 const styles = {
-  wrapper: {
-    fontFamily: 'Arial, sans-serif',
-  },
-  navbar: {
-    backgroundColor: '#1d3557',
-    color: 'white',
-    padding: '1rem 2rem',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  title: {
-    margin: 0,
-  },
-  navBtn: {
-    marginLeft: '10px',
-    padding: '0.5rem 1rem',
-    border: 'none',
-    borderRadius: '5px',
-    backgroundColor: '#457b9d',
-    color: 'white',
-    cursor: 'pointer',
-  },
+  container: { fontFamily: 'Segoe UI, sans-serif', backgroundColor: '#f7f9fc', minHeight: '100vh' },
+  navbar: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 2rem', backgroundColor: '#1d3557', color: '#fff' },
+  title: { margin: 0 },
+  navBtn: { backgroundColor: '#457b9d', border: 'none', borderRadius: '5px', padding: '0.5rem 1rem', color: '#fff', cursor: 'pointer', marginLeft: '10px' },
   contentArea: {
     display: 'flex',
     height: 'calc(100vh - 70px)',
-  },
-  sidebar: {
-    width: '220px',
-    backgroundColor: '#f1faee',
-    padding: '1rem',
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  sideBtn: {
-    marginBottom: '10px',
-    padding: '0.75rem',
-    border: 'none',
-    borderRadius: '4px',
-    backgroundColor: '#a8dadc',
-    cursor: 'pointer',
-    fontWeight: 'bold',
   },
   mainContent: {
     flex: 1,
