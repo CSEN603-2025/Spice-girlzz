@@ -34,7 +34,7 @@ function App() {
         <Route path="/videoCall" element={<VideoCall />} />  
         <Route path="/call" element={<StartCall />} />  
         <Route path="/appointments" element={<Appointments />} />   
-        <Route path="/'/schedule'" element={<ScheduleCall />} /> 
+        <Route path="/schedule'" element={<ScheduleCall />} /> 
         </Routes>
     </div>
   </Router>
