@@ -21,9 +21,13 @@ function LoginPage() {
     // For student email, redirect to student page with email in state
     if (email.endsWith('@student.guc.edu.eg')) {
       navigate('/student', { state: { email } });
-    } else {
+    } 
+  else  if(email.endsWith('@acceptedCorp.com')){
+      navigate('/company', { state: { email } });
+    }
+    else {
       // Handle other roles (e.g., company or faculty) if needed
-      alert('Only student login supported for now');
+      alert('Only student and company login supported for now');
     }
   };
 
