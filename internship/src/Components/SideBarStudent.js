@@ -10,6 +10,10 @@ export const SideBarStudent = [
         title : "Evaluations and Reporting",
         link : "/evals",
     },
+    {
+        title : "Video Call",
+        link : "/videoCall",
+    },
 ];
  
 

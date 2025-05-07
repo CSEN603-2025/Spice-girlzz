@@ -47,3 +47,35 @@
   text-align: center;
   width: 100%;
 }
+
+/*video call css*/
+.video-call-dashboard {
+  background-color: #e2ded0; /* Ivory */
+  height: 100vh;
+  padding: 20px;
+  font-family: sans-serif;
+}
+
+.dashboard-header {
+  background-color: #647c90; /* Blue Gray */
+  color: white;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+}
+
+.dashboard-actions button {
+  background-color: #4e4f50; /* Cool Gray */
+  color: white;
+  border: none;
+  padding: 15px 20px;
+  margin: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.dashboard-actions button:hover {
+  background-color: #746c70; /* Gray */
+}
+
