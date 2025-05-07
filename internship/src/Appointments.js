@@ -1,5 +1,5 @@
 import React from 'react';
-import './AppointmentsPage.css'; // 👈 this line
+import './AppointmentsPage.css'; 
 import './App.css'; // Keep this too if you still use shared styles
 
 function AppointmentsPage() {
@@ -8,21 +8,21 @@ function AppointmentsPage() {
       id: 1,
       date: 'May 10, 2025',
       time: '10:00 AM',
-      with: 'Academic Advisor',
+      with: 'Mariam Khaleel',
       location: 'SCAD Virtual Office Room 1',
     },
     {
       id: 2,
       date: 'May 12, 2025',
       time: '2:00 PM',
-      with: 'Career Counselor',
+      with: 'Asiya  Kareem',
       location: 'SCAD Virtual Office Room 3',
     },
     {
       id: 3,
       date: 'May 15, 2025',
       time: '11:30 AM',
-      with: 'Financial Aid Officer',
+      with: 'Ibrahim Mohamed',
       location: 'SCAD Virtual Office Room 2',
     },
   ];
