@@ -5,6 +5,8 @@ import Login from './Login';
 import Register from './Register';
 import StudentHomePage from './StudentHomePage';
 import ProfileStudent from './ProfileStudent';
+import InternshipList from './Components/InternshipList';
+import internships from './data/internships';
 
 
 
