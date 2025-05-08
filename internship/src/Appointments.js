@@ -28,7 +28,7 @@ function AppointmentsPage() {
   ];
 
   return (
-    <div className="video-call-dashboard">
+    <div className="video-call-dashboard" style={{ paddingTop: '50px' }}>
       <div className="dashboard-header">
         <h1>Your Appointments</h1>
       </div>

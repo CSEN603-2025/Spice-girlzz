@@ -14,7 +14,7 @@ const StartCall = () => {
   };
 
   return (
-    <div className="animate-fadeIn">
+    <div className="animate-fadeIn" style={{ paddingTop: '50px' }}>
       <h2 className="text-2xl font-bold mb-6 text-gray-800">Video Call</h2>
       {callStatus === 'ongoing' ? (
         <div className="bg-white p-6 rounded-md shadow-md">

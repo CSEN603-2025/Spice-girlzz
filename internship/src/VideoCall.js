@@ -6,7 +6,7 @@ function VideoCallDashboard() {
   const navigate = useNavigate();
 
   return (
-    <div className="video-call-dashboard">
+    <div className="video-call-dashboard" style={{ paddingTop: '100px' }}>
       <header className="dashboard-header">
         <h1>Video Call Dashboard</h1>
       </header>
