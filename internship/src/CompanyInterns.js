@@ -36,8 +36,8 @@ const Interns = () => {
       {
         id: 1,
         postId: 1,
-        applicantName: 'John Doe',
-        email: 'john.doe@example.com',
+        applicantName: 'John Ramzy',
+        email: 'john.ramzy@student.guc.edu.eg',
         resumeLink: 'http://example.com/resume1.pdf',
         coverLetter: 'I am passionate about software development...',
         submittedAt: '2025-05-01',
@@ -46,8 +46,8 @@ const Interns = () => {
       {
         id: 2,
         postId: 1,
-        applicantName: 'Jane Smith',
-        email: 'jane.smith@example.com',
+        applicantName: 'Menna Ibrahim',
+        email: 'menna.ibrahimh@student.guc.edu.eg',
         resumeLink: 'http://example.com/resume2.pdf',
         coverLetter: 'I have experience with React...',
         submittedAt: '2025-05-02',
@@ -56,8 +56,8 @@ const Interns = () => {
       {
         id: 3,
         postId: 2,
-        applicantName: 'Alice Johnson',
-        email: 'alice.johnson@example.com',
+        applicantName: 'Alia Mohamed',
+        email: 'ala.mohamed@student.guc.edu.eg',
         resumeLink: 'http://example.com/resume3.pdf',
         coverLetter: 'I am skilled in data analysis...',
         submittedAt: '2025-05-03',

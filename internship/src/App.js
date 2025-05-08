@@ -10,6 +10,7 @@ import CompanyHomePage from './CompanyHomePage';
 import CompanyPosts from './CompanyPosts';
 import CompanyApplications from './CompanyApplications';
 import CompanyInterns from './CompanyInterns';
+import CompanyEvaluation from './CompanyEvaluation';
 
 function App() {
   return (
@@ -26,6 +27,8 @@ function App() {
           <Route path="/company/posts" element = {<CompanyPosts />}></Route>
           <Route path="/company/applicants" element = {<CompanyApplications />}></Route>
           <Route path="/company/interns" element = {<CompanyInterns />}></Route>
+          <Route path="/company/evaluate" element={<CompanyEvaluation />} />
+
 
 
 

@@ -16,6 +16,10 @@ function SideBarCompany() {
             title : "Interns",
             link : "/company/interns",
         },
+        {
+          title : "Evaluations",
+          link : "/company/evaluate",
+      },
     ];
   return (
     <div className='sidebar'>
