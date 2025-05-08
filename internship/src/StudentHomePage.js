@@ -9,6 +9,7 @@ function StudentHomePage() {
   const [selectedIndustry, setSelectedIndustry] = useState('');
   const [selectedDuration, setSelectedDuration] = useState('');
   const [isPaid, setIsPaid] = useState('');
+  const [filterStatus, setFilterStatus] = useState('all');
   const [selectedInternship, setSelectedInternship] = useState(null);
   const navigate = useNavigate();
   const [appliedInternships, setAppliedInternships] = useState(() => {
@@ -30,6 +31,8 @@ function StudentHomePage() {
       expectedSalary: '$2000/month',
       skillsRequired: 'JavaScript, React, Node.js',
       description: 'Develop cutting-edge software solutions.',
+      startDate: '2025-01-01',
+      endDate: '2025-06-30',
     },
     {
       id: 2,
@@ -40,6 +43,8 @@ function StudentHomePage() {
       expectedSalary: '$4500/month',
       skillsRequired: 'HTML, CSS, JavaScript',
       description: 'Build responsive web applications.',
+      startDate: '2024-06-01',
+      endDate: '2024-08-31',
     },
     {
       id: 3,
@@ -50,18 +55,27 @@ function StudentHomePage() {
       expectedSalary: '$2500/month',
       skillsRequired: 'Python, SQL, Tableau',
       description: 'Analyze data to drive business decisions.',
+      startDate: '2025-03-01',
+      endDate: '2026-02-28',
     },
   ];
 
   const filteredInternships = availableInternships.filter((internship) => {
     const search = searchQuery.toLowerCase();
+    const now = new Date();
     const matchesSearch =
       internship.companyName.toLowerCase().includes(search) ||
       internship.jobTitle.toLowerCase().includes(search);
     const matchesIndustry = selectedIndustry ? internship.industry === selectedIndustry : true;
     const matchesDuration = selectedDuration ? internship.duration === selectedDuration : true;
     const matchesPaid = isPaid ? internship.isPaid === isPaid : true;
-    return matchesSearch && matchesIndustry && matchesDuration && matchesPaid;
+    const matchesStatus =
+      filterStatus === 'current'
+        ? new Date(internship.endDate) >= now
+        : filterStatus === 'completed'
+        ? new Date(internship.endDate) < now
+        : true;
+    return matchesSearch && matchesIndustry && matchesDuration && matchesPaid && matchesStatus;
   });
 
   const handleSelectInternship = (internship) => {
@@ -218,6 +232,25 @@ function StudentHomePage() {
                 <option value="">Paid/Unpaid</option>
                 <option value="paid">Paid</option>
                 <option value="unpaid">Unpaid</option>
+              </select>
+              <select
+                onChange={(e) => setFilterStatus(e.target.value)}
+                style={{
+                  padding: '0.4rem',
+                  border: '1px solid #d1d5db',
+                  borderRadius: '0.375rem',
+                  outline: 'none',
+                  minWidth: '12rem',
+                  width: '12rem',
+                  maxWidth: '12rem',
+                  fontSize: '0.875rem',
+                }}
+                onFocus={(e) => (e.target.style.boxShadow = '0 0 0 2px #3b82f6')}
+                onBlur={(e) => (e.target.style.boxShadow = 'none')}
+              >
+                <option value="all">All Internships</option>
+                <option value="current">Current Internships</option>
+                <option value="completed">Completed Internships</option>
               </select>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(15rem, 1fr))', gap: '1.5rem' }}>
@@ -389,6 +422,12 @@ function StudentHomePage() {
             </p>
             <p style={{ color: '#4b5563', marginBottom: '0.25rem', fontSize: '0.875rem' }}>
               <strong>Description:</strong> {selectedInternship.description}
+            </p>
+            <p style={{ color: '#4b5563', marginBottom: '0.25rem', fontSize: '0.875rem' }}>
+              <strong>Start Date:</strong> {selectedInternship.startDate}
+            </p>
+            <p style={{ color: '#4b5563', marginBottom: '0.25rem', fontSize: '0.875rem' }}>
+              <strong>End Date:</strong> {selectedInternship.endDate}
             </p>
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', marginTop: '1.5rem' }}>
               {activePage === 'available' && (

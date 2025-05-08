@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import SideBar from './Components/SideBar';
-import { Mail, Home, LogOut, Edit } from 'lucide-react';
+import { Mail, Home, LogOut, Edit, Upload } from 'lucide-react';
 
 function ProfileStudent() {
   const navigate = useNavigate();
@@ -10,8 +10,44 @@ function ProfileStudent() {
   const [selectedInternship, setSelectedInternship] = useState(null);
   const [appliedInternships, setAppliedInternships] = useState(() => {
     const saved = sessionStorage.getItem('appliedInternships');
+    if (!saved) return [];
+    const now = new Date();
+    return JSON.parse(saved).map(item => ({
+      ...item,
+      status: new Date(item.endDate) < now ? 'finalized' : (item.status || 'pending')
+    }));
+  });
+  const [filter, setFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [documents, setDocuments] = useState(() => {
+    const saved = sessionStorage.getItem('documents');
     return saved ? JSON.parse(saved) : [];
   });
+  const [selectedDocument, setSelectedDocument] = useState(null);
+
+  const filterInternships = (internships) => {
+    const now = new Date();
+    return internships.filter((internship) => {
+      const isFinalized = new Date(internship.endDate) < now;
+      const matchesDate = filter === 'current'
+        ? !isFinalized
+        : filter === 'completed'
+        ? isFinalized
+        : true;
+      const matchesStatus = statusFilter === 'all' ||
+        (statusFilter === 'finalized' && isFinalized) ||
+        (!isFinalized && internship.status === statusFilter);
+      return matchesDate && matchesStatus;
+    });
+  };
+
+  const handleFilterChange = (e) => {
+    setFilter(e.target.value);
+  };
+
+  const handleStatusFilterChange = (e) => {
+    setStatusFilter(e.target.value);
+  };
 
   const majorSemesterMap = {
     'Applied Arts': ['Semester 1', 'Semester 2', 'Semester 3', 'Semester 4', 'Semester 5', 'Semester 6', 'Semester 7', 'Semester 8'],
@@ -49,6 +85,14 @@ function ProfileStudent() {
     sessionStorage.setItem('studentProfile', JSON.stringify(profileData));
   }, [profileData]);
 
+  useEffect(() => {
+    sessionStorage.setItem('documents', JSON.stringify(documents));
+  }, [documents]);
+
+  useEffect(() => {
+    sessionStorage.setItem('appliedInternships', JSON.stringify(appliedInternships));
+  }, [appliedInternships]);
+
   const handleMajorChange = (e) => {
     const selectedMajor = e.target.value;
     setAvailableSemesters(majorSemesterMap[selectedMajor] || []);
@@ -73,6 +117,30 @@ function ProfileStudent() {
     setShowEditModal(false);
   };
 
+  const handleDocumentUpload = (e) => {
+    const files = Array.from(e.target.files);
+    files.forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setDocuments((prev) => [
+          ...prev,
+          {
+            id: Date.now() + Math.random(),
+            name: file.name,
+            type: file.type,
+            size: file.size,
+            data: reader.result,
+          },
+        ]);
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleDeleteDocument = (id) => {
+    setDocuments((prev) => prev.filter((doc) => doc.id !== id));
+  };
+
   const handleSetActivePage = (page) => {
     if (page === 'home') {
       navigate('/student');
@@ -81,7 +149,23 @@ function ProfileStudent() {
     }
   };
 
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'accepted':
+        return '#10b981';
+      case 'rejected':
+        return '#ef4444';
+      case 'pending':
+        return '#f59e0b';
+      case 'finalized':
+        return '#3b82f6';
+      default:
+        return '#6b7280';
+    }
+  };
+
   const isProfileEmpty = Object.values(profileData).every((value) => !value);
+  const filteredAppliedInternships = filterInternships(appliedInternships);
 
   return (
     <div style={styles.container}>
@@ -164,15 +248,153 @@ function ProfileStudent() {
             )}
           </div>
 
+          {/* Documents Section */}
+          <div style={{ marginTop: '1.5rem', animation: 'fadeIn 0.3s' }}>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem', color: '#1f2937' }}>
+              Documents
+            </h2>
+            <div style={{ marginBottom: '1rem' }}>
+              <label
+                style={{
+                  padding: '0.5rem 1rem',
+                  background: '#3b82f6',
+                  color: '#fff',
+                  borderRadius: '0.25rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  cursor: 'pointer',
+                  fontSize: '0.875rem',
+                }}
+                onMouseOver={(e) => (e.target.style.background = '#2563eb')}
+                onMouseOut={(e) => (e.target.style.background = '#3b82f6')}
+              >
+                <Upload size={16} style={{ marginRight: '0.5rem' }} /> Upload Documents
+                <input
+                  type="file"
+                  multiple
+                  accept=".pdf,.doc,.docx"
+                  style={{ display: 'none' }}
+                  onChange={handleDocumentUpload}
+                />
+              </label>
+            </div>
+            <div style={{ background: '#fff', padding: '1.5rem', borderRadius: '0.375rem', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
+              {documents.length > 0 ? (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(15rem, 1fr))', gap: '1.5rem' }}>
+                  {documents.map((doc) => (
+                    <div
+                      key={doc.id}
+                      style={{
+                        background: '#fff',
+                        padding: '1rem',
+                        borderRadius: '0.375rem',
+                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                        transition: 'box-shadow 0.3s, background-color 0.3s',
+                      }}
+                    >
+                      <p style={{ margin: '0 0 0.5rem', fontSize: '1rem', fontWeight: 'bold', color: '#1f2937' }}>
+                        {doc.name}
+                      </p>
+                      <p style={{ margin: '0.5rem 0', fontSize: '0.875rem', color: '#4b5563' }}>
+                        <strong>Type:</strong> {doc.type}
+                      </p>
+                      <p style={{ margin: '0.5rem 0', fontSize: '0.875rem', color: '#4b5563' }}>
+                        <strong>Size:</strong> {(doc.size / 1024).toFixed(2)} KB
+                      </p>
+                      <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.75rem' }}>
+                        <button
+                          style={{
+                            padding: '0.5rem 1rem',
+                            background: '#3b82f6',
+                            color: '#fff',
+                            borderRadius: '0.25rem',
+                            cursor: 'pointer',
+                            fontSize: '0.875rem',
+                          }}
+                          onClick={() => setSelectedDocument(doc)}
+                          onMouseOver={(e) => (e.target.style.background = '#2563eb')}
+                          onMouseOut={(e) => (e.target.style.background = '#3b82f6')}
+                        >
+                          View
+                        </button>
+                        <button
+                          style={{
+                            padding: '0.5rem 1rem',
+                            background: '#ef4444',
+                            color: '#fff',
+                            borderRadius: '0.25rem',
+                            cursor: 'pointer',
+                            fontSize: '0.875rem',
+                          }}
+                          onClick={() => handleDeleteDocument(doc.id)}
+                          onMouseOver={(e) => (e.target.style.background = '#dc2626')}
+                          onMouseOut={(e) => (e.target.style.background = '#ef4444')}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p style={{ color: '#4b5563' }}>No documents uploaded yet.</p>
+              )}
+            </div>
+          </div>
+
           {/* Applied Internships Section */}
           <div style={{ marginTop: '1.5rem', animation: 'fadeIn 0.3s' }}>
             <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem', color: '#1f2937' }}>
               Applied Internships
             </h2>
+            <div style={{ marginBottom: '1rem', display: 'flex', gap: '1rem' }}>
+              <select
+                onChange={handleFilterChange}
+                value={filter}
+                style={{
+                  padding: '0.4rem',
+                  border: '1px solid #d1d5db',
+                  borderRadius: '0.375rem',
+                  outline: 'none',
+                  minWidth: '12rem',
+                  width: '12rem',
+                  maxWidth: '12rem',
+                  fontSize: '0.875rem',
+                }}
+                onFocus={(e) => (e.target.style.boxShadow = '0 0 0 2px #3b82f6')}
+                onBlur={(e) => (e.target.style.boxShadow = 'none')}
+              >
+                <option value="all">All Internships</option>
+                <option value="current">Current Internships</option>
+                <option value="completed">Completed Internships</option>
+              </select>
+              <select
+                onChange={handleStatusFilterChange}
+                value={statusFilter}
+                style={{
+                  padding: '0.4rem',
+                  border: '1px solid #d1d5db',
+                  borderRadius: '0.375rem',
+                  outline: 'none',
+                  minWidth: '12rem',
+                  width: '12rem',
+                  maxWidth: '12rem',
+                  fontSize: '0.875rem',
+                }}
+                onFocus={(e) => (e.target.style.boxShadow = '0 0 0 2px #3b82f6')}
+                onBlur={(e) => (e.target.style.boxShadow = 'none')}
+              >
+                <option value="all">All Statuses</option>
+                <option value="pending">Pending</option>
+                <option value="finalized">Finalized</option>
+                <option value="accepted">Accepted</option>
+                <option value="rejected">Rejected</option>
+              </select>
+            </div>
             <div style={{ background: '#fff', padding: '1.5rem', borderRadius: '0.375rem', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
-              {appliedInternships.length > 0 ? (
+              {filteredAppliedInternships.length > 0 ? (
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(15rem, 1fr))', gap: '1.5rem' }}>
-                  {appliedInternships.map((internship, index) => (
+                  {filteredAppliedInternships.map((internship, index) => (
                     <div
                       key={index}
                       style={{
@@ -191,6 +413,9 @@ function ProfileStudent() {
                       </p>
                       <p style={{ margin: '0.5rem 0', fontSize: '0.875rem', color: '#4b5563' }}>
                         <strong>Duration:</strong> {internship.duration}
+                      </p>
+                      <p style={{ margin: '0.5rem 0', fontSize: '0.875rem', color: getStatusColor(internship.status) }}>
+                        <strong>Status:</strong> {internship.status.charAt(0).toUpperCase() + internship.status.slice(1)}
                       </p>
                       <p style={{ margin: '0.75rem 0 0', fontSize: '0.875rem', color: '#6b7280', lineHeight: '1.4' }}>
                         {internship.description}
@@ -268,6 +493,18 @@ function ProfileStudent() {
             <p style={{ color: '#4b5563', marginBottom: '0.25rem', fontSize: '0.875rem' }}>
               <strong>Description:</strong> {selectedInternship.description}
             </p>
+            <p style={{ color: '#4b5563', marginBottom: '0.25rem', fontSize: '0.875rem' }}>
+              <strong>Start Date:</strong> {selectedInternship.startDate}
+            </p>
+            <p style={{ color: '#4b5563', marginBottom: '0.25rem', fontSize: '0.875rem' }}>
+              <strong>End Date:</strong> {selectedInternship.endDate}
+            </p>
+            <p style={{ color: getStatusColor(selectedInternship.status), marginBottom: '0.25rem', fontSize: '0.875rem' }}>
+              <strong>Status:</strong> {selectedInternship.status.charAt(0).toUpperCase() + selectedInternship.status.slice(1)}
+            </p>
+            <p style={{ color: '#4b5563', marginBottom: '0.25rem', fontSize: '0.875rem' }}>
+              <strong>Documents:</strong> {documents.length > 0 ? documents.map(doc => doc.name).join(', ') : 'None uploaded'}
+            </p>
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', marginTop: '1.5rem' }}>
               <button
                 style={{
@@ -280,6 +517,63 @@ function ProfileStudent() {
                   cursor: 'pointer',
                 }}
                 onClick={() => setSelectedInternship(null)}
+                onMouseOver={(e) => (e.target.style.background = '#dc2626')}
+                onMouseOut={(e) => (e.target.style.background = '#ef4444')}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal for Document Preview */}
+      {selectedDocument && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0, 0, 0, 0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 50,
+          }}
+        >
+          <div
+            style={{
+              background: '#fff',
+              padding: '1.5rem',
+              borderRadius: '0.5rem',
+              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+              maxWidth: '24rem',
+              width: '100%',
+            }}
+          >
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#1f2937', marginBottom: '1rem' }}>
+              {selectedDocument.name}
+            </h3>
+            <p style={{ color: '#4b5563', marginBottom: '0.25rem', fontSize: '0.875rem' }}>
+              <strong>Type:</strong> {selectedDocument.type}
+            </p>
+            <p style={{ color: '#4b5563', marginBottom: '0.25rem', fontSize: '0.875rem' }}>
+              <strong>Size:</strong> {(selectedDocument.size / 1024).toFixed(2)} KB
+            </p>
+            <p style={{ color: '#4b5563', marginBottom: '0.25rem', fontSize: '0.875rem' }}>
+              <strong>Preview:</strong> Document preview not supported in this view.
+            </p>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', marginTop: '1.5rem' }}>
+              <button
+                style={{
+                  padding: '0.5rem 1rem',
+                  background: '#ef4444',
+                  color: '#fff',
+                  borderRadius: '0.25rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  cursor: 'pointer',
+                }}
+                onClick={() => setSelectedDocument(null)}
                 onMouseOver={(e) => (e.target.style.background = '#dc2626')}
                 onMouseOut={(e) => (e.target.style.background = '#ef4444')}
               >

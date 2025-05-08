@@ -6,13 +6,16 @@ function SideBar({ setActivePage }) {
     { title: 'My Internships', page: 'applied', icon: <Briefcase size={20} /> },
     { title: 'Weekly Report', page: 'report', icon: <FileText size={20} /> },
     { title: 'Evaluation', page: 'evaluate', icon: <BarChart2 size={20} /> },
-    { title: 'Available Internships', page: 'available', icon: <Search size={20} /> },
+    { title: 'Available Internships', page: 'available', icon: <Search size={20} /> }
     // Example: Sidebar Button or Navigation Option
 //<button onClick={() => setActivePage('applied')}>My Internships</button>
 
 
-
   ];
+  const handleFilterChange = (e) => {
+    setFilter(e.target.value); // Pass the filter value to the parent component
+  };
+  
 
 
   return (
@@ -68,6 +71,7 @@ function SideBar({ setActivePage }) {
           </li>
         ))}
       </ul>
+      
     </div>
   );
 }
