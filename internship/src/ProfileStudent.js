@@ -1,74 +1,140 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import SideBar from './Components/SideBar';
-import { Mail, Home, LogOut, Edit } from 'lucide-react';
+import { Mail, User, Phone, Home, LogOut, Edit, MapPin, Globe, MessageSquare, Briefcase, Activity, BookOpen, Clipboard, Menu } from 'lucide-react';
 
 function ProfileStudent() {
   const navigate = useNavigate();
   const location = useLocation();
   const [showEditModal, setShowEditModal] = useState(false);
-  const [selectedInternship, setSelectedInternship] = useState(null);
-  const [appliedInternships, setAppliedInternships] = useState(() => {
-    const saved = sessionStorage.getItem('appliedInternships');
-    return saved ? JSON.parse(saved) : [];
-  });
-
-  const majorSemesterMap = {
-    'Applied Arts': ['Semester 1', 'Semester 2', 'Semester 3', 'Semester 4', 'Semester 5', 'Semester 6', 'Semester 7', 'Semester 8'],
-    'Architecture': ['Semester 1', 'Semester 2', 'Semester 3', 'Semester 4', 'Semester 5', 'Semester 6', 'Semester 7', 'Semester 8', 'Semester 9', 'Semester 10'],
-    'Business Informatics': ['Semester 1', 'Semester 2', 'Semester 3', 'Semester 4', 'Semester 5', 'Semester 6', 'Semester 7', 'Semester 8'],
-    'IET': ['Semester 1', 'Semester 2', 'Semester 3', 'Semester 4', 'Semester 5', 'Semester 6', 'Semester 7', 'Semester 8', 'Semester 9', 'Semester 10'],
-    'Management': ['Semester 1', 'Semester 2', 'Semester 3', 'Semester 4', 'Semester 5', 'Semester 6', 'Semester 7', 'Semester 8'],
-    'MET': ['Semester 1', 'Semester 2', 'Semester 3', 'Semester 4', 'Semester 5', 'Semester 6', 'Semester 7', 'Semester 8', 'Semester 9', 'Semester 10'],
-    'Mechatronics Engineering': ['Semester 1', 'Semester 2', 'Semester 3', 'Semester 4', 'Semester 5', 'Semester 6', 'Semester 7', 'Semester 8', 'Semester 9', 'Semester 10'],
-    'Pharmacy': ['Semester 1', 'Semester 2', 'Semester 3', 'Semester 4', 'Semester 5', 'Semester 6', 'Semester 7', 'Semester 8', 'Semester 9', 'Semester 10'],
-  };
-
-  const majors = Object.keys(majorSemesterMap);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const formRef = useRef(null);
+  const [clickedButtons, setClickedButtons] = useState({});
 
   const initialProfileData = {
     name: '',
-    email: location.state?.email || '',
-    major: '',
-    semester: '',
-    jobInterests: '',
-    previousInternships: '',
+    phone: '',
+    email: '',
+    gender: '',
+    Address: '',
+    nationality: '',
+    language: '',
+    jobInterests: [],
+    previousInternships: [],
+    partTimeJobs: [],
+    collegeActivities: [],
+    education: []
   };
+
+  // Import Roboto font
+  useEffect(() => {
+    const link = document.createElement('link');
+    link.href = 'https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap';
+    link.rel = 'stylesheet';
+    document.head.appendChild(link);
+    return () => document.head.removeChild(link);
+  }, []);
 
   const [profileData, setProfileData] = useState(() => {
     const savedData = sessionStorage.getItem('studentProfile');
-    return savedData ? JSON.parse(savedData) : initialProfileData;
+    if (savedData) {
+      try {
+        const parsedData = JSON.parse(savedData);
+        return {
+          ...initialProfileData,
+          ...parsedData,
+          education: Array.isArray(parsedData.education) ? 
+            parsedData.education.filter(edu => edu.degree || edu.years) : 
+            initialProfileData.education,
+          jobInterests: Array.isArray(parsedData.jobInterests) ? parsedData.jobInterests : [],
+          previousInternships: Array.isArray(parsedData.previousInternships) ? parsedData.previousInternships : [],
+          partTimeJobs: Array.isArray(parsedData.partTimeJobs) ? parsedData.partTimeJobs : [],
+          collegeActivities: Array.isArray(parsedData.collegeActivities) ? parsedData.collegeActivities : []
+        };
+      } catch (e) {
+        console.error('Error parsing sessionStorage data:', e);
+        return initialProfileData;
+      }
+    }
+    return initialProfileData;
   });
 
-  const [availableSemesters, setAvailableSemesters] = useState(
-    majorSemesterMap[profileData.major] || []
-  );
+  useEffect(() => {
+    if (!profileData.name) {
+      setShowEditModal(true);
+    }
+  }, []);
 
   useEffect(() => {
     sessionStorage.setItem('studentProfile', JSON.stringify(profileData));
   }, [profileData]);
 
-  const handleMajorChange = (e) => {
-    const selectedMajor = e.target.value;
-    setAvailableSemesters(majorSemesterMap[selectedMajor] || []);
-    setProfileData((prev) => ({
-      ...prev,
-      major: selectedMajor,
-      semester: '',
-    }));
-  };
-
   const handleEditSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData(formRef.current);
+    
+    // Collect all education entries from the form
+    const education = [];
+    let index = 0;
+    while (true) {
+      const degree = formData.get(`education[${index}].degree`);
+      const years = formData.get(`education[${index}].years`);
+      if ((degree && degree.trim() !== '') || (years && years.trim() !== '')) {
+        education.push({ degree: degree || '', years: years || '' });
+        index++;
+      } else {
+        break;
+      }
+    }
+    if (education.length === 0) {
+      const degree = formData.get('education[0].degree');
+      const years = formData.get('education[0].years');
+      if ((degree && degree.trim() !== '') || (years && years.trim() !== '')) {
+        education.push({ degree: degree || '', years: years || '' });
+      }
+    }
+
+    const jobInterests = formData.get('jobInterests')
+      ? formData.get('jobInterests').split(',').map(item => item.trim()).filter(item => item)
+      : profileData.jobInterests;
+
+    const previousInternships = formData.get('previousInternships')
+      ? formData.get('previousInternships')
+          .split(';')
+          .map(item => {
+            const [company, role, duration, responsibilities] = item.split(',').map(i => i.trim());
+            return { company, role, duration, responsibilities };
+          })
+          .filter(i => i.company && i.role)
+      : profileData.previousInternships;
+
+    const partTimeJobs = formData.get('partTimeJobs')
+      ? formData.get('partTimeJobs')
+          .split(';')
+          .map(item => {
+            const [company, role, duration, responsibilities] = item.split(',').map(i => i.trim());
+            return { company, role, duration, responsibilities };
+          })
+          .filter(j => j.company && j.role)
+      : profileData.partTimeJobs;
+
+    const collegeActivities = formData.get('collegeActivities')
+      ? formData.get('collegeActivities').split(',').map(item => item.trim()).filter(item => item)
+      : profileData.collegeActivities;
+
     setProfileData({
-      name: formData.get('name') || '',
-      email: formData.get('email') || '',
-      major: formData.get('major') || '',
-      semester: formData.get('semester') || '',
-      jobInterests: formData.get('jobInterests') || '',
-      previousInternships: formData.get('previousInternships') || '',
+      name: formData.get('name') || profileData.name,
+      phone: formData.get('phone') || profileData.phone,
+      email: formData.get('email') || profileData.email,
+      gender: formData.get('gender') || profileData.gender,
+      Address: formData.get('Address') || profileData.Address,
+      nationality: formData.get('nationality') || profileData.nationality,
+      language: formData.get('language') || profileData.language,
+      jobInterests,
+      previousInternships,
+      partTimeJobs,
+      collegeActivities,
+      education: education.filter(edu => edu.degree || edu.years)
     });
     setShowEditModal(false);
   };
@@ -81,298 +147,365 @@ function ProfileStudent() {
     }
   };
 
-  const isProfileEmpty = Object.values(profileData).every((value) => !value);
+  const handleButtonClick = (buttonId) => {
+    setClickedButtons(prev => ({
+      ...prev,
+      [buttonId]: true
+    }));
+  };
+
+  const getButtonStyle = (buttonId, baseStyle) => {
+    if (buttonId === 'editProfile') {
+      return baseStyle; // No color change for editProfile button when clicked
+    }
+    return {
+      ...baseStyle,
+      ...(clickedButtons[buttonId] && {
+        color: '#fff',
+        background: buttonId.includes('header') ? 'none' : '#4e4f50'
+      })
+    };
+  };
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
   return (
     <div style={styles.container}>
       {/* Header */}
-      <header style={styles.header}>
-        <h2 style={styles.title}>Student Profile</h2>
-        <div style={styles.headerButtons}>
+      <header style={{ ...styles.header, position: 'fixed', top: 0, width: '100%', zIndex: 1001, boxSizing: 'border-box' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: '1 0 auto', maxWidth: '50%' }}>
           <button
             style={styles.headerBtn}
-            onMouseOver={(e) => (e.target.style.color = '#1f2937')}
-            onMouseOut={(e) => (e.target.style.color = '#4b5563')}
+            title="Toggle Sidebar"
+            onClick={toggleSidebar}
           >
-            <Mail size={24} />
+            <Menu size={20} />
+          </button>
+          <h2 style={styles.title}>GUC Internship System</h2>
+        </div>
+        <div style={{ ...styles.headerButtons, flex: '0 0 auto' }}>
+          <button
+            style={getButtonStyle('headerMail', styles.headerBtn)}
+            title="Messages"
+            onClick={(e) => {
+              handleButtonClick('headerMail');
+              navigate('/student/messages');
+            }}
+          >
+            <Mail size={20} />
           </button>
           <button
-            style={styles.headerBtn}
-            onClick={() => navigate('/student')}
-            onMouseOver={(e) => (e.target.style.color = '#1f2937')}
-            onMouseOut={(e) => (e.target.style.color = '#4b5563')}
+            style={getButtonStyle('headerHome', styles.headerBtn)}
+            title="Home"
+            onClick={(e) => {
+              handleButtonClick('headerHome');
+              navigate('/student');
+            }}
           >
-            <Home size={24} />
+            <Home size={20} />
           </button>
           <button
-            style={styles.headerBtn}
-            onClick={() => navigate('/')}
-            onMouseOver={(e) => (e.target.style.color = '#1f2937')}
-            onMouseOut={(e) => (e.target.style.color = '#4b5563')}
+            style={getButtonStyle('headerLogout', styles.headerBtn)}
+            title="Logout"
+            onClick={(e) => {
+              handleButtonClick('headerLogout');
+              navigate('/');
+            }}
           >
-            <LogOut size={24} />
+            <LogOut size={20} />
           </button>
         </div>
       </header>
 
-      <div style={styles.layout}>
+      {/* Layout */}
+      <div style={{ ...styles.layout, marginTop: '4rem', minHeight: 'calc(100vh - 4rem)' }}>
         {/* Sidebar */}
         <div style={styles.sidebar}>
-          <div style={styles.sidebarHeader}>
-            <h1 style={styles.sidebarTitle}>GUC Internship Portal</h1>
-          </div>
-          <SideBar setActivePage={handleSetActivePage} />
-          <div style={styles.sidebarFooter}>
-            <button
-              style={styles.logoutBtn}
-              onClick={() => navigate('/')}
-              onMouseOver={(e) => (e.target.style.background = '#f3f4f6')}
-              onMouseOut={(e) => (e.target.style.background = 'none')}
-            >
-              <LogOut size={20} style={{ marginRight: '0.75rem' }} /> Logout
-            </button>
-          </div>
+          <SideBar setActivePage={handleSetActivePage} isOpen={isSidebarOpen} />
         </div>
 
-        <div style={styles.profileContent}>
+        {/* Profile Content */}
+        <div
+          style={{
+            ...styles.profileContent,
+            marginLeft: isSidebarOpen && window.innerWidth > 768 ? '16rem' : '0',
+            transition: 'margin-left 0.3s ease-in-out',
+            width: isSidebarOpen && window.innerWidth > 768 ? 'calc(100% - 16rem)' : '100%',
+            boxSizing: 'border-box',
+          }}
+        >
           <div style={styles.profileHeader}>
-            <h3 style={styles.profileTitle}>Welcome, {profileData.name || "Student"}!</h3>
+            <h1 style={styles.mainTitle}>Student Profile</h1>
             <button
-              style={styles.editBtn}
-              onClick={() => setShowEditModal(true)}
-              onMouseOver={(e) => (e.target.style.background = '#2563eb')}
-              onMouseOut={(e) => (e.target.style.background = '#3b82f6')}
+              style={getButtonStyle('editProfile', styles.editBtn)}
+              onClick={(e) => {
+                handleButtonClick('editProfile');
+                setShowEditModal(true);
+              }}
+           
             >
-              <Edit size={16} style={{ marginRight: '0.5rem' }} /> Edit Profile
+              <Edit size={16} style={{ marginRight: '0.5rem' }} /> {profileData.name ? 'Edit Profile' : 'Create Profile'}
             </button>
           </div>
 
-          <div style={styles.profileBox}>
-            {isProfileEmpty ? (
-              <div style={styles.empty}>
-                <p style={styles.emptyText}>No profile information added yet. Click edit to begin.</p>
-              </div>
-            ) : (
-              <div style={styles.grid}>
-                <ProfileItem label="Name" value={profileData.name} />
-                <ProfileItem label="Email" value={profileData.email} />
-                <ProfileItem label="Major" value={profileData.major} />
-                <ProfileItem label="Semester" value={profileData.semester} />
-                <ProfileItem label="Job Interests" value={profileData.jobInterests} />
-                <ProfileItem label="Previous Internships" value={profileData.previousInternships} />
-              </div>
-            )}
-          </div>
-
-          {/* Applied Internships Section */}
-          <div style={{ marginTop: '1.5rem', animation: 'fadeIn 0.3s' }}>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem', color: '#1f2937' }}>
-              Applied Internships
-            </h2>
-            <div style={{ background: '#fff', padding: '1.5rem', borderRadius: '0.375rem', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
-              {appliedInternships.length > 0 ? (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(15rem, 1fr))', gap: '1.5rem' }}>
-                  {appliedInternships.map((internship, index) => (
-                    <div
-                      key={index}
-                      style={{
-                        background: '#fff',
-                        padding: '1rem',
-                        borderRadius: '0.375rem',
-                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-                        transition: 'box-shadow 0.3s, background-color 0.3s',
-                      }}
-                    >
-                      <h4 style={{ margin: '0 0 0.75rem', fontSize: '1.25rem', fontWeight: 'bold', color: '#1f2937' }}>
-                        {internship.jobTitle}
-                      </h4>
-                      <p style={{ margin: '0.5rem 0', fontSize: '0.875rem', color: '#4b5563' }}>
-                        <strong>Company:</strong> {internship.companyName}
-                      </p>
-                      <p style={{ margin: '0.5rem 0', fontSize: '0.875rem', color: '#4b5563' }}>
-                        <strong>Duration:</strong> {internship.duration}
-                      </p>
-                      <p style={{ margin: '0.75rem 0 0', fontSize: '0.875rem', color: '#6b7280', lineHeight: '1.4' }}>
-                        {internship.description}
-                      </p>
-                      <button
-                        style={{
-                          padding: '0.5rem 1rem',
-                          background: '#3b82f6',
-                          color: '#fff',
-                          borderRadius: '0.25rem',
-                          display: 'flex',
-                          alignItems: 'center',
-                          cursor: 'pointer',
-                          fontSize: '0.875rem',
-                          marginTop: '0.75rem',
-                        }}
-                        onClick={() => setSelectedInternship(internship)}
-                        onMouseOver={(e) => (e.target.style.background = '#2563eb')}
-                        onMouseOut={(e) => (e.target.style.background = '#3b82f6')}
-                      >
-                        View Details
-                      </button>
-                    </div>
-                  ))}
+          {profileData.name ? (
+            <div style={styles.profileBox}>
+              <div style={styles.profileSection}>
+                <SectionHeader title="Personal Information" icon={<User size={18} style={styles.iconStyle} />} />
+                <div style={styles.infoGrid}>
+                  <ProfileItem label="Name" value={profileData.name} />
+                  <ProfileItem label="Phone Number" value={profileData.phone} />
+                  <ProfileItem label="Email" value={profileData.email} />
                 </div>
-              ) : (
-                <p style={{ color: '#4b5563' }}>You have not applied to any internships yet.</p>
-              )}
+              </div>
+
+              <div style={styles.profileSection}>
+                <SectionHeader title="Personal Details" icon={<Clipboard size={18} style={styles.iconStyle} />} />
+                <div style={styles.detailsGrid}>
+                  <div style={styles.detailColumn}>
+                    <ProfileItem label="Gender" value={profileData.gender} />
+                    <ProfileItem label="Address" value={profileData.Address} />
+                    <ProfileItem label="Nationality" value={profileData.nationality} />
+                  </div>
+                  <div style={styles.detailColumn}>
+                    <ProfileItem label="Language" value={profileData.language} />
+                  </div>
+                </div>
+              </div>
+
+              <div style={styles.profileSection}>
+                <SectionHeader title="Experiences and Interests" icon={<Briefcase size={18} style={styles.iconStyle} />} />
+                <ProfileItem label="Job Interests" value={
+                  Array.isArray(profileData.jobInterests) && profileData.jobInterests.length > 0 
+                    ? profileData.jobInterests.join(', ') 
+                    : undefined
+                } />
+                <ProfileItem label="Previous Internships" value={
+                  profileData.previousInternships.length > 0 ? (
+                    profileData.previousInternships.map((internship, index) => (
+                      <div key={index} style={{ marginBottom: '1rem' }}>
+                        <p><strong>Company:</strong> {internship.company}</p>
+                        <p><strong>Role:</strong> {internship.role}</p>
+                        <p><strong>Duration:</strong> {internship.duration}</p>
+                        <p><strong>Responsibilities:</strong> {internship.responsibilities}</p>
+                      </div>
+                    ))
+                  ) : undefined
+                } />
+                <ProfileItem label="Part-Time Jobs" value={
+                  profileData.partTimeJobs.length > 0 ? (
+                    profileData.partTimeJobs.map((job, index) => (
+                      <div key={index} style={{ marginBottom: '1rem' }}>
+                        <p><strong>Company:</strong> {job.company}</p>
+                        <p><strong>Role:</strong> {job.role}</p>
+                        <p><strong>Duration:</strong> {job.duration}</p>
+                        <p><strong>Responsibilities:</strong> {job.responsibilities}</p>
+                      </div>
+                    ))
+                  ) : undefined
+                } />
+                <ProfileItem label="College Activities" value={
+                  Array.isArray(profileData.collegeActivities) && profileData.collegeActivities.length > 0 
+                    ? profileData.collegeActivities.join(', ') 
+                    : undefined
+                } />
+              </div>
+
+              <div style={styles.profileSection}>
+                <SectionHeader title="Education Information" icon={<BookOpen size={18} style={styles.iconStyle} />} />
+                {profileData.education.length > 0 ? (
+                  profileData.education.map((edu, index) => (
+                    <div key={index} style={styles.educationItem}>
+                      <ProfileItem label="Degree" value={edu.degree || undefined} />
+                      <ProfileItem label="Years" value={edu.years || undefined} />
+                    </div>
+                  ))
+                ) : (
+                  <ProfileItem label="" value="Not provided" />
+                )}
+              </div>
             </div>
-          </div>
+          ) : (
+            <div style={styles.emptyProfileMessage}>
+              <p>Please create your profile to continue.</p>
+            </div>
+          )}
+
+          {showEditModal && (
+            <div style={{ ...styles.modalOverlay, zIndex: 1002 }}>
+              <div style={styles.modal}>
+                <h3 style={styles.modalTitle}>{profileData.name ? 'Edit Profile Information' : 'Create Profile'}</h3>
+                <form ref={formRef} onSubmit={handleEditSubmit} style={styles.form}>
+                  <h4 style={styles.formSectionTitle}>Basic Information</h4>
+                  <TextInput name="name" label="Full Name" defaultValue={profileData.name} required />
+                  <TextInput name="phone" label="Phone Number" defaultValue={profileData.phone} type="tel" />
+                  <TextInput name="email" label="Email" defaultValue={profileData.email} type="email" required />
+
+                  <h4 style={styles.formSectionTitle}>Personal Details</h4>
+                  <TextInput name="gender" label="Gender" defaultValue={profileData.gender} />
+                  <TextInput name="Address" label="Address" defaultValue={profileData.Address} />
+                  <TextInput name="nationality" label="Nationality" defaultValue={profileData.nationality} />
+                  <TextInput name="language" label="Language" defaultValue={profileData.language} />
+
+                  <h4 style={styles.formSectionTitle}>Experiences and Interests</h4>
+                  <TextInput 
+                    name="jobInterests" 
+                    label="Job Interests (comma-separated)" 
+                    defaultValue={Array.isArray(profileData.jobInterests) ? profileData.jobInterests.join(', ') : ''} 
+                    placeholder="e.g., UI/UX Design, Software Development"
+                  />
+                  <TextInput 
+                    name="previousInternships" 
+                    label="Previous Internships (company,role,duration,responsibilities; separated by semicolon)" 
+                    defaultValue={profileData.previousInternships.map(i => `${i.company},${i.role},${i.duration},${i.responsibilities}`).join(';')} 
+                    placeholder="e.g., Company A,Intern,3 months,Designed UI;Company B,Developer,6 months,Coded features"
+                  />
+                  <TextInput 
+                    name="partTimeJobs" 
+                    label="Part-Time Jobs (company,role,duration,responsibilities; separated by semicolon)" 
+                    defaultValue={profileData.partTimeJobs.map(j => `${j.company},${j.role},${j.duration},${j.responsibilities}`).join(';')} 
+                    placeholder="e.g., Cafe A,Barista,1 year,Served customers;Store B,Cashier,6 months,Handled transactions"
+                  />
+                  <TextInput 
+                    name="collegeActivities" 
+                    label="College Activities (comma-separated)" 
+                    defaultValue={Array.isArray(profileData.collegeActivities) ? profileData.collegeActivities.join(', ') : ''} 
+                    placeholder="e.g., Coding Club, Debate Team"
+                  />
+
+                  <h4 style={styles.formSectionTitle}>Education</h4>
+                  {profileData.education.length > 0 ? (
+                    profileData.education.map((edu, index) => (
+                      <div key={index} style={styles.educationFormGroup}>
+                        <TextInput 
+                          name={`education[${index}].degree`} 
+                          label="Degree" 
+                          defaultValue={edu.degree} 
+                        />
+                        <TextInput 
+                          name={`education[${index}].years`} 
+                          label="Year of Graduation" 
+                          defaultValue={edu.years} 
+                        />
+                      </div>
+                    ))
+                  ) : (
+                    <div style={styles.educationFormGroup}>
+                      <TextInput 
+                        name="education[0].degree" 
+                        label="Degree" 
+                        defaultValue="" 
+                      />
+                      <TextInput 
+                        name="education[0].years" 
+                        label="Year of Graduation" 
+                        defaultValue="" 
+                      />
+                    </div>
+                  )}
+
+                  <div style={styles.buttonGroup}>
+                    <button
+                      type="submit"
+                      style={getButtonStyle('saveChanges', styles.saveBtn)}
+                      onClick={(e) => handleButtonClick('saveChanges')}
+                    >
+                      Save Changes
+                    </button>
+                    <button
+                      type="button"
+                      style={getButtonStyle('cancel', styles.cancelBtn)}
+                      onClick={(e) => {
+                        handleButtonClick('cancel');
+                        setShowEditModal(false);
+                      }}
+            
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Modal for Internship Details */}
-      {selectedInternship && (
+      {/* Overlay for mobile */}
+      {isSidebarOpen && (
         <div
           style={{
             position: 'fixed',
             inset: 0,
+            top: '4rem',
             background: 'rgba(0, 0, 0, 0.5)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 50,
+            zIndex: 999,
+            display: window.innerWidth <= 768 ? 'block' : 'none',
           }}
-        >
-          <div
-            style={{
-              background: '#fff',
-              padding: '1.5rem',
-              borderRadius: '0.5rem',
-              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-              maxWidth: '24rem',
-              width: '100%',
-            }}
-          >
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#1f2937', marginBottom: '1rem' }}>
-              {selectedInternship.jobTitle}
-            </h3>
-            <p style={{ color: '#4b5563', marginBottom: '0.25rem', fontSize: '0.875rem' }}>
-              <strong>Company:</strong> {selectedInternship.companyName}
-            </p>
-            <p style={{ color: '#4b5563', marginBottom: '0.25rem', fontSize: '0.875rem' }}>
-              <strong>Duration:</strong> {selectedInternship.duration}
-            </p>
-            <p style={{ color: '#4b5563', marginBottom: '0.25rem', fontSize: '0.875rem' }}>
-              <strong>Paid/Unpaid:</strong> {selectedInternship.isPaid.charAt(0).toUpperCase() + selectedInternship.isPaid.slice(1)}
-            </p>
-            <p style={{ color: '#4b5563', marginBottom: '0.25rem', fontSize: '0.875rem' }}>
-              <strong>Expected Salary:</strong> {selectedInternship.expectedSalary}
-            </p>
-            <p style={{ color: '#4b5563', marginBottom: '0.25rem', fontSize: '0.875rem' }}>
-              <strong>Skills Required:</strong> {selectedInternship.skillsRequired}
-            </p>
-            <p style={{ color: '#4b5563', marginBottom: '0.25rem', fontSize: '0.875rem' }}>
-              <strong>Description:</strong> {selectedInternship.description}
-            </p>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', marginTop: '1.5rem' }}>
-              <button
-                style={{
-                  padding: '0.5rem 1rem',
-                  background: '#ef4444',
-                  color: '#fff',
-                  borderRadius: '0.25rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  cursor: 'pointer',
-                }}
-                onClick={() => setSelectedInternship(null)}
-                onMouseOver={(e) => (e.target.style.background = '#dc2626')}
-                onMouseOut={(e) => (e.target.style.background = '#ef4444')}
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Modal for Profile Editing */}
-      {showEditModal && (
-        <div style={styles.modalOverlay}>
-          <div style={styles.modal}>
-            <h3 style={styles.modalTitle}>Edit Your Profile</h3>
-            <form ref={formRef} onSubmit={handleEditSubmit} style={styles.form}>
-              <TextInput name="name" defaultValue={profileData.name} placeholder="Enter your name" />
-              <TextInput name="email" defaultValue={profileData.email} type="email" placeholder="Enter your email" />
-              <SelectInput name="major" value={profileData.major} options={majors} onChange={handleMajorChange} />
-              <SelectInput name="semester" value={profileData.semester} options={availableSemesters} disabled={!profileData.major} />
-              <TextInput name="jobInterests" defaultValue={profileData.jobInterests} placeholder="Job interests" />
-              <TextArea name="previousInternships" defaultValue={profileData.previousInternships} placeholder="Describe previous internships" />
-
-              <div style={styles.buttonGroup}>
-                <button
-                  type="submit"
-                  style={styles.saveBtn}
-                  onMouseOver={(e) => (e.target.style.background = '#059669')}
-                  onMouseOut={(e) => (e.target.style.background = '#10b981')}
-                >
-                  Save
-                </button>
-                <button
-                  type="button"
-                  style={styles.cancelBtn}
-                  onClick={() => setShowEditModal(false)}
-                  onMouseOver={(e) => (e.target.style.background = '#dc2626')}
-                  onMouseOut={(e) => (e.target.style.background = '#ef4444')}
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+          onClick={() => setIsSidebarOpen(false)}
+        />
       )}
     </div>
   );
 }
 
-// Helper Components
-const ProfileItem = ({ label, value }) => (
-  <p style={styles.profileItem}>
-    <strong>{label}:</strong> {value || "Not provided"}
-  </p>
+const ProfileItem = ({ label, value, icon }) => {
+  const getIcon = () => {
+    const iconMap = {
+      'Name': <User size={16} style={styles.iconStyle} />,
+      'Phone': <Phone size={16} style={styles.iconStyle} />,
+      'Email': <Mail size={16} style={styles.iconStyle} />,
+      'Gender': <User size={16} style={styles.iconStyle} />,  
+      'Address': <MapPin size={16} style={styles.iconStyle} />,
+      'Nationality': <Globe size={16} style={styles.iconStyle} />,
+      'Language': <MessageSquare size={16} style={styles.iconStyle} />,
+      'Activities': <Activity size={16} style={styles.iconStyle} />
+    };
+    return iconMap[label] || null;
+  };
+
+  const isEmpty = value === undefined || value === null || value === '';
+  
+  return (
+    <div style={styles.profileItem}>
+      {label && (
+        <strong style={styles.profileLabel}>
+          {getIcon()}
+          {label}:
+        </strong>
+      )}
+      <span style={styles.profileValue}>
+        {isEmpty ? (
+          <span style={{ color: '#9ca3af', fontStyle: 'italic' }}>Not provided</span>
+        ) : (
+          value
+        )}
+      </span>
+    </div>
+  );
+};
+
+const TextInput = ({ name, label, defaultValue, type = "text", required, placeholder }) => (
+  <div style={styles.inputGroup}>
+    <label style={styles.inputLabel}>{label}</label>
+    <input
+      type={type}
+      name={name}
+      defaultValue={defaultValue}
+      style={styles.input}
+      required={required}
+      placeholder={placeholder}
+    />
+  </div>
 );
 
-const TextInput = ({ name, defaultValue, placeholder, type = "text" }) => (
-  <input
-    type={type}
-    name={name}
-    defaultValue={defaultValue}
-    placeholder={placeholder}
-    style={styles.input}
-    onFocus={(e) => (e.target.style.boxShadow = '0 0 0 2px #3b82f6')}
-    onBlur={(e) => (e.target.style.boxShadow = 'none')}
-  />
-);
-
-const TextArea = ({ name, defaultValue, placeholder }) => (
-  <textarea
-    name={name}
-    defaultValue={defaultValue}
-    placeholder={placeholder}
-    style={styles.textarea}
-    onFocus={(e) => (e.target.style.boxShadow = '0 0 0 2px #3b82f6')}
-    onBlur={(e) => (e.target.style.boxShadow = 'none')}
-  />
-);
-
-const SelectInput = ({ name, value, onChange, options, disabled = false }) => (
-  <select
-    name={name}
-    value={value}
-    onChange={onChange}
-    disabled={disabled}
-    style={styles.input}
-    onFocus={(e) => (e.target.style.boxShadow = '0 0 0 2px #3b82f6')}
-    onBlur={(e) => (e.target.style.boxShadow = 'none')}
-  >
-    <option value="">Select</option>
-    {options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-  </select>
+const SectionHeader = ({ title, icon }) => (
+  <h2 style={styles.sectionTitle}>
+    {icon}
+    {title}
+  </h2>
 );
 
 const styles = {
@@ -384,51 +517,46 @@ const styles = {
     flexDirection: 'column',
   },
   header: {
-    background: '#fff',
-    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-    padding: '1rem',
+    background: 'linear-gradient( #fff 100%)',
+    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+    padding: '0.75rem 1.5rem',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
   title: {
+    fontFamily: "'Inter', sans-serif",
     fontSize: '1.25rem',
-    fontWeight: 'bold',
-    color: '#1f2937',
+    fontWeight: '600',
+    color: '#000',
     margin: 0,
+    letterSpacing: '-0.015em',
+    textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
   },
   headerButtons: {
     display: 'flex',
     alignItems: 'center',
-    gap: '1rem',
+    gap: '0.75rem',
   },
   headerBtn: {
     padding: '0.5rem',
-    color: '#4b5563',
-    background: 'none',
+    color: '#000',
+    background: 'transparent',
     border: 'none',
+    borderRadius: '6px',
     cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
   },
   layout: {
     display: 'flex',
     flex: 1,
   },
   sidebar: {
-    width: '16rem',
-    background: '#fff',
-    boxShadow: '2px 0 4px rgba(0, 0, 0, 0.1)',
     display: 'flex',
     flexDirection: 'column',
-  },
-  sidebarHeader: {
-    padding: '1rem',
-    borderBottom: '1px solid #e5e7eb',
-  },
-  sidebarTitle: {
-    fontSize: '1.5rem',
-    fontWeight: 'bold',
-    color: '#1f2937',
-    margin: 0,
   },
   sidebarFooter: {
     padding: '1rem',
@@ -449,22 +577,24 @@ const styles = {
   },
   profileContent: {
     flex: 1,
-    padding: '1.5rem',
+    padding: '2rem',
     overflowY: 'auto',
+    backgroundColor: '#f9fafb',
   },
   profileHeader: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: '1.5rem',
+    marginBottom: '2rem',
   },
-  profileTitle: {
-    fontSize: '1.5rem',
+  mainTitle: {
+    fontSize: '1.75rem',
     fontWeight: 'bold',
     color: '#1f2937',
+    margin: 0,
   },
   editBtn: {
-    backgroundColor: '#3b82f6',
+    backgroundColor: '#2a9d8f',
     color: '#fff',
     padding: '0.5rem 1rem',
     border: 'none',
@@ -475,26 +605,121 @@ const styles = {
     fontSize: '0.875rem',
   },
   profileBox: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+    gap: '1.5rem',
+    height: 'auto',
+  },
+  profileSection: {
     backgroundColor: '#fff',
+    border: '1px solid #e5e7eb',
+    borderRadius: '0.75rem',
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
     padding: '1.5rem',
-    borderRadius: '0.375rem',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+    width: '100%',
+    height: 'fit-content',
+    display: 'flex',
+    flexDirection: 'column',
+    boxSizing: 'border-box',
+    transition: 'transform 0.2s, box-shadow 0.2s',
+    ':hover': {
+      transform: 'translateY(-2px)',
+      boxShadow: '0 6px 16px rgba(0, 0, 0, 0.12)'
+    }
   },
-  empty: {
-    textAlign: 'center',
-    color: '#6b7280',
+  sectionTitle: {
+    fontSize: '1.125rem',
+    fontWeight: '600',
+    color: '#111827',
+    marginBottom: '1.25rem',
+    paddingBottom: '0.75rem',
+    borderBottom: '2px solid #e5e7eb',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.5rem'
   },
-  emptyText: {
-    fontSize: '0.875rem',
+  subSectionTitle: {
+    fontSize: '1rem',
+    fontWeight: '600',
+    color: '#1f2937',
+    margin: '1rem 0 0.5rem',
   },
-  grid: {
+  infoGrid: {
+    display: 'grid',
+    gridTemplateColumns: '1fr',
+    gap: '1rem',
+    marginBottom: '1rem',
+  },
+  detailsGrid: {
     display: 'grid',
     gridTemplateColumns: '1fr 1fr',
     gap: '1rem',
   },
-  profileItem: {
+  detailColumn: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1rem',
+  },
+  experienceItem: {
+    marginBottom: '1.25rem',
+    padding: '1rem',
+    backgroundColor: '#f8fafc',
+    borderRadius: '0.5rem',
+    borderLeft: '3px solid #3b82f6',
+    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
+    transition: 'transform 0.2s',
+    ':hover': {
+      transform: 'translateX(2px)'
+    }
+  },
+  educationItem: {
+    marginBottom: '1rem',
+    padding: '1rem',
+    backgroundColor: '#f8fafc',
+    borderRadius: '0.5rem',
+    borderLeft: '3px solid #10b981'
+  },
+  educationDegree: {
     fontSize: '0.875rem',
+    fontWeight: '600',
+    color: '#1f2937',
+    margin: '0 0 0.25rem 0',
+  },
+  educationYears: {
+    fontSize: '0.875rem',
+    color: '#6b7280',
+    margin: 0,
+  },
+  profileItem: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.25rem',
+    fontSize: '0.875rem',
+    marginBottom: '1rem',
+    paddingBottom: '0.75rem',
+    borderBottom: '1px dashed #e5e7eb',
+    ':last-child': {
+      borderBottom: 'none',
+      marginBottom: 0,
+      paddingBottom: 0
+    }
+  },
+  iconStyle: {
+    color: '#6b7280',
+    width: '18px',
+    height: '18px'
+  },
+  profileLabel: {
+    fontWeight: '500',
     color: '#4b5563',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.5rem'
+  },
+  profileValue: {
+    color: '#111827',
+    fontWeight: '400',
+    paddingLeft: '1.5rem'
   },
   modalOverlay: {
     position: 'fixed',
@@ -503,14 +728,15 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    zIndex: 1000,
+    zIndex: 1002,
   },
   modal: {
     background: '#fff',
     padding: '1.5rem',
     borderRadius: '0.5rem',
     boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-    width: '350px',
+    width: '90%',
+    maxWidth: '800px',
     maxHeight: '90vh',
     overflowY: 'auto',
   },
@@ -518,37 +744,56 @@ const styles = {
     fontSize: '1.25rem',
     fontWeight: 'bold',
     color: '#1f2937',
-    marginBottom: '1rem',
+    marginBottom: '1.5rem',
   },
   form: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '1rem',
+    gap: '1.5rem',
+  },
+  formSectionTitle: {
+    fontSize: '1rem',
+    fontWeight: '600',
+    color: '#1f2937',
+    margin: '0 0 0.5rem 0',
+    paddingBottom: '0.5rem',
+    borderBottom: '1px solid #e5e7eb',
+  },
+  inputGroup: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.5rem',
+  },
+  inputLabel: {
+    fontSize: '0.875rem',
+    fontWeight: '500',
+    color: '#4b5563',
   },
   input: {
-    padding: '0.5rem',
+    padding: '0.75rem',
     borderRadius: '0.375rem',
     border: '1px solid #d1d5db',
     fontSize: '0.875rem',
     outline: 'none',
   },
-  textarea: {
-    padding: '0.5rem',
-    borderRadius: '0.375rem',
-    border: '1px solid #d1d5db',
-    fontSize: '0.875rem',
-    minHeight: '80px',
-    resize: 'vertical',
+  educationFormGroup: {
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gap: '1rem',
+    padding: '0.75rem',
+    backgroundColor: '#f9fafb',
+    borderRadius: '0.5rem',
   },
   buttonGroup: {
     display: 'flex',
-    justifyContent: 'space-between',
-    marginTop: '1rem',
+    justifyContent: 'flex-end',
+    gap: '1rem',
+    marginTop: '1.5rem',
   },
   saveBtn: {
-    backgroundColor: '#10b981',
+    backgroundColor: '#4e4f50',
     color: '#fff',
-    padding: '0.5rem 1rem',
+    padding: '0.75rem 1.5rem',
     border: 'none',
     borderRadius: '0.375rem',
     cursor: 'pointer',
@@ -557,12 +802,47 @@ const styles = {
   cancelBtn: {
     backgroundColor: '#ef4444',
     color: '#fff',
-    padding: '0.5rem 1rem',
+    padding: '0.75rem 1.5rem',
     border: 'none',
     borderRadius: '0.375rem',
     cursor: 'pointer',
     fontSize: '0.875rem',
   },
+  emptyProfileMessage: {
+    textAlign: 'center',
+    padding: '2rem',
+    backgroundColor: '#fff',
+    borderRadius: '0.5rem',
+    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+    color: '#4b5563',
+    fontSize: '1rem',
+  },
+  '@media (max-width: 768px)': {
+    profileBox: {
+      gridTemplateColumns: '1fr',
+    },
+    profileSection: {
+      padding: '1rem',
+    },
+    sectionTitle: {
+      fontSize: '1rem',
+    }
+  }
 };
+
+// Animation keyframes and media query
+const styleSheet = document.createElement('style');
+styleSheet.textContent = `
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @media (max-width: 768px) {
+    .profile-content {
+      margin-left: 0 !important;
+    }
+  }
+`;
+document.head.appendChild(styleSheet);
 
 export default ProfileStudent;
