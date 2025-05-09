@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SideBar from './Components/SideBar';
@@ -99,10 +100,13 @@ function StudentHomePage({ appliedInternships, setAppliedInternships }) {
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
+
   };
 
   const renderContent = () => {
     switch (activePage) {
+
+
       case 'available':
         return (
           <div style={{ animation: 'fadeIn 0.3s' }}>
@@ -215,11 +219,14 @@ function StudentHomePage({ appliedInternships, setAppliedInternships }) {
               </div>
             </div>
           </div>
+
         );
     }
   };
 
   return (
+
+
     <div style={styles.container}>
       {/* Header */}
       <header style={{ ...styles.header, position: 'fixed', top: 0, width: '100%', zIndex: 1001,boxSizing: 'border-box' }}>
@@ -278,6 +285,7 @@ function StudentHomePage({ appliedInternships, setAppliedInternships }) {
         >
           {renderContent()}
         </main>
+
       </div>
 
       {/* Overlay for mobile */}
@@ -380,6 +388,8 @@ function StudentHomePage({ appliedInternships, setAppliedInternships }) {
       )}
     </div>
   );
+
+
 }
 
 const styles = {
@@ -480,3 +490,4 @@ styleSheet.textContent = `
 document.head.appendChild(styleSheet);
 
 export default StudentHomePage;
+

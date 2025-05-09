@@ -1,29 +1,34 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function LoginPage() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleLogin = (e) => {
     e.preventDefault();
-    
+
     // Check if the email matches the accepted domains
-    const acceptedDomains = ['@acceptedCorp.com', '@student.guc.edu.eg', '@guc.edu.eg'];
-    const isEmailValid = acceptedDomains.some(domain => email.endsWith(domain));
+    const acceptedDomains = [
+      "@acceptedCorp.com",
+      "@student.guc.edu.eg",
+      "@guc.edu.eg",
+    ];
+    const isEmailValid = acceptedDomains.some((domain) =>
+      email.endsWith(domain)
+    );
 
     if (!isEmailValid) {
-      alert('Invalid email domain');
+      alert("Invalid email domain");
       return;
     }
-    
-    // For student email, redirect to student page with email in state
-    if (email.endsWith('@student.guc.edu.eg')) {
-      navigate('/student', { state: { email } });
-    } else {
-      // Handle other roles (e.g., company or faculty) if needed
-      alert('Only student login supported for now');
+
+    if (email.endsWith("@student.guc.edu.eg")) {
+      navigate("/student"); // Redirect to student page for now
+    } else if (email.endsWith("@guc.edu.eg")) {
+      navigate("/staff");
+
     }
   };
 
@@ -47,8 +52,16 @@ function LoginPage() {
           required
           style={styles.input}
         />
-        <button type="submit" style={styles.button}>Login</button>
-        <button type="button" onClick={() => navigate('/register')} style={styles.button}>Register as Company</button>
+        <button type="submit" style={styles.button}>
+          Login
+        </button>
+        <button
+          type="button"
+          onClick={() => navigate("/register")}
+          style={styles.button}
+        >
+          Register as Company
+        </button>
       </form>
     </div>
   );
@@ -56,30 +69,30 @@ function LoginPage() {
 
 const styles = {
   container: {
-    backgroundColor: '#e2ded0',
-    padding: '2rem',
-    borderRadius: '8px',
-    maxWidth: '400px',
-    margin: '2rem auto',
-    textAlign: 'center',
+    backgroundColor: "#e2ded0",
+    padding: "2rem",
+    borderRadius: "8px",
+    maxWidth: "400px",
+    margin: "2rem auto",
+    textAlign: "center",
   },
   form: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1rem',
+    display: "flex",
+    flexDirection: "column",
+    gap: "1rem",
   },
   input: {
-    padding: '0.5rem',
-    border: '1px solid #4e4f50',
-    borderRadius: '4px',
+    padding: "0.5rem",
+    border: "1px solid #4e4f50",
+    borderRadius: "4px",
   },
   button: {
-    padding: '0.5rem',
-    backgroundColor: '#647c90',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
+    padding: "0.5rem",
+    backgroundColor: "#647c90",
+    color: "#fff",
+    border: "none",
+    borderRadius: "4px",
+    cursor: "pointer",
   },
 };
 

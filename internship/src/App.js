@@ -1,9 +1,24 @@
+
+  // import logo from './logo.svg';
+import "./App.css";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  Link,
+} from "react-router-dom";
+import Login from "./Login";
+import Register from "./Register";
+import StudentHomePage from "./StudentHomePage";
+import SCADStaffDashboard from "./SCADStaffDashboard";  
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import StudentHomePage from './StudentHomePage';
 import AppliedInternships from './Applied internships';
 import ProfileStudent from './ProfileStudent';
 import AvailableInternships from './AvailableInternships';
+
 
 function App() {
   const [appliedInternships, setAppliedInternships] = useState(() => {
@@ -22,7 +37,12 @@ function App() {
 
   return (
     <Router>
+
       <Routes>
+           <Route path="/" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/student" element={<StudentHomePage />} />
+         
         <Route path="/" element={<div>Home Page</div>} />
         <Route
           path="/student"
@@ -34,9 +54,11 @@ function App() {
         />
         <Route path="/student/Profile" element={<ProfileStudent/>} />
         <Route path="/student/available"   element={<AvailableInternships />} 
+         <Route path="/staff" element={<SCADStaffDashboard />} />{" "}
 />
       </Routes>
     </Router>
+
   );
 }
 
