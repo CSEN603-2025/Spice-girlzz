@@ -1,638 +1,493 @@
-import React, { useState } from "react";
 
-// Dummy Data
-const companies = [
-  {
-    id: 1,
-    name: "TechCorp",
-    industry: "Technology",
-    status: "Pending",
-    details: "A leading tech firm specializing in AI.",
-  },
-  {
-    id: 2,
-    name: "MediHealth",
-    industry: "Healthcare",
-    status: "Pending",
-    details: "Innovative healthcare solutions provider.",
-  },
-  {
-    id: 3,
-    name: "GreenEnergy",
-    industry: "Energy",
-    status: "Pending",
-    details: "Sustainable energy solutions company.",
-  },
-];
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import SideBar from './Components/SideBar';
+import { Mail, User, LogOut, Menu } from 'lucide-react';
+import AppliedInternships from './Applied internships';
 
-const students = [
-  {
-    id: 1,
-    name: "Alice Johnson",
-    internshipStatus: "Active",
-    major: "CS",
-    profile: "3rd-year CS student, GPA: 3.8",
-  },
-  {
-    id: 2,
-    name: "Bob Smith",
-    internshipStatus: "Pending",
-    major: "Engineering",
-    profile: "2nd-year Engineering student, GPA: 3.5",
-  },
-  {
-    id: 3,
-    name: "Clara Davis",
-    internshipStatus: "Completed",
-    major: "CS",
-    profile: "4th-year CS student, GPA: 3.9",
-  },
-];
+function StudentHomePage({ appliedInternships, setAppliedInternships }) {
+  const [activePage, setActivePage] = useState('home');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedIndustry, setSelectedIndustry] = useState('');
+  const [selectedDuration, setSelectedDuration] = useState('');
+  const [isPaid, setIsPaid] = useState('');
+  const [selectedInternship, setSelectedInternship] = useState(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-const reports = [
-  {
-    id: 1,
-    student: "Alice Johnson",
-    major: "CS",
-    status: "Pending",
-    details: "Week 1 Report: Developed API endpoints.",
-    company: "TechCorp",
-    supervisor: "John Doe",
-    startDate: "2025-01-01",
-    endDate: "2025-03-01",
-  },
-  {
-    id: 2,
-    student: "Bob Smith",
-    major: "Engineering",
-    status: "Flagged",
-    details: "Week 2 Report: Missing documentation.",
-    company: "GreenEnergy",
-    supervisor: "Jane Roe",
-    startDate: "2025-02-01",
-    endDate: "2025-04-01",
-    comments: "Needs more detail on project scope.",
-  },
-  {
-    id: 3,
-    student: "Clara Davis",
-    major: "CS",
-    status: "Accepted",
-    details: "Final Report: Successfully deployed app.",
-    company: "MediHealth",
-    supervisor: "Emily Stone",
-    startDate: "2025-01-15",
-    endDate: "2025-03-15",
-  },
-];
+  const navigate = useNavigate();
 
-const statistics = {
-  reportsPerCycle: { accepted: 10, rejected: 3, flagged: 2 },
-  averageReviewTime: "2 days",
-  popularCourses: ["CS101", "ENG202"],
-  topCompanies: ["TechCorp (Rating: 4.8)", "MediHealth (Rating: 4.5)"],
-  internshipCount: { TechCorp: 5, MediHealth: 3, GreenEnergy: 2 },
-};
+  // Import Inter font
+  useEffect(() => {
+    const link = document.createElement('link');
+    link.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap';
+    link.rel = 'stylesheet';
+    document.head.appendChild(link);
+    return () => document.head.removeChild(link);
+  }, []);
 
-const SCADStaffDashboard = () => {
-  const [activePage, setActivePage] = useState("statistics");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [industryFilter, setIndustryFilter] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
-  const [majorFilter, setMajorFilter] = useState("");
-  const [callStatus, setCallStatus] = useState(null);
-  const [isMuted, setIsMuted] = useState(false);
-  const [isVideoOn, setIsVideoOn] = useState(true);
-  const [isScreenSharing, setIsScreenSharing] = useState(false);
-  const [cycleDates, setCycleDates] = useState({
-    start: "2025-01-01",
-    end: "2025-06-30",
+  const availableInternships = [
+    {
+      id: 1,
+      companyName: 'SCAD Technologies',
+      jobTitle: 'Software Engineer',
+      duration: '6 months',
+      isPaid: 'paid',
+      expectedSalary: '$2000/month',
+      skillsRequired: 'JavaScript, React, Node.js',
+      description: 'Develop cutting-edge software solutions.',
+      industry: 'Tech',
+      status: 'available',
+    },
+    {
+      id: 2,
+      companyName: 'SCAD Systems',
+      jobTitle: 'Web Developer',
+      duration: '3 months',
+      isPaid: 'unpaid',
+      expectedSalary: '$0/month',
+      skillsRequired: 'HTML, CSS, JavaScript',
+      description: 'Build responsive web applications.',
+      industry: 'Tech',
+      status: 'available',
+    },
+    {
+      id: 3,
+      companyName: 'SCAD Solutions',
+      jobTitle: 'Data Analyst',
+      duration: '12 months',
+      isPaid: 'paid',
+      expectedSalary: '$2500/month',
+      skillsRequired: 'Python, SQL, Tableau',
+      description: 'Analyze data to drive business decisions.',
+      industry: 'Tech',
+      status: 'available',
+    },
+  ];
+
+  const filteredInternships = availableInternships.filter((internship) => {
+    const search = searchQuery.toLowerCase();
+    const matchesSearch =
+      internship.companyName.toLowerCase().includes(search) ||
+      internship.jobTitle.toLowerCase().includes(search);
+    const matchesIndustry = selectedIndustry ? internship.industry === selectedIndustry : true;
+    const matchesDuration = selectedDuration ? internship.duration === selectedDuration : true;
+    const matchesPaid = isPaid ? internship.isPaid === isPaid : true;
+    return matchesSearch && matchesIndustry && matchesDuration && matchesPaid;
   });
 
-  const filteredCompanies = companies.filter(
-    (company) =>
-      company.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (industryFilter ? company.industry === industryFilter : true)
-  );
-
-  const handleCompanyAction = (id, action) => {
-    console.log(`Company ${id} ${action}ed`);
+  const handleSelectInternship = (internship) => {
+    setSelectedInternship(internship);
   };
 
-  const downloadPDF = (id) => {
-    console.log(`Downloading PDF for company ${id}`);
-  };
-
-  const filteredStudents = students.filter((student) =>
-    statusFilter ? student.internshipStatus === statusFilter : true
-  );
-
-  const filteredReports = reports.filter(
-    (report) =>
-      (majorFilter ? report.major === majorFilter : true) &&
-      (statusFilter ? report.status === statusFilter : true)
-  );
-
-  const setReportStatus = (id, status) => {
-    console.log(`Report ${id} status set to ${status}`);
-  };
-
-  const handleCallAction = (action) => {
-    if (action === "accept") {
-      setCallStatus("ongoing");
-      console.log("Call accepted");
-    } else if (action === "reject") {
-      setCallStatus(null);
-      console.log("Call rejected");
-    } else if (action === "leave") {
-      setCallStatus(null);
-      console.log("Call left");
+  const handleApply = (internship) => {
+    if (appliedInternships.some((app) => app.id === internship.id)) {
+      alert('You have already applied to this internship.');
+      return;
     }
+    setAppliedInternships((prevAppliedInternships) => [
+      ...prevAppliedInternships,
+      {
+        ...internship,
+        title: internship.jobTitle,
+        company: internship.companyName,
+        status: 'pending',
+        applicationDate: new Date().toISOString().split('T')[0],
+      },
+    ]);
+    alert(`Applied to ${internship.jobTitle} at ${internship.companyName}!`);
+    setSelectedInternship(null);
+  };
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+
   };
 
   const renderContent = () => {
     switch (activePage) {
-      case "companies":
-        return (
-          <div>
-            <h2 className="text-2xl font-bold mb-6 text-gray-800">
-              Manage Companies
-            </h2>
-            <div className="mb-6 flex space-x-6">
-              <input
-                type="text"
-                placeholder="Search by company name..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <select
-                value={industryFilter}
-                onChange={(e) => setIndustryFilter(e.target.value)}
-                className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">All Industries</option>
-                <option value="Technology">Technology</option>
-                <option value="Healthcare">Healthcare</option>
-                <option value="Energy">Energy</option>
-              </select>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="bg-gray-100">
-                    <th className="p-4 text-left text-gray-700">Name</th>
-                    <th className="p-4 text-left text-gray-700">Industry</th>
-                    <th className="p-4 text-left text-gray-700">Status</th>
-                    <th className="p-4 text-left text-gray-700">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredCompanies.map((company) => (
-                    <tr
-                      key={company.id}
-                      className="hover:bg-gray-50 transition-colors duration-300"
-                    >
-                      <td className="p-4 border-b border-gray-200">
-                        {company.name}
-                      </td>
-                      <td className="p-4 border-b border-gray-200">
-                        {company.industry}
-                      </td>
-                      <td className="p-4 border-b border-gray-200">
-                        {company.status}
-                      </td>
-                      <td className="p-4 border-b border-gray-200 flex space-x-4">
-                        <button
-                          onClick={() =>
-                            console.log(
-                              `Viewing details for ${company.name}: ${company.details}`
-                            )
-                          }
-                          className="text-blue-600 hover:text-blue-800 transition-colors duration-300"
-                        >
-                          View Details
-                        </button>
-                        <button
-                          onClick={() =>
-                            handleCompanyAction(company.id, "accept")
-                          }
-                          className="text-green-600 hover:text-green-800 transition-colors duration-300"
-                        >
-                          Accept
-                        </button>
-                        <button
-                          onClick={() =>
-                            handleCompanyAction(company.id, "reject")
-                          }
-                          className="text-red-600 hover:text-red-800 transition-colors duration-300"
-                        >
-                          Reject
-                        </button>
-                        <button
-                          onClick={() => downloadPDF(company.id)}
-                          className="text-purple-600 hover:text-purple-800 transition-colors duration-300"
-                        >
-                          Download PDF
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        );
 
-      case "students":
-        return (
-          <div>
-            <h2 className="text-2xl font-bold mb-6 text-gray-800">
-              Manage Students
-            </h2>
-            <div className="mb-6">
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">All Statuses</option>
-                <option value="Active">Active</option>
-                <option value="Pending">Pending</option>
-                <option value="Completed">Completed</option>
-              </select>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="bg-gray-100">
-                    <th className="p-4 text-left text-gray-700">Name</th>
-                    <th className="p-4 text-left text-gray-700">Major</th>
-                    <th className="p-4 text-left text-gray-700">
-                      Internship Status
-                    </th>
-                    <th className="p-4 text-left text-gray-700">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredStudents.map((student) => (
-                    <tr
-                      key={student.id}
-                      className="hover:bg-gray-50 transition-colors duration-300"
-                    >
-                      <td className="p-4 border-b border-gray-200">
-                        {student.name}
-                      </td>
-                      <td className="p-4 border-b border-gray-200">
-                        {student.major}
-                      </td>
-                      <td className="p-4 border-b border-gray-200">
-                        {student.internshipStatus}
-                      </td>
-                      <td className="p-4 border-b border-gray-200">
-                        <button
-                          onClick={() =>
-                            console.log(
-                              `Viewing profile for ${student.name}: ${student.profile}`
-                            )
-                          }
-                          className="text-blue-600 hover:text-blue-800 transition-colors duration-300"
-                        >
-                          View Profile
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        );
 
-      case "reports":
+      case 'available':
         return (
-          <div>
-            <h2 className="text-2xl font-bold mb-6 text-gray-800">
-              Manage Reports
+          <div style={{ animation: 'fadeIn 0.3s' }}>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem', color: '#4e4f50' }}>
+              Available Internships
             </h2>
-            <div className="mb-6 flex space-x-6">
+            <div style={{ marginBottom: '1.5rem', display: 'flex', gap: '0.8rem', alignItems: 'center' }}>
+              <div style={{ position: 'relative', flex: '1 1 20rem', minWidth: '15rem' }}>
+                <input
+                  type="text"
+                  placeholder="Search by job title or company name"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  style={styles.searchInput}
+                  onFocus={(e) => (e.target.style.boxShadow = '0 0 0 2px #647c90')}
+                  onBlur={(e) => (e.target.style.boxShadow = 'none')}
+                />
+              </div>
               <select
-                value={majorFilter}
-                onChange={(e) => setMajorFilter(e.target.value)}
-                className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onChange={(e) => setSelectedIndustry(e.target.value)}
+                style={styles.filterButtons}
+                onFocus={(e) => (e.target.style.boxShadow = '0 0 0 2px #647c90')}
+                onBlur={(e) => (e.target.style.boxShadow = 'none')}
               >
-                <option value="">All Majors</option>
-                <option value="CS">CS</option>
-                <option value="Engineering">Engineering</option>
+                <option value="">Select Industry</option>
+                <option value="Tech">Tech</option>
+                <option value="Finance">Finance</option>
               </select>
               <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onChange={(e) => setSelectedDuration(e.target.value)}
+                style={styles.filterButtons}
+                onFocus={(e) => (e.target.style.boxShadow = '0 0 0 2px #647c90')}
+                onBlur={(e) => (e.target.style.boxShadow = 'none')}
               >
-                <option value="">All Statuses</option>
-                <option value="Pending">Pending</option>
-                <option value="Flagged">Flagged</option>
-                <option value="Rejected">Rejected</option>
-                <option value="Accepted">Accepted</option>
+                <option value="">Select Duration</option>
+                <option value="3 months">3 months</option>
+                <option value="6 months">6 months</option>
+                <option value="12 months">12 months</option>
               </select>
+              <select
+                onChange={(e) => setIsPaid(e.target.value)}
+                style={styles.filterButtons}
+                onFocus={(e) => (e.target.style.boxShadow = '0 0 0 2px #647c90')}
+                onBlur={(e) => (e.target.style.boxShadow = 'none')}
+              >
+                <option value="">Paid/Unpaid</option>
+                <option value="paid">Paid</option>
+                <option value="unpaid">Unpaid</option>
+              </select>
+              <button
+                onClick={() => {
+                  setSearchQuery('');
+                  setSelectedIndustry('');
+                  setSelectedDuration('');
+                  setIsPaid('');
+                }}
+                style={styles.filterButtons}
+              >
+                Clear Filters
+              </button>
             </div>
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="bg-gray-100">
-                    <th className="p-4 text-left text-gray-700">Student</th>
-                    <th className="p-4 text-left text-gray-700">Major</th>
-                    <th className="p-4 text-left text-gray-700">Status</th>
-                    <th className="p-4 text-left text-gray-700">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredReports.map((report) => (
-                    <tr
-                      key={report.id}
-                      className="hover:bg-gray-50 transition-colors duration-300"
-                    >
-                      <td className="p-4 border-b border-gray-200">
-                        {report.student}
-                      </td>
-                      <td className="p-4 border-b border-gray-200">
-                        {report.major}
-                      </td>
-                      <td className="p-4 border-b border-gray-200">
-                        {report.status}
-                      </td>
-                      <td className="p-4 border-b border-gray-200 flex space-x-4">
-                        <button
-                          onClick={() =>
-                            console.log(
-                              `Viewing report details for ${report.student}: ${
-                                report.details
-                              }, Company: ${report.company}, Supervisor: ${
-                                report.supervisor
-                              }, Dates: ${report.startDate} to ${
-                                report.endDate
-                              }${
-                                report.comments
-                                  ? ", Comments: " + report.comments
-                                  : ""
-                              }`
-                            )
-                          }
-                          className="text-blue-600 hover:text-blue-800 transition-colors duration-300"
-                        >
-                          View Details
-                        </button>
-                        <button
-                          onClick={() => setReportStatus(report.id, "flagged")}
-                          className="text-yellow-600 hover:text-yellow-800 transition-colors duration-300"
-                        >
-                          Flag
-                        </button>
-                        <button
-                          onClick={() => setReportStatus(report.id, "rejected")}
-                          className="text-red-600 hover:text-red-800 transition-colors duration-300"
-                        >
-                          Reject
-                        </button>
-                        <button
-                          onClick={() => setReportStatus(report.id, "accepted")}
-                          className="text-green-600 hover:text-green-800 transition-colors duration-300"
-                        >
-                          Accept
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        );
-
-      case "statistics":
-        return (
-          <div>
-            <h2 className="text-2xl font-bold mb-6 text-gray-800">
-              Real-Time Statistics
-            </h2>
-            <div className="mb-6">
-              <label className="text-gray-700 mr-4">
-                Internship Cycle Dates:
-              </label>
-              <input
-                type="date"
-                value={cycleDates.start}
-                onChange={(e) =>
-                  setCycleDates({ ...cycleDates, start: e.target.value })
-                }
-                className="p-2 border border-gray-300 rounded-lg mr-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <input
-                type="date"
-                value={cycleDates.end}
-                onChange={(e) =>
-                  setCycleDates({ ...cycleDates, end: e.target.value })
-                }
-                className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div className="p-6 bg-white rounded-lg shadow-md">
-                <h3 className="font-bold text-gray-700">Reports Per Cycle</h3>
-                <p className="mt-2 text-gray-600">
-                  Accepted: {statistics.reportsPerCycle.accepted}
-                </p>
-                <p className="text-gray-600">
-                  Rejected: {statistics.reportsPerCycle.rejected}
-                </p>
-                <p className="text-gray-600">
-                  Flagged: {statistics.reportsPerCycle.flagged}
-                </p>
-              </div>
-              <div className="p-6 bg-white rounded-lg shadow-md">
-                <h3 className="font-bold text-gray-700">Average Review Time</h3>
-                <p className="mt-2 text-gray-600">
-                  {statistics.averageReviewTime}
-                </p>
-              </div>
-              <div className="p-6 bg-white rounded-lg shadow-md">
-                <h3 className="font-bold text-gray-700">Popular Courses</h3>
-                <p className="mt-2 text-gray-600">
-                  {statistics.popularCourses.join(", ")}
-                </p>
-              </div>
-              <div className="p-6 bg-white rounded-lg shadow-md">
-                <h3 className="font-bold text-gray-700">Top Rated Companies</h3>
-                <p className="mt-2 text-gray-600">
-                  {statistics.topCompanies.join(", ")}
-                </p>
-              </div>
-              <div className="p-6 bg-white rounded-lg shadow-md">
-                <h3 className="font-bold text-gray-700">
-                  Internship Count by Company
-                </h3>
-                {Object.entries(statistics.internshipCount).map(
-                  ([company, count]) => (
-                    <p key={company} className="mt-2 text-gray-600">
-                      {company}: {count}
-                    </p>
-                  )
-                )}
-              </div>
-            </div>
-          </div>
-        );
-
-      case "video-calls":
-        return (
-          <div>
-            <h2 className="text-2xl font-bold mb-6 text-gray-800">
-              Video Calls
-            </h2>
-            {callStatus === null ? (
-              <div>
-                <p className="mb-4 text-gray-700">
-                  Incoming Call Notification: Student Alice Johnson
-                </p>
-                <div className="flex space-x-6">
-                  <button
-                    onClick={() => handleCallAction("accept")}
-                    className="text-green-600 hover:text-green-800 transition-colors duration-300"
-                  >
-                    Accept Call
-                  </button>
-                  <button
-                    onClick={() => handleCallAction("reject")}
-                    className="text-red-600 hover:text-red-800 transition-colors duration-300"
-                  >
-                    Reject Call
-                  </button>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(15rem, 1fr))', gap: '1.5rem' }}>
+              {filteredInternships.map((internship) => (
+                <div
+                  key={internship.id}
+                  style={{
+                    background: '#e2ded0',
+                    padding: '1rem',
+                    borderRadius: '0.375rem',
+                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                    transition: 'box-shadow 0.3s, background-color 0.3s',
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => handleSelectInternship(internship)}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+                    e.currentTarget.style.backgroundColor = '#d8d4c6';
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
+                    e.currentTarget.style.backgroundColor = '#e2ded0';
+                  }}
+                >
+                  <h4 style={{ margin: '0 0 0.75rem', fontSize: '1.25rem', fontWeight: 'bold', color: '#4e4f50' }}>
+                    {internship.jobTitle}
+                  </h4>
+                  <p style={{ margin: '0.5rem 0', fontSize: '0.875rem', color: '#746c70' }}>
+                    <strong>Company:</strong> {internship.companyName}
+                  </p>
+                  <p style={{ margin: '0.5rem 0', fontSize: '0.875rem', color: '#746c70' }}>
+                    <strong>Duration:</strong> {internship.duration}
+                  </p>
+                  <p style={{ margin: '0.75rem 0 0', fontSize: '0.875rem', color: '#746c70', lineHeight: '1.4' }}>
+                    {internship.description}
+                  </p>
                 </div>
-              </div>
-            ) : (
-              <div>
-                <p className="mb-4 text-gray-700">
-                  Ongoing Call with Alice Johnson (Status: Online)
-                </p>
-                <div className="flex space-x-6 mb-4">
-                  <button
-                    onClick={() => setIsMuted(!isMuted)}
-                    className="text-blue-600 hover:text-blue-800 transition-colors duration-300"
-                  >
-                    {isMuted ? "Unmute Mic" : "Mute Mic"}
-                  </button>
-                  <button
-                    onClick={() => setIsVideoOn(!isVideoOn)}
-                    className="text-blue-600 hover:text-blue-800 transition-colors duration-300"
-                  >
-                    {isVideoOn ? "Disable Video" : "Enable Video"}
-                  </button>
-                  <button
-                    onClick={() => setIsScreenSharing(!isScreenSharing)}
-                    className="text-blue-600 hover:text-blue-800 transition-colors duration-300"
-                  >
-                    {isScreenSharing ? "Stop Sharing" : "Share Screen"}
-                  </button>
-                  <button
-                    onClick={() => handleCallAction("leave")}
-                    className="text-red-600 hover:text-red-800 transition-colors duration-300"
-                  >
-                    Leave Call
-                  </button>
-                </div>
-                <p className="text-gray-600">
-                  Notification: Alice Johnson has left the call.
-                </p>
-              </div>
-            )}
+              ))}
+            </div>
           </div>
         );
-
       default:
         return (
-          <p className="text-gray-700">
-            Welcome, SCAD Staff! Use the sidebar to navigate.
-          </p>
+          <div style={styles.profileContent}>
+            <div style={{ animation: 'fadeIn 0.3s' }}>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem', color: '#4e4f50' }}>
+                Welcome
+              </h2>
+              <div style={{ background: '#e2ded0', padding: '1.5rem', borderRadius: '0.375rem', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
+                <p style={{ color: '#746c70' }}>Welcome, Student! Use the sidebar to navigate.</p>
+              </div>
+            </div>
+          </div>
+
         );
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 font-sans">
-      {/* Top Navbar */}
-      <nav className="bg-blue-600 text-white p-4 flex justify-between items-center shadow-md">
-        <h1 className="text-2xl font-bold">SCAD Staff Dashboard</h1>
-        <div className="flex space-x-4">
-          <button className="px-4 py-2 bg-blue-700 rounded-lg hover:bg-blue-800 transition-colors duration-300">
-            Mail
+
+
+    <div style={styles.container}>
+      {/* Header */}
+      <header style={{ ...styles.header, position: 'fixed', top: 0, width: '100%', zIndex: 1001,boxSizing: 'border-box' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' , flex: '1 0 auto', maxWidth: '50%' }}>
+          <button
+            style={styles.headerBtn}
+            title="Toggle Sidebar"
+            onClick={toggleSidebar}
+          >
+            <Menu size={20} />
           </button>
-          <button className="px-4 py-2 bg-blue-700 rounded-lg hover:bg-blue-800 transition-colors duration-300">
-            Profile
+          <h2 style={styles.title}>GUC Internship System</h2>
+        </div>
+        <div style={{...styles.headerButtons, flex: '0 0 auto'}}>
+          <button
+            style={styles.headerBtn}
+            title="Messages"
+            onClick={() => navigate('/student/messages')}
+          >
+            <Mail size={20} />
           </button>
-          <button className="px-4 py-2 bg-blue-700 rounded-lg hover:bg-blue-800 transition-colors duration-300">
-            Logout
+          <button
+            style={styles.headerBtn}
+            title="Profile"
+            onClick={() => navigate('/student/Profile')}
+          >
+            <User size={20} />
+          </button>
+          <button
+            style={styles.headerBtn}
+            title="Logout"
+            onClick={() => navigate('/')}
+          >
+            <LogOut size={20} />
           </button>
         </div>
-      </nav>
+      </header>
 
-      {/* Sidebar and Main Content */}
-      <div className="flex">
+      {/* Layout */}
+      <div style={{ ...styles.layout, marginTop: '4rem', minHeight: 'calc(100vh - 4rem)'  }}>
         {/* Sidebar */}
-        <aside className="w-64 bg-blue-500 text-white p-4 h-[calc(100vh-64px)]">
-          <ul className="space-y-2">
-            <li
-              className={`p-2 rounded-lg cursor-pointer transition-colors duration-300 ${
-                activePage === "companies" ? "bg-blue-700" : "hover:bg-blue-600"
-              }`}
-              onClick={() => setActivePage("companies")}
-            >
-              Companies
-            </li>
-            <li
-              className={`p-2 rounded-lg cursor-pointer transition-colors duration-300 ${
-                activePage === "students" ? "bg-blue-700" : "hover:bg-blue-600"
-              }`}
-              onClick={() => setActivePage("students")}
-            >
-              Students
-            </li>
-            <li
-              className={`p-2 rounded-lg cursor-pointer transition-colors duration-300 ${
-                activePage === "reports" ? "bg-blue-700" : "hover:bg-blue-600"
-              }`}
-              onClick={() => setActivePage("reports")}
-            >
-              Reports
-            </li>
-            <li
-              className={`p-2 rounded-lg cursor-pointer transition-colors duration-300 ${
-                activePage === "statistics"
-                  ? "bg-blue-700"
-                  : "hover:bg-blue-600"
-              }`}
-              onClick={() => setActivePage("statistics")}
-            >
-              Statistics
-            </li>
-            <li
-              className={`p-2 rounded-lg cursor-pointer transition-colors duration-300 ${
-                activePage === "video-calls"
-                  ? "bg-blue-700"
-                  : "hover:bg-blue-600"
-              }`}
-              onClick={() => setActivePage("video-calls")}
-            >
-              Video Calls
-            </li>
-          </ul>
-        </aside>
+        <SideBar setActivePage={setActivePage} isOpen={isSidebarOpen} />
 
         {/* Main Content */}
-        <main className="flex-1 p-8 overflow-auto">{renderContent()}</main>
+        <main
+          style={{
+            flex: 1,
+            padding: '1.5rem',
+            overflowY: 'auto',
+            marginLeft: isSidebarOpen && window.innerWidth > 768 ? '16rem' : '0',
+            transition: 'margin-left 0.3s ease-in-out',
+            width: isSidebarOpen && window.innerWidth > 768 ? 'calc(100% - 16rem)' : '100%',
+                        boxSizing: 'border-box',
+
+          }}
+        >
+          {renderContent()}
+        </main>
+
       </div>
+
+      {/* Overlay for mobile */}
+      {isSidebarOpen && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            top: '4rem',
+            background: 'rgba(0, 0, 0, 0.5)',
+            zIndex: 999,
+            display: window.innerWidth <= 768 ? 'block' : 'none',
+          }}
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      {/* Modal */}
+      {selectedInternship && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0, 0, 0, 0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1002,
+          }}
+        >
+          <div
+            style={{
+              background: '#e2ded0',
+              padding: '1.5rem',
+              borderRadius: '0.5rem',
+              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+              maxWidth: '24rem',
+              width: '100%',
+            }}
+          >
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#4e4f50', marginBottom: '1rem' }}>
+              {selectedInternship.jobTitle}
+            </h3>
+            <p style={{ color: '#746c70', marginBottom: '0.25rem', fontSize: '0.875rem' }}>
+              <strong>Company:</strong> {selectedInternship.companyName}
+            </p>
+            <p style={{ color: '#746c70', marginBottom: '0.25rem', fontSize: '0.875rem' }}>
+              <strong>Duration:</strong> {selectedInternship.duration}
+            </p>
+            <p style={{ color: '#746c70', marginBottom: '0.25rem', fontSize: '0.875rem' }}>
+              <strong>Paid/Unpaid:</strong> {selectedInternship.isPaid.charAt(0).toUpperCase() + selectedInternship.isPaid.slice(1)}
+            </p>
+            <p style={{ color: '#746c70', marginBottom: '0.25rem', fontSize: '0.875rem' }}>
+              <strong>Expected Salary:</strong> {selectedInternship.expectedSalary}
+            </p>
+            <p style={{ color: '#746c70', marginBottom: '0.25rem', fontSize: '0.875rem' }}>
+              <strong>Skills Required:</strong> {selectedInternship.skillsRequired}
+            </p>
+            <p style={{ color: '#746c70', marginBottom: '0.25rem', fontSize: '0.875rem' }}>
+              <strong>Description:</strong> {selectedInternship.description}
+            </p>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', marginTop: '1.5rem' }}>
+              {activePage === 'available' && (
+                <button
+                  style={{
+                    padding: '0.5rem 1rem',
+                    background: '#647c90',
+                    color: '#e2ded0',
+                    borderRadius: '0.25rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => handleApply(selectedInternship)}
+                  onMouseOver={(e) => (e.target.style.background = '#4e4f50')}
+                  onMouseOut={(e) => (e.target.style.background = '#647c90')}
+                >
+                  Apply
+                </button>
+              )}
+              <button
+                style={{
+                  padding: '0.5rem 1rem',
+                  background: '#746c70',
+                  color: '#e2ded0',
+                  borderRadius: '0.25rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  cursor: 'pointer',
+                }}
+                onClick={() => setSelectedInternship(null)}
+                onMouseOver={(e) => (e.target.style.background = '#4e4f50')}
+                onMouseOut={(e) => (e.target.style.background = '#746c70')}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
+
+
+}
+
+const styles = {
+  container: {
+    fontFamily: 'Inter, sans-serif',
+    backgroundColor: '#fff',
+    minHeight: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  header: {
+    background: 'linear-gradient(#fff)',
+    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+    padding: '0.75rem 1.5rem',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+   
+  },
+  title: {
+    fontFamily: "'Inter', sans-serif",
+    fontSize: '1.25rem',
+    fontWeight: '600',
+    color: '#000',
+    margin: 0,
+    letterSpacing: '-0.015em',
+    textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
+  },
+  headerButtons: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.75rem',
+  },
+  headerBtn: {
+    padding: '0.5rem',
+    color: '#000',
+    background: 'transparent',
+    border: 'none',
+    borderRadius: '6px',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+  },
+  layout: {
+    display: 'flex',
+    flex: 1,
+  },
+  profileContent: {
+    flex: 1,
+    padding: '1.5rem',
+    overflowY: 'auto',
+  },
+  filterButtons: {
+    fontSize: '0.8rem',
+    padding: '0.5em 1em',
+    backgroundColor: '#e2ded0',
+    color: '#4e4f50',
+    border: 'none',
+    borderRadius: '1150px',
+    cursor: 'pointer',
+    textAlign: 'center',
+    display: 'flex',
+    flexDirection: 'row',
+    minWidth: '100px',
+    boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
+    transition: 'background-color 0.2s ease',
+  },
+  searchInput: {
+    fontSize: '0.8rem',
+    padding: '0.5em 1em',
+    backgroundColor: '#e2ded0',
+    color: '#4e4f50',
+    border: 'none',
+    borderRadius: '1150px',
+    cursor: 'text',
+    textAlign: 'left',
+    width: '400px',
+    boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
+    transition: 'background-color 0.2s ease',
+  },
 };
 
-export default SCADStaffDashboard;
+// Animation keyframes
+const styleSheet = document.createElement('style');
+styleSheet.textContent = `
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @media (max-width: 768px) {
+    main {
+      margin-left: 0 !important; /* Override margin-left on mobile */
+    }
+  }
+`;
+document.head.appendChild(styleSheet);
+
+export default StudentHomePage;
+

@@ -23,10 +23,12 @@ function LoginPage() {
       alert("Invalid email domain");
       return;
     }
+
     if (email.endsWith("@student.guc.edu.eg")) {
       navigate("/student"); // Redirect to student page for now
     } else if (email.endsWith("@guc.edu.eg")) {
       navigate("/staff");
+
     }
   };
 
