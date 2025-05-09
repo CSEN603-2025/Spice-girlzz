@@ -20,6 +20,14 @@ import {
 } from "lucide-react";
 
 // Dummy Data
+// Helper Component
+
+const ProfileItem = ({ label, value }) => (
+  <p style={{ fontSize: "0.875rem", color: "#4b5563" }}>
+    <strong>{label}:</strong> {value || "Not provided"}
+  </p>
+);
+
 const initialCompanies = [
   {
     id: 1,
@@ -64,40 +72,66 @@ const initialStudents = [
     name: "Alaa Abdelnaser",
     internshipStatus: "Active",
     major: "Computer Science",
-    profile: "3rd-year CS student, GPA: 2.2",
-    avatar: "/api/placeholder/40/40",
+    semester: "Semester 5",
+    avatar: "/imgs/Alaa.jpg",
+    email: "alaa.abdelnaser@guc.edu.eg",
+    jobInterests: "Software Development",
+    previousInternships: "TechCorp (2024)",
+    appliedInternships: [
+      { companyName: "TechCorp", jobTitle: "Software Intern" },
+    ],
   },
   {
     id: 2,
-    name: "Menna El Sabagh",
+    name: "Mennatullah El Sabagh",
     internshipStatus: "Pending",
     major: "Engineering",
-    profile: "2nd-year Engineering student, GPA: 1.3",
+    semester: "Semester 3",
     avatar: "/api/placeholder/40/40",
+    email: "mennatullah.elsabagh@guc.edu.eg",
+    jobInterests: "Mechanical Design",
+    previousInternships: "None",
+    appliedInternships: [],
   },
   {
     id: 3,
     name: "Esraa Ahmed",
     internshipStatus: "Completed",
     major: "Computer Science",
-    profile: "4th-year CS student, GPA: 2.7",
-    avatar: "/api/placeholder/40/40",
+    semester: "Semester 7",
+    avatar: "/imgs/esraa.jpg",
+    email: "esraa.ahmed@guc.edu.eg",
+    jobInterests: "Web Development",
+    previousInternships: "MediHealth (2024)",
+    appliedInternships: [
+      { companyName: "MediHealth", jobTitle: "Data Analyst Intern" },
+    ],
   },
   {
     id: 4,
     name: "Malak Hisham",
     internshipStatus: "Active",
     major: "Data Science",
-    profile: "3rd-year Data Science student, GPA: 1.7",
+    semester: "Semester 5",
     avatar: "/api/placeholder/40/40",
+    email: "malak.hisham@guc.edu.eg",
+    jobInterests: "Data Analysis",
+    previousInternships: "DataSync (2023)",
+    appliedInternships: [],
   },
   {
     id: 5,
-    name: "Menna Shaaban",
+    name: "Mennatullah Shaaban",
     internshipStatus: "Pending",
     major: "Engineering",
-    profile: "2nd-year Engineering student, GPA: 1.1",
-    avatar: "/api/placeholder/40/40",
+    semester: "Semester 3",
+    avatar: "/imgs/mennatullah-shaaban.jpg",
+    email: "mennatullah.shaaban@guc.edu.eg",
+    jobInterests: "Civil Engineering",
+    previousInternships: "None",
+    appliedInternships: [
+      { companyName: "BuildCorp", jobTitle: "Civil Intern" },
+    ],
   },
 ];
 
@@ -797,7 +831,7 @@ export default function SCADStaffDashboard() {
                       (e.target.style.boxShadow =
                         "0 2px 4px rgba(0, 0, 0, 0.1)")
                     }
-                    onClick={() => openModal("student", student)}
+                    onClick={() => openModal("profile", student)}
                   >
                     <div
                       style={{
@@ -810,8 +844,8 @@ export default function SCADStaffDashboard() {
                         src={student.avatar}
                         alt={student.name}
                         style={{
-                          width: "3rem",
-                          height: "3rem",
+                          width: "5rem",
+                          height: "5rem",
                           borderRadius: "9999px",
                           marginRight: "1rem",
                         }}
@@ -848,6 +882,86 @@ export default function SCADStaffDashboard() {
                 ))}
               </div>
             )}
+          </div>
+        );
+
+      case "profile":
+        return (
+          <div style={{ animation: "fadeIn 0.3s", padding: "1.5rem" }}>
+            <h2
+              style={{
+                fontSize: "1.5rem",
+                fontWeight: "bold",
+                marginBottom: "1.5rem",
+                color: "#1f2937",
+              }}
+            >
+              Student Profile: {selectedItem.name}
+            </h2>
+            <div
+              style={{
+                background: "#fff",
+                padding: "1.5rem",
+                borderRadius: "0.375rem",
+                boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                width: "40rem", // Fixed width for consistency
+                margin: "0 auto", // Center the container
+              }}
+            >
+              <div style={{ marginBottom: "1.5rem" }}>
+                <img
+                  src={selectedItem.avatar}
+                  alt={selectedItem.name}
+                  style={{
+                    width: "10rem",
+                    height: "10rem",
+                    borderRadius: "9999px",
+                    marginBottom: "1rem",
+                  }}
+                />
+                <h3
+                  style={{
+                    fontWeight: "bold",
+                    color: "#1f2937",
+                    marginBottom: "0.5rem",
+                  }}
+                >
+                  {selectedItem.name}
+                </h3>
+                <p style={{ color: "#6b7280", fontSize: "0.875rem" }}>
+                  {selectedItem.major} - {selectedItem.semester}
+                </p>
+              </div>
+              <div style={{ display: "grid", gap: "1rem" }}>
+                <ProfileItem label="Email" value={selectedItem.email} />
+                <ProfileItem
+                  label="Job Interests"
+                  value={selectedItem.jobInterests}
+                />
+                <ProfileItem
+                  label="Previous Internships"
+                  value={selectedItem.previousInternships}
+                />
+                <ProfileItem label="Major" value={selectedItem.major} />
+              </div>
+
+              <button
+                onClick={() => setShowModal(false)}
+                style={{
+                  marginTop: "1.5rem",
+                  paddingLeft: "2000rem",
+                  padding: "0.5rem 1rem",
+                  background: "#4E4F50",
+                  color: "#fff",
+                  borderRadius: "0.25rem",
+                  cursor: "pointer",
+                }}
+                onMouseOver={(e) => (e.target.style.background = "#746C70")}
+                onMouseOut={(e) => (e.target.style.background = "#4E4F50")}
+              >
+                Close
+              </button>
+            </div>
           </div>
         );
       case "report":
@@ -1494,57 +1608,50 @@ export default function SCADStaffDashboard() {
                   onBlur={(e) => (e.target.style.boxShadow = "none")}
                 />
               </div>
-
-              <div style={{ flex: "0 0 auto" }}>
-                <select
-                  value={majorFilter}
-                  onChange={(e) => setMajorFilter(e.target.value)}
-                  style={{
-                    padding: "0.4rem",
-                    border: "1px solid #d1d5db",
-                    borderRadius: "0.375rem",
-                    outline: "none",
-                    minWidth: "12rem",
-                    width: "12rem",
-                    maxWidth: "12rem",
-                    fontSize: "0.875rem",
-                  }}
-                  onFocus={(e) =>
-                    (e.target.style.boxShadow = "0 0 0 2px #3b82f6")
-                  }
-                  onBlur={(e) => (e.target.style.boxShadow = "none")}
-                >
-                  <option value="">All Majors</option>
-                  <option value="Computer Science">Computer Science</option>
-                  <option value="Engineering">Engineering</option>
-                  <option value="Data Science">Data Science</option>
-                </select>
-              </div>
-              <div style={{ flex: "0 0 auto" }}>
-                <select
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                  style={{
-                    padding: "0.4rem",
-                    border: "1px solid #d1d5db",
-                    borderRadius: "0.375rem",
-                    outline: "none",
-                    minWidth: "12rem",
-                    width: "12rem",
-                    maxWidth: "12rem",
-                    fontSize: "0.875rem",
-                  }}
-                  onFocus={(e) =>
-                    (e.target.style.boxShadow = "0 0 0 2px #3b82f6")
-                  }
-                  onBlur={(e) => (e.target.style.boxShadow = "none")}
-                >
-                  <option value="">All Statuses</option>
-                  <option value="Active">Active</option>
-                  <option value="Pending">Pending</option>
-                  <option value="Completed">Completed</option>
-                </select>
-              </div>
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                style={{
+                  padding: "0.4rem",
+                  border: "1px solid #d1d5db",
+                  borderRadius: "0.375rem",
+                  outline: "none",
+                  minWidth: "12rem",
+                  width: "12rem",
+                  fontSize: "0.875rem",
+                }}
+                onFocus={(e) =>
+                  (e.target.style.boxShadow = "0 0 0 2px #3b82f6")
+                }
+                onBlur={(e) => (e.target.style.boxShadow = "none")}
+              >
+                <option value="">All Statuses</option>
+                <option value="Active">Active</option>
+                <option value="Pending">Pending</option>
+                <option value="Completed">Completed</option>
+              </select>
+              <select
+                value={majorFilter}
+                onChange={(e) => setMajorFilter(e.target.value)}
+                style={{
+                  padding: "0.4rem",
+                  border: "1px solid #d1d5db",
+                  borderRadius: "0.375rem",
+                  outline: "none",
+                  minWidth: "12rem",
+                  width: "12rem",
+                  fontSize: "0.875rem",
+                }}
+                onFocus={(e) =>
+                  (e.target.style.boxShadow = "0 0 0 2px #3b82f6")
+                }
+                onBlur={(e) => (e.target.style.boxShadow = "none")}
+              >
+                <option value="">All Majors</option>
+                <option value="Computer Science">Computer Science</option>
+                <option value="Engineering">Engineering</option>
+                <option value="Data Science">Data Science</option>
+              </select>
             </div>
             {filteredStudents.length === 0 ? (
               <div style={{ textAlign: "center", padding: "3rem" }}>
@@ -1568,18 +1675,9 @@ export default function SCADStaffDashboard() {
                       padding: "1rem",
                       borderRadius: "0.375rem",
                       boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                      transition: "box-shadow 0.3s",
                       cursor: "pointer",
                     }}
-                    onMouseOver={(e) =>
-                      (e.target.style.boxShadow =
-                        "0 4px 6px rgba(0, 0, 0, 0.1)")
-                    }
-                    onMouseOut={(e) =>
-                      (e.target.style.boxShadow =
-                        "0 2px 4px rgba(0, 0, 0, 0.1)")
-                    }
-                    onClick={() => openModal("student", student)}
+                    onClick={() => openModal("profile", student)}
                   >
                     <div
                       style={{
@@ -1592,8 +1690,8 @@ export default function SCADStaffDashboard() {
                         src={student.avatar}
                         alt={student.name}
                         style={{
-                          width: "3rem",
-                          height: "3rem",
+                          width: "5rem",
+                          height: "5rem",
                           borderRadius: "9999px",
                           marginRight: "1rem",
                         }}
@@ -1630,6 +1728,125 @@ export default function SCADStaffDashboard() {
                 ))}
               </div>
             )}
+          </div>
+        );
+
+      case "profile":
+        const currentStudent =
+          filteredStudents.find((student) => student.id === selectedItem.id) ||
+          selectedItem;
+
+        return (
+          <div style={{ animation: "fadeIn 0.3s", padding: "1.5rem" }}>
+            <div
+              style={{
+                background: "#fff",
+                padding: "1.5rem",
+                borderRadius: "0.375rem",
+                boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                maxWidth: "40rem",
+                width: "100%",
+                margin: "0 auto",
+              }}
+            >
+              <div style={{ marginBottom: "1.5rem", textAlign: "center" }}>
+                <img
+                  src={currentStudent.avatar}
+                  alt={currentStudent.name}
+                  style={{
+                    width: "10rem",
+                    height: "10rem",
+                    borderRadius: "9999px",
+                    marginBottom: "1rem",
+                  }}
+                />
+
+                <h3
+                  style={{
+                    fontWeight: "bold",
+                    color: "#1f2937",
+                    marginBottom: "0.5rem",
+                  }}
+                >
+                  {currentStudent.name}
+                </h3>
+                <div style={{ color: "#6b7280", fontSize: "0.875rem" }}>
+                  <ProfileItem
+                    label="Semester"
+                    value={currentStudent.semester}
+                  />
+                  <ProfileItem label="Major" value={currentStudent.major} />
+                </div>
+              </div>
+
+              <div style={{ display: "grid", gap: "1rem" }}>
+                <ProfileItem label="Email" value={currentStudent.email} />
+                <ProfileItem
+                  label="Job Interests"
+                  value={currentStudent.jobInterests}
+                />
+                <ProfileItem
+                  label="Previous Internships"
+                  value={currentStudent.previousInternships}
+                />
+                <h3
+                  style={{
+                    fontWeight: "bold",
+                    color: "#1f2937",
+                    marginTop: "1rem",
+                  }}
+                >
+                  Applied Internships
+                </h3>
+                <div style={{ marginTop: "0.5rem" }}>
+                  {currentStudent.appliedInternships &&
+                  currentStudent.appliedInternships.length > 0 ? (
+                    currentStudent.appliedInternships.map(
+                      (internship, index) => (
+                        <div key={index} style={{ marginBottom: "0.75rem" }}>
+                          <p style={{ color: "#4b5563", fontSize: "0.875rem" }}>
+                            <strong>Company:</strong> {internship.companyName} -{" "}
+                            <strong>Job Title:</strong> {internship.jobTitle}
+                          </p>
+                        </div>
+                      )
+                    )
+                  ) : (
+                    <p style={{ color: "#6b7280", fontSize: "0.875rem" }}>
+                      No applied internships yet.
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Close Button Container */}
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  marginTop: "2rem",
+                }}
+              >
+                <button
+                  onClick={() => setShowModal(false)}
+                  style={{
+                    background: "#1f2937",
+                    color: "#fff",
+                    padding: "0.5rem 1.25rem",
+                    borderRadius: "0.375rem",
+                    border: "none",
+                    fontSize: "0.875rem",
+                    fontWeight: "500",
+                    cursor: "pointer",
+                    transition: "background 0.3s ease",
+                  }}
+                  onMouseOver={(e) => (e.target.style.background = "#111827")}
+                  onMouseOut={(e) => (e.target.style.background = "#1f2937")}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
           </div>
         );
 
