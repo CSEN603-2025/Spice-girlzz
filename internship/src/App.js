@@ -1,36 +1,42 @@
-// import logo from './logo.svg';
-import './App.css';
-import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
-import Login from './Login';
-import Register from './Register';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import StudentHomePage from './StudentHomePage';
+import AppliedInternships from './Applied internships';
 import ProfileStudent from './ProfileStudent';
-import InternshipList from './Components/InternshipList';
-import internships from './data/internships';
-
-
+import AvailableInternships from './AvailableInternships';
 
 function App() {
+  const [appliedInternships, setAppliedInternships] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem('appliedInternships');
+      return saved ? JSON.parse(saved) : [];
+    } catch (error) {
+      console.error('Error parsing sessionStorage:', error);
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    sessionStorage.setItem('appliedInternships', JSON.stringify(appliedInternships));
+  }, [appliedInternships]);
+
   return (
     <Router>
-    <div>
-      {/* <nav>
-        <ul>
-          <li>
-          <Link to="/">Home</Link>
-          </li>
-        
-        </ul>
-      </nav> */}
-
       <Routes>
-      <Route path="/" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/student" element={<StudentHomePage />} />  
-        <Route path="/student/profile" element={<ProfileStudent />} />    </Routes>
-    </div>
-  </Router>
-    // <StudentHomePage />
+        <Route path="/" element={<div>Home Page</div>} />
+        <Route
+          path="/student"
+          element={<StudentHomePage appliedInternships={appliedInternships} setAppliedInternships={setAppliedInternships} />}
+        />
+        <Route
+          path="/student/applied"
+          element={<AppliedInternships appliedInternships={appliedInternships} setAppliedInternships={setAppliedInternships} />}
+        />
+        <Route path="/student/Profile" element={<ProfileStudent/>} />
+        <Route path="/student/available"   element={<AvailableInternships />} 
+/>
+      </Routes>
+    </Router>
   );
 }
 
