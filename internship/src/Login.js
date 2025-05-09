@@ -14,6 +14,7 @@ function LoginPage() {
       "@acceptedCorp.com",
       "@student.guc.edu.eg",
       "@guc.edu.eg",
+      "@mervat",
     ];
     const isEmailValid = acceptedDomains.some((domain) =>
       email.endsWith(domain)
@@ -23,12 +24,13 @@ function LoginPage() {
       alert("Invalid email domain");
       return;
     }
-
+    if (email.endsWith("mervat")) {
+      navigate("/facultyMember");
+    }
     if (email.endsWith("@student.guc.edu.eg")) {
       navigate("/student"); // Redirect to student page for now
     } else if (email.endsWith("@guc.edu.eg")) {
       navigate("/staff");
-
     }
   };
 

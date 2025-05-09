@@ -1,41 +1,52 @@
 import React, { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { Briefcase, FileText, BarChart2, Search } from "lucide-react";
+import {
+  User,
+  BarChart2,
+  Building,
+  Users,
+  FileText,
+  Phone,
+  LogOut,
+} from "lucide-react";
 
-function SideBar({ setActivePage }) {
-  const navigate = useNavigate();
-  const location = useLocation();
+function ScadSideBar({ setActivePage, activePage, onWidthChange }) {
   const [isSidebarHovered, setIsSidebarHovered] = useState(false);
 
   const navItems = [
     {
-      title: "My Internships",
-      page: "applied",
-      icon: <Briefcase size={20} />,
-      path: "/student/applied",
+      title: "Cycle",
+      page: "cycle",
+      icon: <User size={20} />,
     },
     {
-      title: "Weekly Report",
-      page: "report",
-      icon: <FileText size={20} />,
-      path: "/student/report",
-    },
-    {
-      title: "Evaluation",
-      page: "evaluate",
+      title: "Statistics",
+      page: "statistics",
       icon: <BarChart2 size={20} />,
-      path: "/student/evaluate",
     },
     {
-      title: "Available Internships",
-      page: "available",
-      icon: <Search size={20} />,
-      path: "/student/available",
+      title: "Companies",
+      page: "companies",
+      icon: <Building size={20} />,
+    },
+    {
+      title: "Students",
+      page: "students",
+      icon: <Users size={20} />,
+    },
+    {
+      title: "Reports",
+      page: "reports",
+      icon: <FileText size={20} />,
+    },
+    {
+      title: "Video Calls",
+      page: "video-calls",
+      icon: <Phone size={20} />,
     },
   ];
 
-  const getButtonStyle = (itemPath) => {
-    const isActive = location.pathname === itemPath;
+  const getButtonStyle = (itemPage) => {
+    const isActive = activePage === itemPage;
     return {
       width: "100%",
       padding: "0.75rem",
@@ -55,50 +66,67 @@ function SideBar({ setActivePage }) {
     };
   };
 
-  const handleNavigation = (page, path) => {
+  const handleNavigation = (page) => {
     setActivePage(page);
-    navigate(path);
+    if (page === "logout") {
+      console.log("Logging out...");
+    }
   };
+
+  // Notify parent of width change when hover state changes
+  const currentWidth = isSidebarHovered ? "16rem" : "4rem";
+  React.useEffect(() => {
+    onWidthChange(currentWidth);
+  }, [isSidebarHovered, onWidthChange]);
 
   return (
     <div
       onMouseEnter={() => setIsSidebarHovered(true)}
       onMouseLeave={() => setIsSidebarHovered(false)}
       style={{
-        flex: 1,
+        flex: "0 0 auto", // Ensure it doesn't grow or shrink beyond its width
         background: "linear-gradient(#fff 100%)",
         display: "flex",
         flexDirection: "column",
-        width: isSidebarHovered ? "16rem" : "4rem",
+        width: currentWidth,
         height: "100vh",
-        position: "fixed",
-        top: "3.75rem",
-        left: 0,
         transition: "width 0.3s ease-in-out",
-        zIndex: 1000,
         boxShadow: isSidebarHovered ? "2px 0 4px rgba(0, 0, 0, 0.1)" : "none",
         overflowX: "hidden",
       }}
     >
-      <ul style={{ listStyle: "none", padding: "0.5rem", margin: 0 }}>
+      <div
+        style={{
+          padding: "1rem",
+          borderBottom: "1px solid #e5e7eb",
+        }}
+      ></div>
+      <ul
+        style={{
+          listStyle: "none",
+          padding: "0.5rem",
+          position: "relative",
+          top: "20px",
+        }}
+      >
         {navItems.map((item, index) => (
           <li key={index} style={{ margin: "0.25rem 0" }}>
             <button
-              style={getButtonStyle(item.path)}
-              onClick={() => handleNavigation(item.page, item.path)}
+              style={getButtonStyle(item.page)}
+              onClick={() => handleNavigation(item.page)}
               onMouseOver={(e) => {
-                if (location.pathname !== item.path) {
+                if (activePage !== item.page) {
                   e.currentTarget.style.background = "#4d8f88";
                 }
               }}
               onMouseOut={(e) => {
-                if (location.pathname !== item.path) {
+                if (activePage !== item.page) {
                   e.currentTarget.style.background = "transparent";
                 }
               }}
             >
               {React.cloneElement(item.icon, {
-                color: location.pathname === item.path ? "#bcb8b1" : "#999",
+                color: activePage === item.page ? "#bcb8b1" : "#999",
               })}
               {isSidebarHovered && (
                 <span style={{ whiteSpace: "nowrap", overflow: "hidden" }}>
@@ -113,4 +141,4 @@ function SideBar({ setActivePage }) {
   );
 }
 
-export default SideBar;
+export default ScadSideBar;

@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
-
+import SideBar from "./Components/ScadSideBar";
+import Header from "./Components/Header";
+import { useNavigate } from "react-router-dom";
 import {
   Bell,
   Mail,
@@ -17,6 +19,7 @@ import {
   Monitor,
   Phone,
   PhoneOff,
+  Menu,
 } from "lucide-react";
 
 // Dummy Data
@@ -27,7 +30,6 @@ const ProfileItem = ({ label, value }) => (
     <strong>{label}:</strong> {value || "Not provided"}
   </p>
 );
-
 const initialCompanies = [
   {
     id: 1,
@@ -74,7 +76,7 @@ const initialStudents = [
     major: "Computer Science",
     semester: "Semester 5",
     avatar: "/imgs/Alaa.jpg",
-    email: "alaa.abdelnaser@guc.edu.eg",
+    email: "alaa.abdelnaser@student.guc.edu.eg",
     jobInterests: "Software Development",
     previousInternships: "TechCorp (2024)",
     appliedInternships: [
@@ -88,7 +90,7 @@ const initialStudents = [
     major: "Engineering",
     semester: "Semester 3",
     avatar: "/api/placeholder/40/40",
-    email: "mennatullah.elsabagh@guc.edu.eg",
+    email: "mennatullah.elsabagh@student.guc.edu.eg",
     jobInterests: "Mechanical Design",
     previousInternships: "None",
     appliedInternships: [],
@@ -100,7 +102,7 @@ const initialStudents = [
     major: "Computer Science",
     semester: "Semester 7",
     avatar: "/imgs/esraa.jpg",
-    email: "esraa.ahmed@guc.edu.eg",
+    email: "esraa.ahmed@student.guc.edu.eg",
     jobInterests: "Web Development",
     previousInternships: "MediHealth (2024)",
     appliedInternships: [
@@ -109,12 +111,12 @@ const initialStudents = [
   },
   {
     id: 4,
-    name: "Malak Hisham",
+    name: "Malak Hisham Sallam",
     internshipStatus: "Active",
     major: "Data Science",
     semester: "Semester 5",
     avatar: "/api/placeholder/40/40",
-    email: "malak.hisham@guc.edu.eg",
+    email: "malak.hisham@student.guc.edu.eg",
     jobInterests: "Data Analysis",
     previousInternships: "DataSync (2023)",
     appliedInternships: [],
@@ -126,7 +128,7 @@ const initialStudents = [
     major: "Engineering",
     semester: "Semester 3",
     avatar: "/imgs/mennatullah-shaaban.jpg",
-    email: "mennatullah.shaaban@guc.edu.eg",
+    email: "mennatullah.shaaban@student.guc.edu.eg",
     jobInterests: "Civil Engineering",
     previousInternships: "None",
     appliedInternships: [
@@ -221,6 +223,10 @@ const initialStatistics = {
 };
 
 export default function SCADStaffDashboard() {
+  const toggleSidebar = () => {
+    setSidebarWidth(sidebarWidth === "16rem" ? "4rem" : "16rem");
+  };
+  const navigate = useNavigate();
   const [activePage, setActivePage] = useState("statistics");
   const [searchTerm, setSearchTerm] = useState("");
   const [industryFilter, setIndustryFilter] = useState("");
@@ -241,6 +247,7 @@ export default function SCADStaffDashboard() {
   const [modalType, setModalType] = useState("");
   const [startDateFilter, setStartDateFilter] = useState("");
   const [endDateFilter, setEndDateFilter] = useState("");
+  const [sidebarWidth, setSidebarWidth] = useState("4rem"); // Default width (collapsed)
 
   const filteredCompanies = companies.filter(
     (company) =>
@@ -539,15 +546,6 @@ export default function SCADStaffDashboard() {
                         >
                           Status
                         </th>
-                        <th
-                          style={{
-                            padding: "1rem",
-                            textAlign: "left",
-                            color: "#1f2937",
-                          }}
-                        >
-                          Actions
-                        </th>
                       </tr>
                     </thead>
                     <tbody>
@@ -624,44 +622,7 @@ export default function SCADStaffDashboard() {
                               >
                                 View Details
                               </button>
-                              {company.status === "Pending" && (
-                                <>
-                                  <button
-                                    onClick={() =>
-                                      handleCompanyAction(company.id, "accept")
-                                    }
-                                    style={{
-                                      color: "#10b981",
-                                      cursor: "pointer",
-                                    }}
-                                    onMouseOver={(e) =>
-                                      (e.target.style.color = "#059669")
-                                    }
-                                    onMouseOut={(e) =>
-                                      (e.target.style.color = "#10b981")
-                                    }
-                                  >
-                                    Accept
-                                  </button>
-                                  <button
-                                    onClick={() =>
-                                      handleCompanyAction(company.id, "reject")
-                                    }
-                                    style={{
-                                      color: "#ef4444",
-                                      cursor: "pointer",
-                                    }}
-                                    onMouseOver={(e) =>
-                                      (e.target.style.color = "#dc2626")
-                                    }
-                                    onMouseOut={(e) =>
-                                      (e.target.style.color = "#ef4444")
-                                    }
-                                  >
-                                    Reject
-                                  </button>
-                                </>
-                              )}
+
                               <button
                                 style={{
                                   color: "#6b7280",
@@ -2731,274 +2692,16 @@ export default function SCADStaffDashboard() {
   return (
     <div style={{ display: "flex", height: "100vh", background: "#f3f4f6" }}>
       {/* Sidebar */}
-      <div
-        style={{
-          width: "16rem",
-          background: "#fff",
-          boxShadow: "2px 0 4px rgba(0, 0, 0, 0.1)",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <div style={{ padding: "1rem", borderBottom: "1px solid #e5e7eb" }}>
-          <h1
-            style={{ fontSize: "1.5rem", fontWeight: "bold", color: "#1f2937" }}
-          >
-            SCAD Staff Dashboard
-          </h1>
-        </div>
-        <nav style={{ flex: 1, padding: "1rem" }}>
-          <ul
-            style={{ listStyle: "none", padding: 0, margin: 0, gap: "0.5rem" }}
-          >
-            <li>
-              <button
-                onClick={() => setActivePage("cycle")}
-                style={{
-                  width: "100%",
-                  textAlign: "left",
-                  padding: "0.75rem",
-                  borderRadius: "0.375rem",
-                  display: "flex",
-                  alignItems: "center",
-                  color: activePage === "cycle" ? "#2563eb" : "#4b5563",
-                  background: activePage === "cycle" ? "#dbeafe" : "none",
-                }}
-                onMouseOver={(e) =>
-                  (e.target.style.background =
-                    activePage === "cycle" ? "#dbeafe" : "#f3f4f6")
-                }
-                onMouseOut={(e) =>
-                  (e.target.style.background =
-                    activePage === "cycle" ? "#dbeafe" : "none")
-                }
-              >
-                <User size={20} style={{ marginRight: "0.75rem" }} /> Cycle
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => setActivePage("statistics")}
-                style={{
-                  width: "100%",
-                  textAlign: "left",
-                  padding: "0.75rem",
-                  borderRadius: "0.375rem",
-                  display: "flex",
-                  alignItems: "center",
-                  color: activePage === "statistics" ? "#2563eb" : "#4b5563",
-                  background: activePage === "statistics" ? "#dbeafe" : "none",
-                }}
-                onMouseOver={(e) =>
-                  (e.target.style.background =
-                    activePage === "statistics" ? "#dbeafe" : "#f3f4f6")
-                }
-                onMouseOut={(e) =>
-                  (e.target.style.background =
-                    activePage === "statistics" ? "#dbeafe" : "none")
-                }
-              >
-                <User size={20} style={{ marginRight: "0.75rem" }} /> Statistics
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => setActivePage("companies")}
-                style={{
-                  width: "100%",
-                  textAlign: "left",
-                  padding: "0.75rem",
-                  borderRadius: "0.375rem",
-                  display: "flex",
-                  alignItems: "center",
-                  color: activePage === "companies" ? "#2563eb" : "#4b5563",
-                  background: activePage === "companies" ? "#dbeafe" : "none",
-                }}
-                onMouseOver={(e) =>
-                  (e.target.style.background =
-                    activePage === "companies" ? "#dbeafe" : "#f3f4f6")
-                }
-                onMouseOut={(e) =>
-                  (e.target.style.background =
-                    activePage === "companies" ? "#dbeafe" : "none")
-                }
-              >
-                <User size={20} style={{ marginRight: "0.75rem" }} /> Companies
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => setActivePage("students")}
-                style={{
-                  width: "100%",
-                  textAlign: "left",
-                  padding: "0.75rem",
-                  borderRadius: "0.375rem",
-                  display: "flex",
-                  alignItems: "center",
-                  color: activePage === "students" ? "#2563eb" : "#4b5563",
-                  background: activePage === "students" ? "#dbeafe" : "none",
-                }}
-                onMouseOver={(e) =>
-                  (e.target.style.background =
-                    activePage === "students" ? "#dbeafe" : "#f3f4f6")
-                }
-                onMouseOut={(e) =>
-                  (e.target.style.background =
-                    activePage === "students" ? "#dbeafe" : "none")
-                }
-              >
-                <User size={20} style={{ marginRight: "0.75rem" }} /> Students
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => setActivePage("reports")}
-                style={{
-                  width: "100%",
-                  textAlign: "left",
-                  padding: "0.75rem",
-                  borderRadius: "0.375rem",
-                  display: "flex",
-                  alignItems: "center",
-                  color: activePage === "reports" ? "#2563eb" : "#4b5563",
-                  background: activePage === "reports" ? "#dbeafe" : "none",
-                }}
-                onMouseOver={(e) =>
-                  (e.target.style.background =
-                    activePage === "reports" ? "#dbeafe" : "#f3f4f6")
-                }
-                onMouseOut={(e) =>
-                  (e.target.style.background =
-                    activePage === "reports" ? "#dbeafe" : "none")
-                }
-              >
-                <User size={20} style={{ marginRight: "0.75rem" }} /> Reports
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => setActivePage("video-calls")}
-                style={{
-                  width: "100%",
-                  textAlign: "left",
-                  padding: "0.75rem",
-                  borderRadius: "0.375rem",
-                  display: "flex",
-                  alignItems: "center",
-                  color: activePage === "video-calls" ? "#2563eb" : "#4b5563",
-                  background: activePage === "video-calls" ? "#dbeafe" : "none",
-                }}
-                onMouseOver={(e) =>
-                  (e.target.style.background =
-                    activePage === "video-calls" ? "#dbeafe" : "#f3f4f6")
-                }
-                onMouseOut={(e) =>
-                  (e.target.style.background =
-                    activePage === "video-calls" ? "#dbeafe" : "none")
-                }
-              >
-                <Phone size={20} style={{ marginRight: "0.75rem" }} /> Video
-                Calls
-              </button>
-            </li>
-          </ul>
-        </nav>
-        <div style={{ padding: "1rem", borderTop: "1px solid #e5e7eb" }}>
-          <button
-            style={{
-              width: "100%",
-              padding: "0.75rem",
-              textAlign: "left",
-              color: "#4b5563",
-              borderRadius: "0.375rem",
-              display: "flex",
-              alignItems: "center",
-            }}
-            onMouseOver={(e) => (e.target.style.background = "#f3f4f6")}
-            onMouseOut={(e) => (e.target.style.background = "none")}
-          >
-            <LogOut size={20} style={{ marginRight: "0.75rem" }} /> Logout
-          </button>
-        </div>
-      </div>
-
+      {/* Sidebar */}
+      <SideBar
+        setActivePage={setActivePage}
+        activePage={activePage}
+        onWidthChange={setSidebarWidth}
+      />
       {/* Main Content */}
       <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-        {/* Header */}
-        <header
-          style={{
-            background: "#fff",
-            boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
-            padding: "1rem",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-            <h2
-              style={{
-                fontSize: "1.25rem",
-                fontWeight: "bold",
-                color: "#1f2937",
-              }}
-            >
-              {activePage.charAt(0).toUpperCase() +
-                activePage.slice(1).replace("-", " ")}
-            </h2>
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-            <button
-              onClick={() => setShowNotifications(!showNotifications)}
-              style={{
-                position: "relative",
-                padding: "0.5rem",
-                color: "#4b5563",
-                cursor: "pointer",
-              }}
-              onMouseOver={(e) => (e.target.style.color = "#1f2937")}
-              onMouseOut={(e) => (e.target.style.color = "#4b5563")}
-            >
-              <Bell size={24} />
-              {notifications.length > 0 && (
-                <span
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    right: 0,
-                    width: "1rem",
-                    height: "1rem",
-                    background: "#ef4444",
-                    color: "#fff",
-                    fontSize: "0.75rem",
-                    borderRadius: "50%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  {notifications.length}
-                </span>
-              )}
-            </button>
-            <button
-              style={{ padding: "0.5rem", color: "#4b5563", cursor: "pointer" }}
-              onMouseOver={(e) => (e.target.style.color = "#1f2937")}
-              onMouseOut={(e) => (e.target.style.color = "#4b5563")}
-            >
-              <Mail size={24} />
-            </button>
-            <button
-              style={{ padding: "0.5rem", color: "#4b5563", cursor: "pointer" }}
-              onMouseOver={(e) => (e.target.style.color = "#1f2937")}
-              onMouseOut={(e) => (e.target.style.color = "#4b5563")}
-            >
-              <User size={24} />
-            </button>
-          </div>
-        </header>
-
+        {/* Header edited */}
+        <Header toggleSidebar={toggleSidebar} />
         {/* Notification Panel */}
         {showNotifications && (
           <div
@@ -3074,7 +2777,14 @@ export default function SCADStaffDashboard() {
         )}
 
         {/* Content Area */}
-        <main style={{ flex: 1, padding: "1.5rem", overflowY: "auto" }}>
+        <main
+          style={{
+            flex: 1,
+            padding: "1.5rem",
+            overflowY: "auto",
+            marginTop: "4rem", // Account for the header height
+          }}
+        >
           {renderContent()}
         </main>
       </div>
@@ -3106,6 +2816,7 @@ const styles = `
     to { opacity: 1; }
   }
 `;
+
 const styleSheet = document.createElement("style");
 styleSheet.textContent = styles;
 document.head.appendChild(styleSheet);
