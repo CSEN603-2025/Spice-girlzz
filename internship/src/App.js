@@ -15,7 +15,6 @@ import FacultyMember from "./FacultyMember";
 
 import VideoCall from './VideoCall'
 import ScheduleCall from './ScheduleCall';
-import Appointments from './Appointments';
 import StartCall from './StartCall';
 
 
@@ -70,14 +69,16 @@ function App() {
           }
         />
 
-        <Route path="/student/scheduleCall" element={<ScheduleCall />} /> 
-        <Route path="/student/videoCallDashboard" element={<VideoCall />} /> 
+
+        <Route path="/student/scheduleCall" element={<ScheduleCall  appliedInternships={appliedInternships}
+              setAppliedInternships={setAppliedInternships}/>} /> 
+        <Route path="/student/videoCallDashboard" element={<VideoCall  appliedInternships={appliedInternships}
+              setAppliedInternships={setAppliedInternships}/>} /> 
 
         <Route path="/startCall" element={<StartCall />} /> 
-        <Route path="/appointments" element={<Appointments />} /> 
 
         <Route path="/company" element={<CompanyHomePage />} /> 
-        <Route path="/company" element={<CompanyMail />} /> 
+        <Route path="/company/mail" element={<CompanyMail />} /> 
         <Route path="/company/profile" element={<ProfileCompany />} /> 
         <Route path="/company/evaluate" element={<CompanyEvaluation />} /> 
         <Route path="/company/interns" element={<CompanyInterns />} /> 

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import './AppointmentsPage.css'; 
 import './App.css'; // Keep this too if you still use shared styles
+import HeaderandSidebar from './StudentHandS';
+
 
 function ScheduleCall() {
   const [formData, setFormData] = useState({
@@ -30,6 +32,7 @@ function ScheduleCall() {
   };
 
   return (
+    <HeaderandSidebar>
     <div className="appointment-card" style={{ maxWidth: '500px', margin: '0 auto' }}>
       <h3 style={{ color: '#1d3557', textAlign: 'center' }}>Schedule a Call</h3>
       
@@ -110,6 +113,7 @@ function ScheduleCall() {
         </form>
       )}
     </div>
+    </HeaderandSidebar>
   );
 }
 

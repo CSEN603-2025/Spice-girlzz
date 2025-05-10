@@ -1,6 +1,5 @@
 import React from 'react';
-import './AppointmentsPage.css'; 
-import './App.css'; // Keep this too if you still use shared styles
+import './AppointmentsPage.css';
 
 function AppointmentsPage() {
   const appointments = [
@@ -15,7 +14,7 @@ function AppointmentsPage() {
       id: 2,
       date: 'May 12, 2025',
       time: '2:00 PM',
-      with: 'Asiya  Kareem',
+      with: 'Asiya Kareem',
       location: 'SCAD Virtual Office Room 3',
     },
     {
@@ -28,26 +27,16 @@ function AppointmentsPage() {
   ];
 
   return (
-    <div className="video-call-dashboard" style={{ paddingTop: '50px' }}>
-      <div className="dashboard-header">
-        <h1>Your Appointments</h1>
-      </div>
+    <div className="appointments-wrapper">
+      <h1 className="appointments-title">Your Upcoming Appointments</h1>
 
       <div className="appointments-container">
         {appointments.map((appt) => (
           <div key={appt.id} className="appointment-card">
-            <div className="appointment-row">
-              <span className="label">Date:</span> {appt.date}
-            </div>
-            <div className="appointment-row">
-              <span className="label">Time:</span> {appt.time}
-            </div>
-            <div className="appointment-row">
-              <span className="label">With:</span> {appt.with}
-            </div>
-            <div className="appointment-row">
-              <span className="label">Location:</span> {appt.location}
-            </div>
+            <div className="appointment-detail"><strong>Date:</strong> {appt.date}</div>
+            <div className="appointment-detail"><strong>Time:</strong> {appt.time}</div>
+            <div className="appointment-detail"><strong>With:</strong> {appt.with}</div>
+            <div className="appointment-detail"><strong>Location:</strong> {appt.location}</div>
           </div>
         ))}
       </div>

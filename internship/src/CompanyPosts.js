@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SideBarCompany from './Components/SideBarCompany';
+import { Mail, Home, LogOut, User, Menu } from 'lucide-react';
+import './CompanyStyles.css';
 
 const JobPostManager = () => {
   const navigate = useNavigate();
@@ -19,8 +21,9 @@ const JobPostManager = () => {
   });
   const [isEditing, setIsEditing] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [clickedButtons, setClickedButtons] = useState({});
 
-  // Simulated API call to fetch internships and applications
   useEffect(() => {
     const fetchedInternships = [
       {
@@ -51,7 +54,6 @@ const JobPostManager = () => {
     setApplications(fetchedApplications);
   }, []);
 
-  // Filter and search internships
   const filteredInternships = internships.filter(internship => {
     const matchesSearch = internship.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          internship.skills.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -61,7 +63,6 @@ const JobPostManager = () => {
     return matchesSearch && matchesDuration && matchesPaid;
   });
 
-  // Get application count per post
   const getApplicationCount = (postId) => {
     return applications.filter(app => app.postId === postId).length;
   };
@@ -77,11 +78,9 @@ const JobPostManager = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (isEditing) {
-      // Update internship
       setInternships(internships.map(internship => internship.id === formData.id ? { ...formData } : internship));
       setIsEditing(false);
     } else {
-      // Create new internship
       const newInternship = { ...formData, id: internships.length + 1 };
       setInternships([...internships, newInternship]);
     }
@@ -116,61 +115,96 @@ const JobPostManager = () => {
     setIsEditing(false);
   };
 
+  const handleButtonClick = (buttonId) => {
+    setClickedButtons(prev => ({
+      ...prev,
+      [buttonId]: true
+    }));
+  };
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   return (
-    <div style={styles.container}>
-      {/* Navbar */}
-      <div style={styles.navbar}>
-        <h2 style={styles.title}>Internship Post Manager</h2>
-        <div>
-          <button 
-            style={styles.navBtn} 
-            onClick={() => navigate('/company')}
-          >
-            🏠 Home
+    <div className="container">
+      <header className="header">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: '1 0 auto', maxWidth: '50%' }}>
+          <button className="header-btn" title="Toggle Sidebar" onClick={toggleSidebar}>
+            <Menu size={20} />
           </button>
-          <button 
-            style={styles.navBtn} 
-            onClick={() => navigate('/company/profile')}
-          >
-            👤 Profile
-          </button>
-          <button 
-            style={styles.navBtn} 
-            onClick={() => navigate('/company/mail')}
-          >
-            📧 Mail
-            <span style={styles.notificationBadge}>1</span>
-          </button>
-          <button style={styles.navBtn} onClick={() => navigate('/')}>🚪 Logout</button>
+          <h2 className="header-title">Internship Post Manager</h2>
         </div>
-      </div>
+        <div className="header-buttons">
+          <button
+            className={`header-btn ${clickedButtons['headerMail'] ? 'clicked' : ''}`}
+            title="Messages"
+            onClick={() => {
+              handleButtonClick('headerMail');
+              navigate('/company/mail');
+            }}
+          >
+            <Mail size={20} />
+            <span className="notification-badge">1</span>
+          </button>
+          <button
+            className={`header-btn ${clickedButtons['headerProfile'] ? 'clicked' : ''}`}
+            title="Profile"
+            onClick={() => {
+              handleButtonClick('headerProfile');
+              navigate('/company/profile');
+            }}
+          >
+            <User size={20} />
+          </button>
+          <button
+            className={`header-btn ${clickedButtons['headerHome'] ? 'clicked' : ''}`}
+            title="Home"
+            onClick={() => {
+              handleButtonClick('headerHome');
+              navigate('/company');
+            }}
+          >
+            <Home size={20} />
+          </button>
+          <button
+            className={`header-btn ${clickedButtons['headerLogout'] ? 'clicked' : ''}`}
+            title="Logout"
+            onClick={() => {
+              handleButtonClick('headerLogout');
+              navigate('/');
+            }}
+          >
+            <LogOut size={20} />
+          </button>
+        </div>
+      </header>
 
-      <div style={styles.mainContent}>
-        <SideBarCompany activePage="job-posts" />
-
-        <div style={styles.profileContent}>
-          {/* Create Post Section */}
-          <div style={styles.card}>
-            <h3 style={styles.sectionTitle}>Create Post</h3>
-            <button onClick={openModal} style={styles.submitBtn}>Create Post</button>
+      <div className="layout">
+        <div className="sidebar">
+          <SideBarCompany setActivePage={(page) => navigate(`/company/${page}`)} />
+        </div>
+        <div className={`content ${isSidebarOpen && window.innerWidth > 768 ? 'sidebar-open' : 'sidebar-closed'}`}>
+          <div className="card">
+            <h3 className="section-title">Create Post</h3>
+            <button onClick={openModal} className="btn btn-primary">Create Post</button>
           </div>
 
-          {/* Internship Posts Section */}
-          <div style={styles.card}>
-            <h3 style={styles.sectionTitle}>Internship Posts</h3>
-            <div style={styles.searchFilter}>
+          <div className="card">
+            <h3 className="section-title">Internship Posts</h3>
+            <div className="search-filter">
               <input
                 type="text"
                 placeholder="Search by title, skills, or description..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                style={styles.searchInput}
+                className="form-input"
               />
-              <div style={styles.filterGroup}>
+              <div className="filter-group">
                 <select
                   value={filter.duration}
                   onChange={(e) => setFilter({ ...filter, duration: e.target.value })}
-                  style={styles.filterSelect}
+                  className="form-select"
                 >
                   <option value="">All Durations</option>
                   <option value="3 months">3 months</option>
@@ -179,7 +213,7 @@ const JobPostManager = () => {
                 <select
                   value={filter.isPaid}
                   onChange={(e) => setFilter({ ...filter, isPaid: e.target.value })}
-                  style={styles.filterSelect}
+                  className="form-select"
                 >
                   <option value="">All Payment Types</option>
                   <option value="true">Paid</option>
@@ -187,21 +221,21 @@ const JobPostManager = () => {
                 </select>
               </div>
             </div>
-            <div style={styles.postList}>
+            <div className="post-list">
               {filteredInternships.length === 0 ? (
-                <p style={styles.noData}>No internship posts found.</p>
+                <p className="no-data">No internship posts found.</p>
               ) : (
                 filteredInternships.map(post => (
-                  <div key={post.id} style={styles.postCard}>
-                    <h4 style={styles.postTitle}>{post.title}</h4>
+                  <div key={post.id} className="post-card">
+                    <h4 className="post-title">{post.title}</h4>
                     <p><strong>Duration:</strong> {post.duration}</p>
                     <p><strong>Paid:</strong> {post.isPaid ? `Yes (${post.salary})` : 'No'}</p>
                     <p><strong>Skills:</strong> {post.skills}</p>
                     <p><strong>Description:</strong> {post.description}</p>
                     <p><strong>Applications:</strong> {getApplicationCount(post.id)}</p>
-                    <div style={styles.jobActions}>
-                      <button onClick={() => handleEdit(post)} style={styles.editBtn}>Edit</button>
-                      <button onClick={() => handleDelete(post.id)} style={styles.deleteBtn}>Delete</button>
+                    <div className="job-actions">
+                      <button onClick={() => handleEdit(post)} className="btn btn-light">Edit</button>
+                      <button onClick={() => handleDelete(post.id)} className="btn btn-danger">Delete</button>
                     </div>
                   </div>
                 ))
@@ -211,88 +245,87 @@ const JobPostManager = () => {
         </div>
       </div>
 
-      {/* Internship Post Modal */}
       {showModal && (
-        <div style={styles.modal}>
-          <div style={styles.modalContent}>
-            <h3 style={styles.sectionTitle}>{isEditing ? 'Update Internship Post' : 'Create Internship Post'}</h3>
-            <form onSubmit={handleSubmit} style={styles.form}>
-              <div style={styles.formGroup}>
-                <label style={styles.detailLabel}>Internship Title</label>
+        <div className="modal">
+          <div className="modal-content">
+            <h3 className="section-title">{isEditing ? 'Update Internship Post' : 'Create Internship Post'}</h3>
+            <form onSubmit={handleSubmit} className="form">
+              <div className="form-group">
+                <label className="form-label">Internship Title</label>
                 <input
                   type="text"
                   name="title"
                   value={formData.title}
                   onChange={handleInputChange}
-                  style={styles.inputField}
+                  className="form-input"
                   required
                 />
               </div>
-              <div style={styles.formGroup}>
-                <label style={styles.detailLabel}>Duration</label>
+              <div className="form-group">
+                <label className="form-label">Duration</label>
                 <input
                   type="text"
                   name="duration"
                   value={formData.duration}
                   onChange={handleInputChange}
-                  style={styles.inputField}
+                  className="form-input"
                   placeholder="e.g., 3 months"
                   required
                 />
               </div>
-              <div style={styles.formGroup}>
-                <label style={styles.detailLabel}>
+              <div className="form-group">
+                <label className="form-label">
                   <input
                     type="checkbox"
                     name="isPaid"
                     checked={formData.isPaid}
                     onChange={handleInputChange}
-                    style={styles.checkbox}
+                    className="form-checkbox"
                   />
                   Paid Internship
                 </label>
               </div>
               {formData.isPaid && (
-                <div style={styles.formGroup}>
-                  <label style={styles.detailLabel}>Expected Salary</label>
+                <div className="form-group">
+                  <label className="form-label">Expected Salary</label>
                   <input
                     type="text"
                     name="salary"
                     value={formData.salary}
                     onChange={handleInputChange}
-                    style={styles.inputField}
+                    className="form-input"
                     placeholder="e.g., $20/hour"
                     required
                   />
                 </div>
               )}
-              <div style={styles.formGroup}>
-                <label style={styles.detailLabel}>Skills Required</label>
+              <div className="form-group">
+                <label className="form-label">Skills Required</label>
                 <input
                   type="text"
                   name="skills"
                   value={formData.skills}
                   onChange={handleInputChange}
-                  style={styles.inputField}
+                  className="form-input"
                   placeholder="e.g., JavaScript, React"
                   required
                 />
               </div>
-              <div style={styles.formGroup}>
-                <label style={styles.detailLabel}>Internship Description</label>
+              <div className="form-group">
+                <label className="form-label">Internship Description</label>
                 <textarea
                   name="description"
                   value={formData.description}
                   onChange={handleInputChange}
-                  style={styles.textArea}
+                  className="form-textarea"
                   required
                 ></textarea>
               </div>
-              <div style={styles.formActions}>
-                <button type="submit" style={isEditing ? styles.saveBtn : styles.submitBtn}>
+              <div className="form-actions">
+                <button type="submit" className={isEditing ? 'btn btn-primary' : 'btn btn-primary'}>
                   {isEditing ? 'Update' : 'Save'}
                 </button>
-                <button type="button" onClick={closeModal} style={styles.cancelBtn}>
+                <button type="button" onClick={closeModal} className="btn btn-danger">
                   Cancel
                 </button>
               </div>
@@ -300,237 +333,12 @@ const JobPostManager = () => {
           </div>
         </div>
       )}
+
+      {isSidebarOpen && (
+        <div className={`mobile-overlay ${isSidebarOpen ? 'active' : ''}`} onClick={() => setIsSidebarOpen(false)} />
+      )}
     </div>
   );
-};
-
-const styles = {
-  container: {
-    fontFamily: 'Segoe UI, sans-serif',
-    backgroundColor: '#f7f9fc', // Light blue-gray background
-    minHeight: '100vh',
-    display: 'flex',
-    flexDirection: 'column'
-  },
-  navbar: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '1rem 2rem',
-    backgroundColor: '#1d3557', // Dark blue
-    color: '#fff',
-    position: 'sticky',
-    top: 0,
-    zIndex: 100
-  },
-  title: {
-    margin: 0
-  },
-  navBtn: {
-    backgroundColor: '#457b9d', // Medium blue
-    border: 'none',
-    borderRadius: '5px',
-    padding: '0.5rem 1rem',
-    color: '#fff',
-    cursor: 'pointer',
-    marginLeft: '10px',
-    position: 'relative'
-  },
-  notificationBadge: {
-    position: 'absolute',
-    top: '-8px',
-    right: '-8px',
-    backgroundColor: '#e63946', // Red
-    color: 'white',
-    borderRadius: '50%',
-    padding: '2px 6px',
-    fontSize: '12px'
-  },
-  mainContent: {
-    display: 'flex',
-    flex: 1,
-    overflow: 'auto'
-  },
-  profileContent: {
-    flex: 1,
-    padding: '2rem',
-    marginLeft: '240px',
-    overflowY: 'auto',
-    height: 'calc(100vh - 64px)' // Adjust based on navbar height
-  },
-  card: {
-    backgroundColor: '#fff',
-    padding: '2rem',
-    borderRadius: '8px',
-    boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
-    marginBottom: '2rem'
-  },
-  sectionTitle: {
-    fontSize: '1.3rem',
-    color: '#1d3557', // Dark blue
-    marginBottom: '1rem',
-    borderBottom: '1px solid #eee',
-    paddingBottom: '0.5rem'
-  },
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1rem'
-  },
-  formGroup: {
-    display: 'flex',
-    flexDirection: 'column'
-  },
-  detailLabel: {
-    display: 'block',
-    color: '#666',
-    fontSize: '0.9rem',
-    marginBottom: '0.3rem'
-  },
-  inputField: {
-    width: '100%',
-    padding: '0.75rem',
-    borderRadius: '4px',
-    border: '1px solid #ddd',
-    fontSize: '1rem',
-    color: '#333'
-  },
-  textArea: {
-    width: '100%',
-    minHeight: '120px',
-    padding: '1rem',
-    borderRadius: '4px',
-    border: '1px solid #ddd',
-    fontFamily: 'inherit',
-    fontSize: '1rem',
-    lineHeight: '1.5',
-    color: '#333'
-  },
-  checkbox: {
-    marginRight: '0.5rem'
-  },
-  formActions: {
-    display: 'flex',
-    gap: '1rem'
-  },
-  submitBtn: {
-    backgroundColor: '#a8dadc', // Light teal
-    border: 'none',
-    borderRadius: '5px',
-    padding: '0.75rem 1.5rem',
-    cursor: 'pointer',
-    fontWeight: 'bold',
-    color: '#1d3557', // Dark blue
-    fontSize: '1rem'
-  },
-  saveBtn: {
-    backgroundColor: '#2a9d8f', // Teal
-    border: 'none',
-    borderRadius: '5px',
-    padding: '0.75rem 1.5rem',
-    cursor: 'pointer',
-    fontWeight: 'bold',
-    color: 'white',
-    fontSize: '1rem'
-  },
-  cancelBtn: {
-    backgroundColor: '#457b9d', // Medium blue
-    border: 'none',
-    borderRadius: '5px',
-    padding: '0.75rem 1.5rem',
-    cursor: 'pointer',
-    color: '#fff',
-    fontSize: '1rem'
-  },
-  searchFilter: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1rem',
-    marginBottom: '1rem'
-  },
-  searchInput: {
-    padding: '0.75rem',
-    borderRadius: '4px',
-    border: '1px solid #ddd',
-    fontSize: '1rem',
-    color: '#333'
-  },
-  filterGroup: {
-    display: 'flex',
-    gap: '1rem'
-  },
-  filterSelect: {
-    padding: '0.75rem',
-    borderRadius: '4px',
-    border: '1px solid #ddd',
-    fontSize: '1rem',
-    color: '#333',
-    backgroundColor: '#fff'
-  },
-  postList: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1rem'
-  },
-  postCard: {
-    border: '1px solid #eee',
-    padding: '1rem',
-    borderRadius: '5px'
-  },
-  postTitle: {
-    fontSize: '1.2rem',
-    color: '#1d3557', // Dark blue
-    marginBottom: '0.5rem'
-  },
-  noData: {
-    color: '#666',
-    textAlign: 'center',
-    fontSize: '1rem'
-  },
-  jobActions: {
-    display: 'flex',
-    gap: '1rem',
-    marginTop: '1rem'
-  },
-  editBtn: {
-    backgroundColor: '#a8dadc', // Light teal
-    border: 'none',
-    borderRadius: '5px',
-    padding: '0.5rem 1rem',
-    cursor: 'pointer',
-    color: '#1d3557', // Dark blue
-    fontWeight: 'bold'
-  },
-  deleteBtn: {
-    backgroundColor: '#e63946', // Red
-    border: 'none',
-    borderRadius: '5px',
-    padding: '0.5rem 1rem',
-    cursor: 'pointer',
-    color: '#fff'
-  },
-  modal: {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 1000
-  },
-  modalContent: {
-    backgroundColor: '#fff',
-    padding: '2rem',
-    borderRadius: '8px',
-    maxWidth: '600px',
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1rem'
-  }
 };
 
 export default JobPostManager;

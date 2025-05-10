@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FaMicrophone, FaMicrophoneSlash, FaVideo, FaVideoSlash, FaDesktop, FaPhoneSlash } from 'react-icons/fa';
-
+import HeaderandSidebar from './StudentHandS';
 const StartCall = () => {
   const [callStatus, setCallStatus] = useState('ongoing'); // Can be 'ongoing' or 'inactive'
   const [isMuted, setIsMuted] = useState(false);
@@ -14,6 +14,7 @@ const StartCall = () => {
   };
 
   return (
+    <HeaderandSidebar>
     <div className="animate-fadeIn" style={{ paddingTop: '50px' }}>
       <h2 className="text-2xl font-bold mb-6 text-gray-800">Video Call</h2>
       {callStatus === 'ongoing' ? (
@@ -63,6 +64,7 @@ const StartCall = () => {
         </div>
       )}
     </div>
+    </HeaderandSidebar>
   );
 };
 

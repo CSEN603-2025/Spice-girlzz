@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SideBarCompany from './Components/SideBarCompany';
+import { Mail, Home, LogOut, User, Menu } from 'lucide-react';
+import './CompanyStyles.css';
 
 const Applications = () => {
   const navigate = useNavigate();
@@ -11,6 +13,8 @@ const Applications = () => {
   const [selectedApplicant, setSelectedApplicant] = useState(null);
   const [isCoverLetterExpanded, setIsCoverLetterExpanded] = useState(false);
   const [isResumeVisible, setIsResumeVisible] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [clickedButtons, setClickedButtons] = useState({});
 
   // Simulated API call to fetch internships and applications
   useEffect(() => {
@@ -241,47 +245,83 @@ const Applications = () => {
     return text.substring(0, maxLength) + '...';
   };
 
+  const handleButtonClick = (buttonId) => {
+    setClickedButtons(prev => ({
+      ...prev,
+      [buttonId]: true
+    }));
+  };
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   return (
-    <div style={styles.container}>
-      {/* Navbar */}
-      <div style={styles.navbar}>
-        <h2 style={styles.title}>Applications Manager</h2>
-        <div>
-          <button 
-            style={styles.navBtn} 
-            onClick={() => navigate('/company')}
-          >
-            🏠 Home
+    <div className="container">
+      <header className="header">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: '1 0 auto', maxWidth: '50%' }}>
+          <button className="header-btn" title="Toggle Sidebar" onClick={toggleSidebar}>
+            <Menu size={20} />
           </button>
-          <button 
-            style={styles.navBtn} 
-            onClick={() => navigate('/company/profile')}
-          >
-            👤 Profile
-          </button>
-          <button 
-            style={styles.navBtn} 
-            onClick={() => navigate('/company/mail')}
-          >
-            📧 Mail
-            <span style={styles.notificationBadge}>1</span>
-          </button>
-          <button style={styles.navBtn} onClick={() => navigate('/')}>🚪 Logout</button>
+          <h2 className="header-title">Applications Manager</h2>
         </div>
-      </div>
+        <div className="header-buttons">
+          <button
+            className={`header-btn ${clickedButtons['headerMail'] ? 'clicked' : ''}`}
+            title="Messages"
+            onClick={() => {
+              handleButtonClick('headerMail');
+              navigate('/company/mail');
+            }}
+          >
+            <Mail size={20} />
+            <span className="notification-badge">1</span>
+          </button>
+          <button
+            className={`header-btn ${clickedButtons['headerProfile'] ? 'clicked' : ''}`}
+            title="Profile"
+            onClick={() => {
+              handleButtonClick('headerProfile');
+              navigate('/company/profile');
+            }}
+          >
+            <User size={20} />
+          </button>
+          <button
+            className={`header-btn ${clickedButtons['headerHome'] ? 'clicked' : ''}`}
+            title="Home"
+            onClick={() => {
+              handleButtonClick('headerHome');
+              navigate('/company');
+            }}
+          >
+            <Home size={20} />
+          </button>
+          <button
+            className={`header-btn ${clickedButtons['headerLogout'] ? 'clicked' : ''}`}
+            title="Logout"
+            onClick={() => {
+              handleButtonClick('headerLogout');
+              navigate('/');
+            }}
+          >
+            <LogOut size={20} />
+          </button>
+        </div>
+      </header>
 
-      <div style={styles.mainContent}>
-        <SideBarCompany activePage="applications" />
-
-        <div style={styles.profileContent}>
-          {/* Applications Section */}
-          <div style={styles.card}>
-            <h3 style={styles.sectionTitle}>Applications</h3>
-            <div style={styles.filterGroup}>
+      <div className="layout">
+        <div className="sidebar">
+          <SideBarCompany setActivePage={(page) => navigate(`/company/${page}`)} />
+        </div>
+        <div className={`content ${isSidebarOpen && window.innerWidth > 768 ? 'sidebar-open' : 'sidebar-closed'}`}>
+          <div className="card">
+            <h3 className="section-title">Applications</h3>
+            <div className="filter-group">
               <select
                 value={selectedPostId}
                 onChange={(e) => setSelectedPostId(e.target.value)}
-                style={styles.filterSelect}
+                className="form-select"
               >
                 <option value="">All Internship Posts</option>
                 {internships.map(post => (
@@ -291,7 +331,7 @@ const Applications = () => {
               <select
                 value={selectedStatus}
                 onChange={(e) => setSelectedStatus(e.target.value)}
-                style={styles.filterSelect}
+                className="form-select"
               >
                 <option value="">All Statuses</option>
                 <option value="pending">Pending</option>
@@ -302,20 +342,20 @@ const Applications = () => {
                 <option value="internship complete">Internship Complete</option>
               </select>
             </div>
-            <p style={styles.applicationCount}>{getApplicationCount()}</p>
-            <div style={styles.applicationList}>
+            <div><p className="application-count">{getApplicationCount()}</p></div>
+            <div className="application-list">
               {filteredApplications.length === 0 ? (
-                <p style={styles.noData}>No applications found.</p>
+                <p className="no-data">No applications found.</p>
               ) : (
                 filteredApplications.map(app => (
-                  <div key={app.id} style={styles.applicationCard}>
+                  <div key={app.id} className="application-card">
                     <p><strong>Applicant:</strong> {app.applicantName}</p>
                     <p><strong>Post:</strong> {internships.find(post => post.id === app.postId)?.title}</p>
                     <p><strong>Submitted:</strong> {app.submittedAt}</p>
                     <p><strong>Status:</strong> {app.status.charAt(0).toUpperCase() + app.status.slice(1)}</p>
                     <button
                       onClick={() => viewApplicantDetails(app)}
-                      style={styles.viewBtn}
+                      className="btn btn-light"
                     >
                       View Details
                     </button>
@@ -327,42 +367,41 @@ const Applications = () => {
         </div>
       </div>
 
-      {/* Applicant Details Modal */}
       {selectedApplicant && (
-        <div style={styles.modal}>
-          <div style={styles.modalContent}>
-            <h3 style={styles.sectionTitle}>Applicant Details</h3>
+        <div className="modal">
+          <div className="modal-content">
+            <h3 className="section-title">Applicant Details</h3>
             <p><strong>Name:</strong> {selectedApplicant.applicantName}</p>
             <p><strong>Email:</strong> {selectedApplicant.email}</p>
             <p><strong>Resume:</strong> 
-              <button onClick={toggleResume} style={styles.toggleBtn}>
+              <button onClick={toggleResume} className="btn btn-light">
                 {isResumeVisible ? 'Hide Resume' : 'View Resume'}
               </button>
             </p>
             {isResumeVisible && (
-              <div style={styles.resumePreview}>
-                <h4 style={styles.resumeTitle}>{selectedApplicant.applicantName}</h4>
+              <div className="resume-preview">
+                <h4 className="resume-title">{selectedApplicant.applicantName}</h4>
                 <p><strong>Contact:</strong> {selectedApplicant.resume.contact.email} | {selectedApplicant.resume.contact.phone} | {selectedApplicant.resume.contact.location}</p>
-                <h5 style={styles.resumeSection}>Education</h5>
+                <h5 className="resume-section">Education</h5>
                 {selectedApplicant.resume.education.map((edu, index) => (
-                  <div key={index}>
+                  <div key={index} className="resume-item">
                     <p><strong>{edu.institution}</strong> - {edu.degree} ({edu.dates})</p>
                     <p>{edu.details}</p>
                   </div>
                 ))}
-                <h5 style={styles.resumeSection}>Experience</h5>
+                <h5 className="resume-section">Experience</h5>
                 {selectedApplicant.resume.experience.map((exp, index) => (
-                  <div key={index}>
+                  <div key={index} className="resume-item">
                     <p><strong>{exp.company}</strong> - {exp.role} ({exp.dates})</p>
-                    <ul style={styles.resumeList}>
+                    <ul className="resume-list">
                       {exp.details.map((detail, idx) => (
                         <li key={idx}>{detail}</li>
                       ))}
                     </ul>
                   </div>
                 ))}
-                <h5 style={styles.resumeSection}>Skills</h5>
-                <ul style={styles.resumeList}>
+                <h5 className="resume-section">Skills</h5>
+                <ul className="resume-list">
                   {selectedApplicant.resume.skills.map((skill, index) => (
                     <li key={index}>{skill}</li>
                   ))}
@@ -373,19 +412,19 @@ const Applications = () => {
             {selectedApplicant.coverLetter.length > 100 && (
               <button
                 onClick={toggleCoverLetter}
-                style={styles.toggleBtn}
+                className="btn btn-light"
               >
                 {isCoverLetterExpanded ? 'Read Less' : 'Read More'}
               </button>
             )}
             <p><strong>Submitted:</strong> {selectedApplicant.submittedAt}</p>
             <p><strong>Status:</strong> {selectedApplicant.status.charAt(0).toUpperCase() + selectedApplicant.status.slice(1)}</p>
-            <div style={styles.formGroup}>
-              <label style={styles.detailLabel}>Update Status</label>
+            <div className="form-group">
+              <label className="form-label">Update Status</label>
               <select
                 value={selectedApplicant.status}
                 onChange={(e) => updateStatus(selectedApplicant.id, e.target.value)}
-                style={styles.filterSelect}
+                className="form-select"
               >
                 <option value="pending">Pending</option>
                 <option value="finalized">Finalized</option>
@@ -397,211 +436,19 @@ const Applications = () => {
             </div>
             <button
               onClick={() => setSelectedApplicant(null)}
-              style={styles.closeBtn}
+              className="btn btn-danger"
             >
               Close
             </button>
           </div>
         </div>
       )}
+
+      {isSidebarOpen && (
+        <div className={`mobile-overlay ${isSidebarOpen ? 'active' : ''}`} onClick={() => setIsSidebarOpen(false)} />
+      )}
     </div>
   );
-};
-
-const styles = {
-  container: {
-    fontFamily: 'Segoe UI, sans-serif',
-    backgroundColor: '#f7f9fc', // Light blue-gray background
-    minHeight: '100vh',
-    display: 'flex',
-    flexDirection: 'column'
-  },
-  navbar: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '1rem 2rem',
-    backgroundColor: '#1d3557', // Dark blue
-    color: '#fff',
-    position: 'sticky',
-    top: 0,
-    zIndex: 100
-  },
-  title: {
-    margin: 0
-  },
-  navBtn: {
-    backgroundColor: '#457b9d', // Medium blue
-    border: 'none',
-    borderRadius: '5px',
-    padding: '0.5rem 1rem',
-    color: '#fff',
-    cursor: 'pointer',
-    marginLeft: '10px',
-    position: 'relative'
-  },
-  notificationBadge: {
-    position: 'absolute',
-    top: '-8px',
-    right: '-8px',
-    backgroundColor: '#e63946', // Red
-    color: 'white',
-    borderRadius: '50%',
-    padding: '2px 6px',
-    fontSize: '12px'
-  },
-  mainContent: {
-    display: 'flex',
-    flex: 1,
-    overflow: 'auto'
-  },
-  profileContent: {
-    flex: 1,
-    padding: '2rem',
-    marginLeft: '240px',
-    overflowY: 'auto',
-    height: 'calc(100vh - 64px)' // Adjust based on navbar height
-  },
-  card: {
-    backgroundColor: '#fff',
-    padding: '2rem',
-    borderRadius: '8px',
-    boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
-    marginBottom: '2rem'
-  },
-  sectionTitle: {
-    fontSize: '1.3rem',
-    color: '#1d3557', // Dark blue
-    marginBottom: '1rem',
-    borderBottom: '1px solid #eee',
-    paddingBottom: '0.5rem'
-  },
-  filterGroup: {
-    display: 'flex',
-    gap: '1rem',
-    marginBottom: '1rem',
-    flexWrap: 'wrap'
-  },
-  filterSelect: {
-    padding: '0.75rem',
-    borderRadius: '4px',
-    border: '1px solid #ddd',
-    fontSize: '1rem',
-    color: '#333',
-    backgroundColor: '#fff'
-  },
-  applicationCount: {
-    color: '#666',
-    fontSize: '1rem',
-    marginBottom: '1rem'
-  },
-  applicationList: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1rem'
-  },
-  applicationCard: {
-    border: '1px solid #eee',
-    padding: '1rem',
-    borderRadius: '5px',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.5rem'
-  },
-  viewBtn: {
-    backgroundColor: '#a8dadc', // Light teal
-    border: 'none',
-    borderRadius: '5px',
-    padding: '0.5rem 1rem',
-    cursor: 'pointer',
-    color: '#1d3557', // Dark blue
-    fontWeight: 'bold',
-    alignSelf: 'flex-start'
-  },
-  noData: {
-    color: '#666',
-    textAlign: 'center',
-    fontSize: '1rem'
-  },
-  modal: {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 1000
-  },
-  modalContent: {
-    backgroundColor: '#fff',
-    padding: '2rem',
-    borderRadius: '8px',
-    maxWidth: '500px',
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1rem',
-    maxHeight: '80vh',
-    overflowY: 'auto'
-  },
-  closeBtn: {
-    backgroundColor: '#457b9d', // Medium blue
-    border: 'none',
-    borderRadius: '5px',
-    padding: '0.5rem 1rem',
-    cursor: 'pointer',
-    color: '#fff',
-    alignSelf: 'flex-end'
-  },
-  link: {
-    color: '#457b9d', // Medium blue
-    textDecoration: 'none'
-  },
-  formGroup: {
-    display: 'flex',
-    flexDirection: 'column'
-  },
-  detailLabel: {
-    display: 'block',
-    color: '#666',
-    fontSize: '0.9rem',
-    marginBottom: '0.3rem'
-  },
-  toggleBtn: {
-    backgroundColor: '#a8dadc', // Light teal
-    border: 'none',
-    borderRadius: '5px',
-    padding: '0.5rem 1rem',
-    cursor: 'pointer',
-    color: '#1d3557', // Dark blue
-    fontWeight: 'bold',
-    alignSelf: 'flex-start'
-  },
-  resumePreview: {
-    border: '1px solid #eee',
-    padding: '1rem',
-    backgroundColor: '#f7f9fc',
-    borderRadius: '5px'
-  },
-  resumeTitle: {
-    fontSize: '1.2rem',
-    color: '#1d3557',
-    marginBottom: '0.5rem',
-    textAlign: 'center'
-  },
-  resumeSection: {
-    fontSize: '1rem',
-    color: '#1d3557',
-    marginTop: '0.5rem',
-    marginBottom: '0.3rem'
-  },
-  resumeList: {
-    margin: 0,
-    paddingLeft: '1.5rem'
-  }
 };
 
 export default Applications;

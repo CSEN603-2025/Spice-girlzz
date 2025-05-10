@@ -1,128 +1,97 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SideBarCompany from './Components/SideBarCompany';
+import { Mail, Home, LogOut, User, Menu } from 'lucide-react';
+import './CompanyStyles.css';
 
 const CompanyHome = () => {
   const navigate = useNavigate();
-  const companyName = "Tech Innovators Ltd."; // This could come from props or context
+  const companyName = "Tech Innovators Ltd.";
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [clickedButtons, setClickedButtons] = useState({});
+
+  const handleButtonClick = (buttonId) => {
+    setClickedButtons(prev => ({
+      ...prev,
+      [buttonId]: true
+    }));
+  };
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
   return (
-    <div style={styles.container}>
-      {/* Navbar */}
-      <div style={styles.navbar}>
-        <h2 style={styles.title}>Company Dashboard</h2>
-        <div>
-
-        <button 
-            style={styles.navBtn} 
-            onClick={() => navigate('/company')}
-          >
-            🏠 Home
+    <div className="container">
+      <header className="header">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: '1 0 auto', maxWidth: '50%' }}>
+          <button className="header-btn" title="Toggle Sidebar" onClick={toggleSidebar}>
+            <Menu size={20} />
           </button>
-
-          <button 
-            style={styles.navBtn} 
-            onClick={() => navigate('/company/profile')}
-          >
-            👤 Profile
-          </button>
-          
-          <button 
-            style={styles.navBtn} 
-            onClick={() => navigate('/company/mail')}
-          >
-            📧 Mail
-            <span style={styles.notificationBadge}>1</span>
-          </button>
-          <button style={styles.navBtn} onClick={() => navigate('/')}>🚪 Logout</button>
+          <h2 className="header-title">Company Dashboard</h2>
         </div>
-      </div>
+        <div className="header-buttons">
+          <button
+            className={`header-btn ${clickedButtons['headerMail'] ? 'clicked' : ''}`}
+            title="Messages"
+            onClick={() => {
+              handleButtonClick('headerMail');
+              navigate('/company/mail');
+            }}
+          >
+            <Mail size={20} />
+            <span className="notification-badge">1</span>
+          </button>
+          <button
+            className={`header-btn ${clickedButtons['headerProfile'] ? 'clicked' : ''}`}
+            title="Profile"
+            onClick={() => {
+              handleButtonClick('headerProfile');
+              navigate('/company/profile');
+            }}
+          >
+            <User size={20} />
+          </button>
+          <button
+            className={`header-btn ${clickedButtons['headerHome'] ? 'clicked' : ''}`}
+            title="Home"
+            onClick={() => {
+              handleButtonClick('headerHome');
+              navigate('/company');
+            }}
+          >
+            <Home size={20} />
+          </button>
+          <button
+            className={`header-btn ${clickedButtons['headerLogout'] ? 'clicked' : ''}`}
+            title="Logout"
+            onClick={() => {
+              handleButtonClick('headerLogout');
+              navigate('/');
+            }}
+          >
+            <LogOut size={20} />
+          </button>
+        </div>
+      </header>
 
-      <div style={styles.mainContent}>
-        <SideBarCompany activePage="home" />
-
-        <div style={styles.profileContent}>
-          <div style={styles.welcomeCard}>
-            <h1 style={styles.welcomeTitle}>Welcome back, {companyName}!</h1>
-            <p style={styles.welcomeText}>
-              Here's what's happening with your company today.
-            </p>
-            {/* Add any dashboard widgets/metrics here */}
+      <div className="layout">
+        <div className="sidebar">
+          <SideBarCompany setActivePage={(page) => navigate(`/company/${page}`)} />
+        </div>
+        <div className={`content ${isSidebarOpen && window.innerWidth > 768 ? 'sidebar-open' : 'sidebar-closed'}`}>
+          <div className="card">
+            <h3 className="section-title">Welcome back, {companyName}!</h3>
+            <p>Here's what's happening with your company today.</p>
           </div>
         </div>
       </div>
+
+      {isSidebarOpen && (
+        <div className={`mobile-overlay ${isSidebarOpen ? 'active' : ''}`} onClick={() => setIsSidebarOpen(false)} />
+      )}
     </div>
   );
-};
-
-const styles = {
-  container: { 
-    fontFamily: 'Segoe UI, sans-serif', 
-    backgroundColor: '#f7f9fc', // Light blue-gray background
-    minHeight: '100vh',
-    display: 'flex',
-    flexDirection: 'column'
-  },
-  navbar: { 
-    display: 'flex', 
-    justifyContent: 'space-between', 
-    alignItems: 'center', 
-    padding: '1rem 2rem', 
-    backgroundColor: '#1d3557', // Dark blue
-    color: '#fff',
-    position: 'sticky',
-    top: 0,
-    zIndex: 100
-  },
-  title: { margin: 0 },
-  navBtn: { 
-    backgroundColor: '#457b9d', // Medium blue
-    border: 'none', 
-    borderRadius: '5px', 
-    padding: '0.5rem 1rem', 
-    color: '#fff', 
-    cursor: 'pointer', 
-    marginLeft: '10px',
-    position: 'relative'
-  },
-  notificationBadge: {
-    position: 'absolute',
-    top: '-8px',
-    right: '-8px',
-    backgroundColor: '#e63946', // Red
-    color: 'white',
-    borderRadius: '50%',
-    padding: '2px 6px',
-    fontSize: '12px'
-  },
-  mainContent: {
-    display: 'flex',
-    flex: 1,
-    overflow: 'auto'
-  },
-  profileContent: {
-    flex: 1,
-    padding: '2rem',
-    marginLeft: '240px',
-    overflowY: 'auto',
-    height: 'calc(100vh - 64px)' // Adjust based on navbar height
-  },
-  welcomeCard: {
-    backgroundColor: '#fff',
-    padding: '2rem',
-    borderRadius: '8px',
-    boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
-    textAlign: 'center'
-  },
-  welcomeTitle: {
-    fontSize: '2rem',
-    color: '#1d3557', // Dark blue
-    marginBottom: '1rem'
-  },
-  welcomeText: {
-    fontSize: '1.1rem',
-    color: '#666'
-  }
 };
 
 export default CompanyHome;

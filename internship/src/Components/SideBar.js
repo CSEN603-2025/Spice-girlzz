@@ -32,6 +32,12 @@ function SideBar({ setActivePage }) {
       icon: <Search size={20} />,
       path: "/student/available",
     },
+    {
+      title: "Video Calls",
+      page: "available",
+      icon: <Search size={20} />,
+      path: "/student/videoCallDashboard",
+    }
   ];
 
   const getButtonStyle = (itemPath) => {
