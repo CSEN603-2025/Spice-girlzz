@@ -12,9 +12,9 @@ function VideoCallDashboard() {
       </header>
 
       <div className="dashboard-actions">
-      <button onClick={() => navigate('/schedule')}>📅 Schedule a Call</button>
+      <button onClick={() => navigate('/student/scheduleCall')}>📅 Schedule a Call</button>
       <button onClick={() => navigate('/appointments')}>📄 View Appointments</button>
-      <button onClick={() => navigate('/call')}>📞 Start a Call</button>
+      <button onClick={() => navigate('/startCall')}>📞 Start a Call</button>
       </div>
     </div>
   );
