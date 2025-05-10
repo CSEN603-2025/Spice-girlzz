@@ -1,6 +1,8 @@
 // import logo from './logo.svg';
 import './App.css';
 import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+
 import Login from './Login';
 import Register from './Register';
 import StudentHomePage from './StudentHomePage';
@@ -49,11 +51,46 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/student" element={<StudentHomePage />} />  
-        <Route path="/student/profile" element={<ProfileStudent />} />    </Routes>
-    </div>
-  </Router>
-    // <StudentHomePage />
+        <Route
+          path="/student"
+          element={
+            <StudentHomePage
+              appliedInternships={appliedInternships}
+              setAppliedInternships={setAppliedInternships}
+            />
+          }
+        />
+        <Route
+          path="/student/applied"
+          element={
+            <AppliedInternships
+              appliedInternships={appliedInternships}
+              setAppliedInternships={setAppliedInternships}
+            />
+          }
+        />
+
+        <Route path="/student/scheduleCall" element={<ScheduleCall />} /> 
+        <Route path="/student/videoCallDashboard" element={<VideoCall />} /> 
+
+        <Route path="/startCall" element={<StartCall />} /> 
+        <Route path="/appointments" element={<Appointments />} /> 
+
+        <Route path="/company" element={<CompanyHomePage />} /> 
+        <Route path="/company" element={<CompanyMail />} /> 
+        <Route path="/company/profile" element={<ProfileCompany />} /> 
+        <Route path="/company/evaluate" element={<CompanyEvaluation />} /> 
+        <Route path="/company/interns" element={<CompanyInterns />} /> 
+        <Route path="/company/posts" element={<CompanyPosts />} /> 
+        <Route path="/company/applicants" element={<CompanyApplications />} /> 
+
+        
+        <Route path="/student/profile" element={<ProfileStudent />} />
+        <Route path="/student/available" element={<AvailableInternships />} />
+        <Route path="/staff" element={<SCADStaffDashboard />} />
+        <Route path="/facultyMember" element={<FacultyMember />} />
+      </Routes>
+    </Router>
   );
 }
 
