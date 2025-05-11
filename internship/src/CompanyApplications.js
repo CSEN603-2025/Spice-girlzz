@@ -14,9 +14,9 @@ const Applications = () => {
   const [isCoverLetterExpanded, setIsCoverLetterExpanded] = useState(false);
   const [isResumeVisible, setIsResumeVisible] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarHovered, setIsSidebarHovered] = useState(false);
   const [clickedButtons, setClickedButtons] = useState({});
 
-  // Simulated API call to fetch internships and applications
   useEffect(() => {
     const fetchedInternships = [
       {
@@ -194,14 +194,12 @@ const Applications = () => {
     setApplications(fetchedApplications);
   }, []);
 
-  // Filter applications by post and status
   const filteredApplications = applications.filter(app => {
     const matchesPost = selectedPostId ? app.postId === parseInt(selectedPostId) : true;
     const matchesStatus = selectedStatus ? app.status === selectedStatus : true;
     return matchesPost && matchesStatus;
   });
 
-  // Calculate application count
   const getApplicationCount = () => {
     if (selectedPostId) {
       const count = applications.filter(app => app.postId === parseInt(selectedPostId)).length;
@@ -211,14 +209,12 @@ const Applications = () => {
     return `${applications.length} application${applications.length !== 1 ? 's' : ''} total`;
   };
 
-  // Handle applicant selection
   const viewApplicantDetails = (applicant) => {
     setSelectedApplicant(applicant);
     setIsCoverLetterExpanded(false);
-    setIsResumeVisible(false); // Reset resume visibility when opening modal
+    setIsResumeVisible(false);
   };
 
-  // Update application status
   const updateStatus = (applicationId, newStatus) => {
     setApplications(applications.map(app =>
       app.id === applicationId ? { ...app, status: newStatus } : app
@@ -228,17 +224,14 @@ const Applications = () => {
     }
   };
 
-  // Toggle cover letter expansion
   const toggleCoverLetter = () => {
     setIsCoverLetterExpanded(!isCoverLetterExpanded);
   };
 
-  // Toggle resume visibility
   const toggleResume = () => {
     setIsResumeVisible(!isResumeVisible);
   };
 
-  // Truncate cover letter for preview
   const truncateCoverLetter = (text) => {
     const maxLength = 100;
     if (text.length <= maxLength) return text;
@@ -311,10 +304,8 @@ const Applications = () => {
       </header>
 
       <div className="layout">
-        <div className="sidebar">
-          <SideBarCompany setActivePage={(page) => navigate(`/company/${page}`)} />
-        </div>
-        <div className={`content ${isSidebarOpen && window.innerWidth > 768 ? 'sidebar-open' : 'sidebar-closed'}`}>
+        <SideBarCompany onHoverChange={setIsSidebarHovered} />
+        <div className={`content ${isSidebarHovered && window.innerWidth > 768 ? 'sidebar-expanded' : ''}`}>
           <div className="card">
             <h3 className="section-title">Applications</h3>
             <div className="filter-group">

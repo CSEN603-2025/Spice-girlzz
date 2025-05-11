@@ -38,7 +38,6 @@ function SideBar({ setActivePage, isOpen, setSidebarWidth }) {
       icon: <Search size={20} />,
       path: "/student/suggested",
     },
-    
 
   ];
 

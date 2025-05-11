@@ -109,51 +109,49 @@ body {
 .layout {
   display: flex;
   flex: 1;
-  margin-top: 4rem;
-  min-height: calc(100vh - 4rem);
+  margin-top: 3.75rem; /* Match header height */
+  min-height: calc(100vh - 3.75rem);
 }
 
+/* Sidebar (minimal styles to avoid overriding inline styles) */
 .sidebar {
-  display: flex;
-  flex-direction: column;
+  transition: width 0.3s ease-in-out;
 }
 
+/* Content */
 .content {
   flex: 1;
   padding: var(--spacing-xl);
   overflow-y: auto;
   background-color: var(--content-bg);
-  transition: margin-left 0.3s ease-in-out;
+  transition: transform 0.3s ease-in-out;
+  width: 100%;
+  margin-left: 4rem; /* Reserve space for collapsed sidebar */
 }
 
-.content.sidebar-open {
-  margin-left: 16rem;
-  width: calc(100% - 16rem);
-}
-
-.content.sidebar-closed {
-  margin-left: 4rem;
-  width: calc(100% - 4rem);
+.content.sidebar-expanded {
+  transform: translateX(12rem); /* Slide right when sidebar expands (16rem - 4rem) */
 }
 
 @media (max-width: 768px) {
   .content {
-    margin-left: 0 !important;
-    width: 100% !important;
+    margin-left: 0; /* No reserved space on mobile */
+    transform: translateX(0) !important; /* No sliding on mobile */
   }
-}
 
-/* Mobile overlay */
-.mobile-overlay {
-  position: fixed;
-  inset: 0;
-  top: 4rem;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-  display: none;
-}
+  .content.sidebar-expanded {
+    transform: translateX(0); /* Prevent sliding on mobile */
+  }
 
-@media (max-width: 768px) {
+  .mobile-overlay {
+    position: fixed;
+    inset: 0;
+    top: 3.75rem;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    display: none;
+  }
+
   .mobile-overlay.active {
     display: block;
   }
