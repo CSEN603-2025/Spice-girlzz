@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import SideBar from './Components/SideBar';
 import { Mail, User, Phone, Home, LogOut, Edit, MapPin, Globe, MessageSquare, Briefcase, Activity, BookOpen, Clipboard, Menu } from 'lucide-react';
-
+import UpcomingWorkshops from './UpcomingWorkshops';
 function ProfileStudent() {
   const navigate = useNavigate();
   const location = useLocation();
