@@ -163,9 +163,27 @@ function SideBarFaculty({ onHoverChange }) {
       title: "Statistics",
       page: "FacultyStatistics",
       icon: <BarChart2 size={20} />,
-      path: "/faculty/statistics",
     },
- 
+    {
+      title: "Companies",
+      page: "companies",
+      icon: <Building size={20} />,
+    },
+    {
+      title: "Students",
+      page: "students",
+      icon: <Users size={20} />,
+    },
+    {
+      title: "Reports",
+      page: "reports",
+      icon: <FileText size={20} />,
+    },
+    {
+      title: "Logout",
+      page: "logout",
+      icon: <LogOut size={20} />,
+    },
   ];
 
   const getButtonStyle = (itemPath) => {
@@ -188,6 +206,18 @@ function SideBarFaculty({ onHoverChange }) {
       justifyContent: isSidebarHovered ? "flex-start" : "center",
     };
   };
+
+  const handleNavigation = (page) => {
+    setActivePage(page);
+    if (page === "logout") {
+      console.log("Logging out...");
+    }
+  };
+
+  const currentWidth = isSidebarHovered ? "16rem" : "4rem";
+  React.useEffect(() => {
+    onWidthChange(currentWidth);
+  }, [isSidebarHovered, onWidthChange]);
 
   return (
     <div
