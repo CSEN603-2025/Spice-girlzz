@@ -32,6 +32,12 @@ function SideBar({ setActivePage }) {
       icon: <Search size={20} />,
       path: "/student/available",
     },
+    {
+      title: "Video Calls",
+      page: "available",
+      icon: <Search size={20} />,
+      path: "/student/videoCallDashboard",
+    }
   ];
 
   const getButtonStyle = (itemPath) => {
@@ -114,3 +120,35 @@ function SideBar({ setActivePage }) {
 }
 
 export default SideBar;
+
+// import React from 'react';
+// import { useNavigate } from 'react-router-dom'; // Import the useNavigate hook
+// import { SideBarStudent } from './SideBarStudent';
+
+// function SideBar() {
+//   const navigate = useNavigate(); // Initialize useNavigate
+
+//   return (
+//     <div className='sidebar'>
+//       <ul className='SideBarList'>
+//         {SideBarStudent.map((val, key) => {
+//           return (
+//             <li
+//               key={key}
+//               className='row'
+//               id={window.location.pathname === val.link ? 'active' : ''}
+//               onClick={() => navigate(val.link)} // Use navigate instead of window.location
+//             >
+//               <div id='title'>
+//                 {val.title}
+//               </div>
+//             </li>
+//           );
+//         })}
+//       </ul>
+//     </div>
+//   );
+// }
+
+// export default SideBar;
+
