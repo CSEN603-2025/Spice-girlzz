@@ -3,7 +3,50 @@ import SideBar from "./Components/FacultySideBar";
 import Header from "./Components/Header";
 import { useNavigate } from "react-router-dom";
 import { Bell, Flag, Check, X, Download, Search } from "lucide-react";
+import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 
+const generateDummyPDF = async (report) => {
+  try {
+    const pdfDoc = await PDFDocument.create();
+    const page = pdfDoc.addPage();
+    const { width, height } = page.getSize();
+    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    
+    const text = `
+      Internship Report
+      ================
+      
+      Student: ${report.student}
+      Major: ${report.major}
+      Company: ${report.company}
+      Status: ${report.status}
+      
+      Report Details:
+      ${report.details}
+    `;
+    
+    page.drawText(text, {
+      x: 50,
+      y: height - 50,
+      size: 12,
+      font,
+      color: rgb(0, 0, 0),
+    });
+    
+    const pdfBytes = await pdfDoc.save();
+    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Report_${report.student.replace(' ', '_')}_${report.id}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error('Error generating PDF:', error);
+  }
+};
 // Helper Component
 const ProfileItem = ({ label, value }) => (
   <p style={{ fontSize: "0.875rem", color: "#4b5563" }}>
@@ -71,23 +114,201 @@ const initialReports = [
 ];
 
 const initialStatistics = {
-  reportsPerCycle: { accepted: 12, rejected: 4, flagged: 3 },
+  reportsPerCycle: { accepted: 12, rejected: 4, flagged: 3, pending: 5 },
   averageReviewTime: "3 days",
-  popularCourses: ["CS101", "ENG202", "DS100"],
-  topCompanies: [
-    "TechCorp (Rating: 4.7)",
-    "MediHealth (Rating: 4.6)",
-    "FinTech Solutions (Rating: 4.4)",
+  popularCourses: [
+    { name: "CS101", reports: 15 },
+    { name: "ENG202", reports: 12 },
+    { name: "DS100", reports: 8 }
   ],
-  internshipCount: {
-    TechCorp: 6,
-    MediHealth: 4,
-    GreenEnergy: 2,
-    FinTech: 5,
-    EduLearn: 3,
+  topCompanies: [
+    { name: "TechCorp", rating: 4.7, reports: 6 },
+    { name: "MediHealth", rating: 4.6, reports: 4 },
+    { name: "FinTech Solutions", rating: 4.4, reports: 5 }
+  ],
+  statusTrends: {
+    labels: ["Jan", "Feb", "Mar", "Apr"],
+    accepted: [8, 10, 12, 15],
+    rejected: [2, 3, 4, 5],
+    flagged: [1, 2, 3, 4]
   },
+  performanceMetrics: {
+    facultyAverage: 3.2,
+    departmentAverage: 2.8,
+    universityAverage: 2.5
+  }
 };
-
+const generateStatisticsReport = async (stats) => {
+  try {
+    const now = new Date();
+    const reportDate = now.toLocaleDateString();
+    const reportTime = now.toLocaleTimeString();
+    
+    // Create PDF document
+    const pdfDoc = await PDFDocument.create();
+    const page = pdfDoc.addPage([600, 800]);
+    const { width, height } = page.getSize();
+    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+    
+    let yPosition = height - 50;
+    
+    // Add title
+    page.drawText('Internship Program Statistics Report', {
+      x: 50,
+      y: yPosition,
+      size: 20,
+      font: boldFont,
+      color: rgb(0, 0, 0.5),
+    });
+    yPosition -= 30;
+    
+    // Add metadata
+    page.drawText(`Generated on: ${reportDate} at ${reportTime}`, {
+      x: 50,
+      y: yPosition,
+      size: 10,
+      font,
+      color: rgb(0.5, 0.5, 0.5),
+    });
+    yPosition -= 40;
+    
+    // Section 1: Summary Statistics
+    page.drawText('1. Summary Statistics', {
+      x: 50,
+      y: yPosition,
+      size: 14,
+      font: boldFont,
+      color: rgb(0, 0, 0),
+    });
+    yPosition -= 25;
+    
+    const summaryText = `
+      Total Reports: ${stats.reportsPerCycle.accepted + stats.reportsPerCycle.rejected + stats.reportsPerCycle.flagged + stats.reportsPerCycle.pending}
+      Accepted: ${stats.reportsPerCycle.accepted} (${Math.round((stats.reportsPerCycle.accepted / (stats.reportsPerCycle.accepted + stats.reportsPerCycle.rejected + stats.reportsPerCycle.flagged + stats.reportsPerCycle.pending)) * 100)}%)
+      Rejected: ${stats.reportsPerCycle.rejected}
+      Flagged: ${stats.reportsPerCycle.flagged}
+      Pending: ${stats.reportsPerCycle.pending}
+      Average Review Time: ${stats.averageReviewTime}
+    `;
+    
+    page.drawText(summaryText, {
+      x: 60,
+      y: yPosition,
+      size: 12,
+      font,
+      color: rgb(0, 0, 0),
+      lineHeight: 15,
+    });
+    yPosition -= 100;
+    
+    // Section 2: Popular Courses
+    page.drawText('2. Popular Courses', {
+      x: 50,
+      y: yPosition,
+      size: 14,
+      font: boldFont,
+      color: rgb(0, 0, 0),
+    });
+    yPosition -= 25;
+    
+    stats.popularCourses.forEach((course, index) => {
+      page.drawText(`${index + 1}. ${course.name}: ${course.reports} reports`, {
+        x: 60,
+        y: yPosition,
+        size: 12,
+        font,
+        color: rgb(0, 0, 0),
+      });
+      yPosition -= 20;
+    });
+    yPosition -= 20;
+    
+    // Section 3: Top Companies
+    page.drawText('3. Top Companies', {
+      x: 50,
+      y: yPosition,
+      size: 14,
+      font: boldFont,
+      color: rgb(0, 0, 0),
+    });
+    yPosition -= 25;
+    
+    stats.topCompanies.forEach((company, index) => {
+      page.drawText(`${index + 1}. ${company.name} (Rating: ${company.rating}): ${company.reports} interns`, {
+        x: 60,
+        y: yPosition,
+        size: 12,
+        font,
+        color: rgb(0, 0, 0),
+      });
+      yPosition -= 20;
+    });
+    yPosition -= 30;
+    
+    // Section 4: Performance Metrics
+    page.drawText('4. Performance Metrics', {
+      x: 50,
+      y: yPosition,
+      size: 14,
+      font: boldFont,
+      color: rgb(0, 0, 0),
+    });
+    yPosition -= 25;
+    
+    page.drawText(`Faculty Average Review Time: ${stats.performanceMetrics.facultyAverage} days`, {
+      x: 60,
+      y: yPosition,
+      size: 12,
+      font,
+      color: rgb(0, 0, 0),
+    });
+    yPosition -= 20;
+    
+    page.drawText(`Department Average: ${stats.performanceMetrics.departmentAverage} days`, {
+      x: 60,
+      y: yPosition,
+      size: 12,
+      font,
+      color: rgb(0, 0, 0),
+    });
+    yPosition -= 20;
+    
+    page.drawText(`University Average: ${stats.performanceMetrics.universityAverage} days`, {
+      x: 60,
+      y: yPosition,
+      size: 12,
+      font,
+      color: rgb(0, 0, 0),
+    });
+    yPosition -= 40;
+    
+    // Footer
+    page.drawText('Generated by Faculty Dashboard System', {
+      x: 50,
+      y: 30,
+      size: 10,
+      font,
+      color: rgb(0.5, 0.5, 0.5),
+    });
+    
+    // Save and download
+    const pdfBytes = await pdfDoc.save();
+    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Internship_Statistics_Report_${now.getFullYear()}_${now.getMonth() + 1}_${now.getDate()}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+  } catch (error) {
+    console.error('Error generating statistics report:', error);
+    alert('Failed to generate report. Please try again.');
+  }
+};
 export default function FacultyMember() {
   const navigate = useNavigate();
   const [activePage, setActivePage] = useState("reports");
@@ -320,22 +541,20 @@ export default function FacultyMember() {
                   </button>
                 </div>
               )}
-              <button
-                onClick={() => {
-                  /* PDF download logic */
-                }}
-                style={{
-                  marginTop: "0.5rem",
-                  padding: "0.5rem",
-                  background: "#6b7280",
-                  color: "#fff",
-                  borderRadius: "0.25rem",
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <Download size={16} /> PDF
-              </button>
+             <button
+  onClick={() => generateDummyPDF(selectedItem)}
+  style={{
+    marginTop: "0.5rem",
+    padding: "0.5rem",
+    background: "#6b7280",
+    color: "#fff",
+    borderRadius: "0.25rem",
+    display: "flex",
+    alignItems: "center",
+  }}
+>
+  <Download size={16} /> Download PDF
+</button>
             </div>
           </div>
         );
@@ -628,19 +847,30 @@ export default function FacultyMember() {
                   )
                 )}
               </div>
-              <button
-                onClick={() => {
-                  /* Generate report logic */
-                }}
-                style={{
-                  padding: "0.5rem 1rem",
-                  background: "#3b82f6",
-                  color: "#fff",
-                  borderRadius: "0.25rem",
-                }}
-              >
-                Generate Report
-              </button>
+             <div style={{ marginTop: "2rem", textAlign: "center" }}>
+  <button
+    onClick={() => generateStatisticsReport(statistics)}
+    style={{
+      padding: "0.75rem 1.5rem",
+      background: "#3b82f6",
+      color: "#fff",
+      borderRadius: "0.375rem",
+      fontWeight: "bold",
+      display: "inline-flex",
+      alignItems: "center",
+      gap: "0.5rem",
+      cursor: "pointer",
+      border: "none",
+      fontSize: "1rem",
+    }}
+  >
+    <Download size={18} />
+    Generate Comprehensive Report
+  </button>
+  <p style={{ marginTop: "0.5rem", color: "#2a9d8f", fontSize: "0.875rem" }}>
+    This will generate a PDF with all current statistics
+  </p>
+</div>
             </div>
           </div>
         );
@@ -890,10 +1120,42 @@ export default function FacultyMember() {
             )}
           </div>
         );
-      case "statistics":
-        return renderModalContent();
-      default:
-        return null;
+      case "statistics": //This is the correct placement; do not remove this :) -Menna Shaaban
+        return (
+    <div style={{ animation: "fadeIn 0.3s" }}>
+      <h2 style={{ fontSize: "1.5rem", fontWeight: "bold", marginBottom: "1.5rem", color: "#1f2937" }}>
+        Real-Time Statistics
+      </h2>
+      
+      {/* ... (existing statistics content) ... */}
+
+      {/* ===== ADD THE BUTTON HERE ===== */}
+      <div style={{ marginTop: "2rem", textAlign: "center" }}>
+        <button
+          onClick={() => generateStatisticsReport(statistics)}
+          style={{
+            padding: "0.75rem 1.5rem",
+            background: "#3b82f6",
+            color: "#fff",
+            borderRadius: "0.375rem",
+            fontWeight: "bold",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "0.5rem",
+            cursor: "pointer",
+            border: "none",
+            fontSize: "1rem",
+          }}
+        >
+          <Download size={18} />
+          Generate Comprehensive Report
+        </button>
+        <p style={{ marginTop: "0.5rem", color: "#6b7280", fontSize: "0.875rem" }}>
+          This will generate a PDF with all current statistics.
+        </p>
+      </div>
+    </div>
+  );
     }
   };
 
