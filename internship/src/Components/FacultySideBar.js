@@ -157,7 +157,7 @@ function SideBarFaculty({ onHoverChange }) {
       title: "Companies Evaluations",
       page: "FacultyCompEval",
       icon: <Clipboard size={20} />,
-      path: "/faculty/compEvalutions",
+      path: "/faculty/eval",
     },
     {
       title: "Statistics",

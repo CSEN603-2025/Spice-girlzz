@@ -42,7 +42,7 @@ const FacultyHeader = () => {
   return (
     <header className="header">
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: '1 0 auto', maxWidth: '50%' }}>
-        <h2 className="header-title">Student Evaluations</h2>
+        <h2 className="header-title">InternHub</h2>
       </div>
       <div className="header-buttons">
         <button

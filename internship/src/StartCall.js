@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FaMicrophone, FaMicrophoneSlash, FaVideo, FaVideoSlash, FaDesktop, FaPhoneSlash } from 'react-icons/fa';
 import HeaderandSidebar from './StudentHandS';
+
 const StartCall = () => {
   const [callStatus, setCallStatus] = useState('ongoing'); // Can be 'ongoing' or 'inactive'
   const [isMuted, setIsMuted] = useState(false);

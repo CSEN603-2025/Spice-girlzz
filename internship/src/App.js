@@ -30,6 +30,8 @@ import FacultyLayout from './FacultyLayout';
 import FacultyStatistics from './FacultyStatistics';
 import FacultyReport from './FacultyReport';
 import FacultyMail from "./FacultyMail";
+import FacultyCompEvaluations from "./FacultyCompEvaluations";
+
 
 
 
@@ -100,6 +102,7 @@ function App() {
         <Route path="reports" element={<FacultyReport />} />
         <Route path="statistics" element={<FacultyStatistics />} />
         <Route path="mail" element={<FacultyMail />} />
+        <Route path="eval" element={<FacultyCompEvaluations />} />
 
       </Route>
       </Routes>

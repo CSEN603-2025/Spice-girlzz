@@ -389,6 +389,69 @@
   text-align: left;
 }
 
+/* Evaluation Styles for CompanyEvaluations.js */
+.evaluation-list {
+  display: grid;
+  grid-template-columns: repeat(2, 600px);
+  gap: 1.5rem;
+  justify-content: center; /* Centers the grid in the container */
+}
+
+.evaluation-card {
+  background: #f9fafb;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.evaluation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.evaluation-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.evaluation-subtitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #2a9d8f;
+  margin-bottom: 0.5rem;
+}
+
+.rating {
+  margin-left: 0.5rem;
+}
+
+.star-filled {
+  color: #f59e0b;
+}
+
+.star-empty {
+  color: #d1d5db;
+}
+
+.evaluation-date {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.evaluation-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.detail-row {
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .container {
@@ -406,6 +469,21 @@
   .client-logo {
     margin: 10px 15px;
     height: 30px;
+  }
+  .evaluation-card {
+    padding: 0.75rem;
+  }
+  .evaluation-title {
+    font-size: 0.875rem;
+  }
+  .evaluation-subtitle {
+    font-size: 0.875rem;
+  }
+  .evaluation-date {
+    font-size: 0.7rem;
+  }
+  .detail-row {
+    font-size: 0.8rem;
   }
 }
 
