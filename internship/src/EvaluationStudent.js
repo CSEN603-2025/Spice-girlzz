@@ -11,8 +11,7 @@ function EvaluationStudent() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [sidebarWidth, setSidebarWidth] = useState("4rem");
   const [evaluation, setEvaluation] = useState({
-    title: "",
-    introduction: "",
+
     body: "",
     courses: [],
     recommend: "",
@@ -32,20 +31,20 @@ function EvaluationStudent() {
 
   const majorCourses = {
     "Computer Engineering": [
-      { id: 1, name: "CSEN 301" },
-      { id: 2, name: "CSEN 501" },
-      { id: 3, name: "CSEN 502" },
-      { id: 4, name: "CSEN 401" },
-      { id: 5, name: "CSEN 602" },
-      { id: 6, name: "CSEN 604" },
-      { id: 7, name: "CSEN 701" },
-      { id: 8, name: "CSEN 902" },
-      { id: 9, name: "CSEN 1002" },
-      { id: 10, name: "CSEN 703" },
+      { id: 1, name: "CSEN 301 Data Structures and Algorithms" },
+      { id: 2, name: "CSEN 501 Databases 1" },
+      { id: 3, name: "CSEN 502 Theory Of Computation" },
+      { id: 4, name: "CSEN 401 Computer Programming Lab" },
+      { id: 5, name: "CSEN 602 Operating Systems" },
+      { id: 6, name: "CSEN 604 Databases 2" },
+      { id: 7, name: "CSEN 701 Advanced Computer Lab" },
+      { id: 8, name: "CSEN 902 Cloud Computing" },
+      { id: 9, name: "CSEN 1002 Compiler" },
+      { id: 10, name: "CSEN 703 Microprocessors" },
     ],
     "Pharmacy": [
-      { id: 1, name: "PHAM 875" },
-      { id: 2, name: "CLPH 1202" },
+      { id: 1, name: "PHAM 875 " },
+      { id: 2, name: "CLPH 1202 " },
       { id: 3, name: "CLPH 301" },
       { id: 4, name: "PHBLP 411" },
     ],
@@ -169,8 +168,7 @@ function EvaluationStudent() {
     setTimeout(() => {
       const newEvaluation = {
         id: Date.now(),
-        title: evaluation.title,
-        introduction: evaluation.introduction,
+   
         body: evaluation.body,
         courses: evaluation.courses,
         internshipId: internshipId,
@@ -193,8 +191,7 @@ function EvaluationStudent() {
 
       setIsSubmitting(false);
       setEvaluation({
-        title: "",
-        introduction: "",
+    
         body: "",
         courses: [],
         recommend: "",
@@ -231,8 +228,7 @@ function EvaluationStudent() {
     const evaluationToEdit = evaluations.find((r) => r.id === evaluationId);
     if (evaluationToEdit) {
       setEvaluation({
-        title: evaluationToEdit.title,
-        introduction: evaluationToEdit.introduction,
+
         body: evaluationToEdit.body,
         courses: evaluationToEdit.courses,
         recommend: evaluationToEdit.recommend || "",
@@ -260,8 +256,6 @@ function EvaluationStudent() {
 
     const updatedEvaluation = {
       id: editingEvaluationId,
-      title: evaluation.title,
-      introduction: evaluation.introduction,
       body: evaluation.body,
       courses: evaluation.courses,
       internshipId: internshipId,
@@ -278,8 +272,7 @@ function EvaluationStudent() {
 
     setIsSubmitting(false);
     setEvaluation({
-      title: "",
-      introduction: "",
+ 
       body: "",
       courses: [],
       recommend: "",
@@ -339,22 +332,7 @@ function EvaluationStudent() {
     doc.setLineWidth(0.5);
     doc.line(20, 35, 190, 35);
 
-    // Title Section
-    doc.setFontSize(18);
-    doc.setTextColor(40, 157, 143);
-    doc.text(evaluationToDownload.title, 20, 45);
-    
-    // Internship Info
-    doc.setFontSize(12);
-    doc.setTextColor(0, 0, 0);
-    doc.text(`Internship at: ${evaluationToDownload.internshipTitle}`, 20, 55);
 
-    // Introduction Section
-    doc.setFontSize(14);
-    doc.setTextColor(40, 157, 143);
-    doc.text('Introduction', 20, 70);
-    doc.setFontSize(12);
-    doc.setTextColor(0, 0, 0);
     const introductionLines = doc.splitTextToSize(
       evaluationToDownload.introduction, 
       170
@@ -635,69 +613,8 @@ function EvaluationStudent() {
               </select>
             </div>
 
-            <div style={{ marginBottom: "1rem" }}>
-              <label
-                htmlFor="title"
-                style={{
-                  display: "block",
-                  fontSize: "0.875rem",
-                  fontWeight: "500",
-                  color: "#1f2937",
-                  marginBottom: "0.25rem",
-                }}
-              >
-                Evaluation Title
-              </label>
-              <input
-                id="title"
-                name="title"
-                type="text"
-                value={evaluation.title}
-                onChange={handleInputChange}
-                placeholder="Enter evaluation title"
-                style={{
-                  width: "100%",
-                  padding: "0.5rem",
-                  border: "1px solid #d1d5db",
-                  borderRadius: "0.25rem",
-                  fontSize: "0.875rem",
-                }}
-                onFocus={(e) => (e.target.style.boxShadow = "0 0 0 2px #2a9d8f")}
-                onBlur={(e) => (e.target.style.boxShadow = "none")}
-              />
-            </div>
 
-            <div style={{ marginBottom: "1rem" }}>
-              <label
-                htmlFor="introduction"
-                style={{
-                  display: "block",
-                  fontSize: "0.875rem",
-                  fontWeight: "500",
-                  color: "#1f2937",
-                  marginBottom: "0.25rem",
-                }}
-              >
-                Introduction
-              </label>
-              <textarea
-                id="introduction"
-                name="introduction"
-                value={evaluation.introduction}
-                onChange={handleInputChange}
-                placeholder="Write the introduction"
-                style={{
-                  width: "100%",
-                  padding: "0.5rem",
-                  border: "1px solid #d1d5db",
-                  borderRadius: "0.25rem",
-                  fontSize: "0.875rem",
-                  minHeight: "100px",
-                }}
-                onFocus={(e) => (e.target.style.boxShadow = "0 0 0 2px #2a9d8f")}
-                onBlur={(e) => (e.target.style.boxShadow = "none")}
-              />
-            </div>
+        
 
             <div style={{ marginBottom: "1rem" }}>
               <label
@@ -942,8 +859,7 @@ function EvaluationStudent() {
                 }}
                 onClick={() =>
                   setEvaluation({
-                    title: "",
-                    introduction: "",
+                                
                     body: "",
                     courses: [],
                     recommend: "",
@@ -986,17 +902,6 @@ function EvaluationStudent() {
                 boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
               }}
             >
-              <h2 style={{ fontSize: "1.5rem", fontWeight: "bold", marginBottom: "1rem", color: "#1f2937" }}>
-                {viewingEvaluation.title}
-              </h2>
-              <section>
-                <h3 style={{ fontSize: "1.25rem", fontWeight: "600", marginBottom: "0.5rem", color: "#1f2937" }}>
-                  Introduction
-                </h3>
-                <p style={{ fontSize: "1rem", color: "#4b5563", marginBottom: "1rem" }}>
-                  {viewingEvaluation.introduction}
-                </p>
-              </section>
               <section>
                 <h3 style={{ fontSize: "1.25rem", fontWeight: "600", marginBottom: "0.5rem", color: "#1f2937" }}>
                   Body

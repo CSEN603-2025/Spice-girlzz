@@ -13,133 +13,118 @@ function AppliedInternships() {
   const [selectedInternship, setSelectedInternship] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [sidebarWidth, setSidebarWidth] = useState("4rem");
-  const [appliedInternships, setAppliedInternships] = useState([]);
+  const [appliedInternships, setAppliedInternships] = useState(() => {
+    const saved = sessionStorage.getItem('appliedInternships');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const mockCurrentCompletedInternships = [
+    {
+      id: 1,
+      title: "Software Engineer",
+      company: "SCAD Technologies",
+      duration: "6 months",
+      isPaid: "paid",
+      expectedSalary: "$2000/month",
+      skillsRequired: "JavaScript, React, Node.js",
+      description: "Develop cutting-edge software solutions.",
+      industry: "Tech",
+      status: "current",
+      applicationDate: "2025-04-01",
+      location: "Remote",
+      role: "Software Engineer",
+    },
+    {
+      id: 2,
+      title: "Web Developer",
+      company: "SCAD Systems",
+      duration: "3 months",
+      isPaid: "unpaid",
+      expectedSalary: "$0/month",
+      skillsRequired: "HTML, CSS, JavaScript",
+      description: "Build responsive web applications.",
+      industry: "Tech",
+      status: "current",
+      applicationDate: "2025-03-01",
+      startDate: "2025-04-15",
+      location: "Remote",
+      role: "Web Developer",
+    },
+    {
+      id: 3,
+      title: "Data Analyst",
+      company: "SCAD Solutions",
+      duration: "12 months",
+      isPaid: "paid",
+      expectedSalary: "$2500/month",
+      skillsRequired: "Python, SQL, Tableau",
+      description: "Analyze data to drive business decisions.",
+      industry: "Tech",
+      status: "completed",
+      applicationDate: "2024-12-01",
+      startDate: "2025-01-01",
+      endDate: "2025-12-31",
+      location: "Remote",
+      role: "Data Analyst",
+    },
+    {
+      id: 4,
+      title: "PWC Summer Internship",
+      company: "PWC",
+      duration: "3 months",
+      isPaid: "paid",
+      expectedSalary: "$3000/month",
+      skillsRequired: "AI, Machine Learning",
+      description: "Work on applied AI projects.",
+      industry: "Consulting",
+      status: "current",
+      applicationDate: "2025-01-01",
+      startDate: "2025-02-01",
+      location: "Cairo, Egypt",
+      role: "Applied AI Intern",
+    },
+    {
+      id: 5,
+      title: "Google UI/UX Winter Internship",
+      company: "Google",
+      duration: "6 months",
+      isPaid: "paid",
+      expectedSalary: "$4000/month",
+      skillsRequired: "UI/UX, Figma",
+      description: "Design user interfaces for web applications.",
+      industry: "Tech",
+      status: "completed",
+      applicationDate: "2023-09-01",
+      startDate: "2023-10-01",
+      endDate: "2024-03-31",
+      location: "USA",
+      role: "UX/UI Designer",
+    },
+    {
+      id: 6,
+      title: "Etisalat Hybrid Data Science Internship",
+      company: "Etisalat",
+      duration: "6 months",
+      isPaid: "paid",
+      expectedSalary: "$2500/month",
+      skillsRequired: "Python, Data Engineering",
+      description: "Build data pipelines and analytics solutions.",
+      industry: "Telecom",
+      status: "completed",
+      applicationDate: "2024-09-01",
+      startDate: "2024-10-01",
+      endDate: "2025-03-31",
+      location: "Cairo, Egypt",
+      role: "Data Engineer",
+    },
+  ];
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
   useEffect(() => {
-    // Load mock internships on mount
-    const mockInternships = [
-      {
-        id: 1,
-        title: "Software Engineer",
-        company: "SCAD Technologies",
-        duration: "6 months",
-        isPaid: "paid",
-        expectedSalary: "$2000/month",
-        skillsRequired: "JavaScript, React, Node.js",
-        description: "Develop cutting-edge software solutions.",
-        industry: "Tech",
-        status: "pending",
-        applicationDate: "2025-04-01",
-        location: "Remote",
-        role: "Software Engineer",
-        reportCreated: true,
-        evaluationCreated: true,
-      },
-      {
-        id: 2,
-        title: "Web Developer",
-        company: "SCAD Systems",
-        duration: "3 months",
-        isPaid: "unpaid",
-        expectedSalary: "$0/month",
-        skillsRequired: "HTML, CSS, JavaScript",
-        description: "Build responsive web applications.",
-        industry: "Tech",
-        status: "current",
-        applicationDate: "2025-03-01",
-        startDate: "2025-04-15",
-        location: "Remote",
-        role: "Web Developer",
-        reportCreated: true,
-        evaluationCreated: true,
-      },
-      {
-        id: 3,
-        title: "Data Analyst",
-        company: "SCAD Solutions",
-        duration: "12 months",
-        isPaid: "paid",
-        expectedSalary: "$2500/month",
-        skillsRequired: "Python, SQL, Tableau",
-        description: "Analyze data to drive business decisions.",
-        industry: "Tech",
-        status: "completed",
-        applicationDate: "2024-12-01",
-        startDate: "2025-01-01",
-        endDate: "2025-12-31",
-        location: "Remote",
-        role: "Data Analyst",
-        reportCreated: false,
-        evaluationCreated: false,
-      },
-      {
-        id: 4,
-        title: "PWC Summer Internship",
-        company: "PWC",
-        duration: "3 months",
-        isPaid: "paid",
-        expectedSalary: "$3000/month",
-        skillsRequired: "AI, Machine Learning",
-        description: "Work on applied AI projects.",
-        industry: "Consulting",
-        status: "current",
-        applicationDate: "2025-01-01",
-        startDate: "2025-02-01",
-        location: "Cairo, Egypt",
-        role: "Applied AI Intern",
-        reportCreated: true,
-        evaluationCreated: true,
-      },
-      {
-        id: 5,
-        title: "Google UI/UX Winter Internship",
-        company: "Google",
-        duration: "6 months",
-        isPaid: "paid",
-        expectedSalary: "$4000/month",
-        skillsRequired: "UI/UX, Figma",
-        description: "Design user interfaces for web applications.",
-        industry: "Tech",
-        status: "completed",
-        applicationDate: "2023-09-01",
-        startDate: "2023-10-01",
-        endDate: "2024-03-31",
-        location: "USA",
-        role: "UX/UI Designer",
-        reportCreated: false,
-        evaluationCreated: false,
-      },
-      {
-        id: 6,
-        title: "Etisalat Hybrid Data Science Internship",
-        company: "Etisalat",
-        duration: "6 months",
-        isPaid: "paid",
-        expectedSalary: "$2500/month",
-        skillsRequired: "Python, Data Engineering",
-        description: "Build data pipelines and analytics solutions.",
-        industry: "Telecom",
-        status: "completed",
-        applicationDate: "2024-09-01",
-        startDate: "2024-10-01",
-        endDate: "2025-03-31",
-        location: "Cairo, Egypt",
-        role: "Data Engineer",
-        reportCreated: false,
-        evaluationCreated: false,
-      },
-    ];
-    setAppliedInternships(mockInternships);
-    console.log("Initialized appliedInternships:", mockInternships);
-  }, []);
-
-  useEffect(() => {
     sessionStorage.setItem("appliedInternships", JSON.stringify(appliedInternships));
-    console.log("Saved to sessionStorage:", appliedInternships);
   }, [appliedInternships]);
 
   // Common filtering function
@@ -153,58 +138,28 @@ function AppliedInternships() {
         ? filterDate === "recent"
           ? new Date(internship.applicationDate) >=
             new Date(
-              appliedInternships
+              internships
                 .map((i) => i.applicationDate)
                 .sort()
                 .slice(-1)[0]
             )
           : new Date(internship.applicationDate) <=
-            new Date(appliedInternships.map((i) => i.applicationDate).sort()[0])
+            new Date(internships.map((i) => i.applicationDate).sort()[0])
         : true;
       return matchesSearch && matchesStatus && matchesDate;
     });
-    console.log("Filtered internships:", filtered);
     return filtered;
   };
 
-  // Filtering logic for Pending Internships
+  // Filtering logic for Pending Internships (from sessionStorage)
   const pendingInternships = filterInternships(
     appliedInternships.filter((internship) =>
       ["pending", "finalized", "accepted", "rejected"].includes(internship.status)
     )
   );
 
-  // Filtering logic for Current/Completed Internships
-  const currentCompletedInternships = filterInternships(
-    appliedInternships.filter((internship) =>
-      ["current", "completed"].includes(internship.status)
-    )
-  );
-
-  const handleCreateReport = (internshipId) => {
-    setAppliedInternships((prev) =>
-      prev.map((internship) =>
-        internship.id === internshipId
-          ? { ...internship, reportCreated: true }
-          : internship
-      )
-    );
-    navigate("/student/report", { state: { internshipId } });
-  };
-
-  const handleCreateEvaluation = (internshipId) => {
-    const internship = appliedInternships.find((i) => i.id === internshipId);
-    setAppliedInternships((prev) =>
-      prev.map((internship) =>
-        internship.id === internshipId
-          ? { ...internship, evaluationCreated: true }
-          : internship
-      )
-    );
-    navigate("/student/evaluations", { state: { internshipId, internshipTitle: internship.title } });
-  };
-
-  console.log("Current/Completed internships:", currentCompletedInternships);
+  // Filtering logic for Current/Completed Internships (from mock data)
+  const currentCompletedInternships = filterInternships(mockCurrentCompletedInternships);
 
   return (
     <>
@@ -337,10 +292,8 @@ function AppliedInternships() {
                       <button
                         className="actionButton"
                         onClick={() => setSelectedInternship(internship)}
-                    
                       >
                         View Details
-                       
                       </button>
                     </div>
                   </div>
@@ -417,9 +370,7 @@ function AppliedInternships() {
       </div>
 
       {/* Modal for Internship Details */}
-     
-    </div>
-     {selectedInternship && (
+      {selectedInternship && (
         <div className="modal-overlay">
           <div className="modal-content">
             <h3 className="modal-title">{selectedInternship.title}</h3>
@@ -448,51 +399,6 @@ function AppliedInternships() {
               {selectedInternship.status.charAt(0).toUpperCase() +
                 selectedInternship.status.slice(1)}
             </p>
-            {["pending", "finalized", "accepted", "rejected"].includes(selectedInternship.status) ? (
-              <p className="modal-status-message">
-                Status cannot be changed for pending applications.
-              </p>
-            ) : (
-              <select
-                value={selectedInternship.status}
-                onChange={(e) => {
-                  const newStatus = e.target.value;
-                  setAppliedInternships((prev) =>
-                    prev.map((internship) =>
-                      internship.id === selectedInternship.id
-                        ? { ...internship, status: newStatus }
-                        : internship
-                    )
-                  );
-                  setSelectedInternship({ ...selectedInternship, status: newStatus });
-                }}
-                className="modal-status-select"
-              >
-                <option value="current">Current</option>
-                <option value="completed">Completed</option>
-              </select>
-            )}
-            {selectedInternship.status === "completed" && (
-              <div className="modal-button-group">
-                <button
-                  className={selectedInternship.reportCreated ? "modal-button-disabled" : "modal-button"}
-                  onClick={() => handleCreateReport(selectedInternship.id)}
-                  disabled={selectedInternship.reportCreated}
-                >
-                  {selectedInternship.reportCreated ? "Report Created" : "Create a Report"}
-                </button>
-                <button
-                  className={selectedInternship.evaluationCreated ? "modal-button-disabled" : "modal-button"}
-                  onClick={() => handleCreateEvaluation(selectedInternship.id)}
-                  disabled={selectedInternship.evaluationCreated}
-                >
-                  {selectedInternship.evaluationCreated
-                    ? "Evaluation Created"
-                    : "Create an Evaluation Form"}
-                </button>
-              </div>
-            )}
-
             <div className="modal-footer">
               <button
                 className="modal-close-button"
@@ -504,7 +410,8 @@ function AppliedInternships() {
           </div>
         </div>
       )}
-      </>
+    </div>
+    </>
   );
 }
 
@@ -570,8 +477,6 @@ const styles = {
     transition: "background-color 0.2s ease",
   },
 };
-
-
 
 // Animation keyframes
 const styleSheet = document.createElement("style");

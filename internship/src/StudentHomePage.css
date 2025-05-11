@@ -121,6 +121,17 @@
 .client-logo.visa { color: #1A1F71; }
 .client-logo.amazon { color: #FF9900; }
 
+.homeBtns{
+
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center; /* Centers horizontally */
+  gap: 10px; /* Adds spacing between buttons */
+
+}
+
 .cardHolder {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -136,9 +147,9 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   padding: 20px;
   transition: transform 0.3s ease;
-  display: flex; /* Make card a flex container */
-  flex-direction: column; /* Stack content vertically */
-  min-height: 200px; /* Ensure cards have a minimum height for uniformity */
+  display: flex;
+  flex-direction: column;
+  min-height: 200px;
 }
 
 .card:hover {
@@ -149,7 +160,7 @@
 .card-content {
   display: flex;
   flex-direction: column;
-  flex: 1; /* Allow content to take available space */
+  flex: 1;
 }
 
 .card-header {
@@ -186,7 +197,7 @@
 }
 
 .card-footer {
-  margin-top: auto; /* Push footer to the bottom */
+  margin-top: auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -249,7 +260,7 @@
   align-items: center;
   justify-content: center;
   z-index: 1002;
-  overflow: hidden; /* Prevent scrolling on the overlay */
+  overflow: hidden;
 }
 
 .modal-content {
@@ -261,23 +272,23 @@
   max-width: 24rem;
   width: 100%;
   margin: 0 auto;
-  max-height: 80vh; /* Set a maximum height relative to viewport */
-  height: 500px; /* Fixed height - adjust as needed */
-  overflow: hidden; /* Hide any content that exceeds the height */
+  max-height: 80vh;
+  height: 500px;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
 .modal-body {
-  overflow: hidden; /* Contain any overflowing content */
-  flex-grow: 1; /* Take up remaining space */
+  overflow: hidden;
+  flex-grow: 1;
 }
 
 .modal-title {
   margin-bottom: 15px;
   border-bottom: 1px solid #f0f0f0;
   padding-bottom: 15px;
-    font-size: 1.25rem;
+  font-size: 1.25rem;
   font-weight: bold;
   color: #1f2937;
   margin: 0 0 0.5rem;
@@ -285,7 +296,7 @@
 
 .modal-info {
   display: flex;
-   border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid #f0f0f0;
   gap: 10px;
   font-size: 0.9rem;
   color: #636e72;
@@ -350,6 +361,7 @@
   color: #fff;
   border-radius: 0.25rem;
   border: none;
+  max-height: 100px;
   cursor: pointer;
   font-size: 0.875rem;
   transition: background 0.2s ease;
@@ -359,6 +371,85 @@
   background: #dc2626;
 }
 
+/* Search and Filter Styles */
+.filter-input {
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+  background-color: #e5e7eb;
+  color: #1f2937;
+  border: none;
+  border-radius: 0.375rem;
+  width: 18rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s ease;
+}
+
+.filter-input:focus {
+  box-shadow: 0 0 0 2px #2a9d8f;
+  outline: none;
+}
+
+.filter-select {
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+  background-color: #e5e7eb;
+  color: #1f2937;
+  border: none;
+  border-radius: 0.375rem;
+  min-width: 10rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.filter-select:focus {
+  box-shadow: 0 0 0 2px #2a9d8f;
+  outline: none;
+}
+
+.filter-clear-button {
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+  background-color: #ef4444;
+  color: #fff;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s ease;
+}
+
+.filter-clear-button:hover {
+  background-color: #dc2626;
+}
+.quickButton {
+  background-color: #fff;
+  color: #000;
+  padding: 0.75rem 1.25rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9375rem;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto 1.5rem;
+}
+
+.quickButton:hover {
+  background-color: #f8fafc;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
+  border-color: #ef4444;
+}
+
+.quickButton:active {
+  transform: translateY(0);
+}
 /* For responsive design */
 @media (max-width: 768px) {
   .client-logos {
@@ -369,7 +460,14 @@
     height: 30px;
   }
   .card {
-    min-height: 180px; /* Slightly smaller min-height for mobile */
+    min-height: 180px;
+  }
+  .filter-input {
+    width: 100%;
+  }
+  .filter-select {
+    width: 100%;
+    min-width: unset;
   }
 }
 

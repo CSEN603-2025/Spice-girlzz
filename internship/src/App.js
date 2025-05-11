@@ -14,14 +14,14 @@ import StudentHomePage from "./StudentHomePage";
 import SCADStaffDashboard from "./SCADStaffDashboard";
 import AppliedInternships from "./Applied internships";
 import ProfileStudent from "./ProfileStudent";
-import AvailableInternships from "./AvailableInternships";
+import AvailableInternships from "./SuggestedInternships";
 import FacultyMember from "./FacultyMember";
 import Report from "./Report";
 import VideoCall from './VideoCall'
 import ScheduleCall from './ScheduleCall';
 import StartCall from './StartCall';
 import EvaluationStudent from "./EvaluationStudent";
-
+import SuggestedInternships from "./SuggestedInternships";
 
 
 import ProfileCompany from './ProfileCompany';
@@ -87,7 +87,7 @@ function App() {
           }
         />
         <Route path="/student/profile" element={<ProfileStudent />} />
-       <Route path="/student/available" element={<AvailableInternships />} />
+       <Route path="/student/suggested" element={<SuggestedInternships />} />
         <Route path="/staff" element={<SCADStaffDashboard />} />
         <Route path="/facultyMember" element={<FacultyMember />} />
         <Route path="/student/report" element={<Report />} />

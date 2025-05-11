@@ -28,22 +28,18 @@ function SideBar({ setActivePage, isOpen, setSidebarWidth }) {
     },
     {
       title: "Evaluation",
-      page: "evaluate",
+      page: "evaluation",
       icon: <BarChart2 size={20} />,
-      path: "/student/evaluate",
+      path: "/student/evaluation",
     },
     {
-      title: "Available Internships",
-      page: "available",
+      title: "Suggested Internships",
+      page: "suggested",
       icon: <Search size={20} />,
-      path: "/student/available",
+      path: "/student/suggested",
     },
-    {
-      title: "Video Calls",
-      page: "available",
-      icon: <Search size={20} />,
-      path: "/student/videoCallDashboard",
-    }
+    
+
   ];
 
   const getButtonStyle = (itemPath) => {

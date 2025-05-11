@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import SideBar from './Components/SideBar';
 import Header from './Components/Header';
-import { Mail, Upload, Paperclip,  User, Phone,PhoneIncoming, Home, LogOut, Edit, MapPin, Globe, MessageSquare, Briefcase, Activity, BookOpen, Clipboard, Menu } from 'lucide-react';
+import { Mail, Upload, Paperclip, User, Phone, PhoneIncoming, Home, LogOut, Edit, MapPin, Globe, MessageSquare, Briefcase, Activity, BookOpen, Clipboard, Menu } from 'lucide-react';
 
 function ProfileStudent() {
   const navigate = useNavigate();
@@ -13,14 +13,14 @@ function ProfileStudent() {
   const [clickedButtons, setClickedButtons] = useState({});
   const [sidebarWidth, setSidebarWidth] = useState('4rem');
   const [documents, setDocuments] = useState([]);
-const [selectedDocument, setSelectedDocument] = useState(null);
+  const [selectedDocument, setSelectedDocument] = useState(null);
 
   const initialProfileData = {
     name: '...',
     phone: '',
     email: '',
-    major:'',
-    semester:'',
+    major: '',
+    semester: '',
     gender: '',
     Address: '',
     nationality: '',
@@ -51,8 +51,8 @@ const [selectedDocument, setSelectedDocument] = useState(null);
         return {
           ...initialProfileData,
           ...parsedData,
-          education: Array.isArray(parsedData.education) ? 
-            parsedData.education.filter(edu => edu.degree || edu.years) : 
+          education: Array.isArray(parsedData.education) ?
+            parsedData.education.filter(edu => edu.degree || edu.years) :
             initialProfileData.education,
           jobInterests: Array.isArray(parsedData.jobInterests) ? parsedData.jobInterests : [],
           previousInternships: Array.isArray(parsedData.previousInternships) ? parsedData.previousInternships : [],
@@ -80,7 +80,7 @@ const [selectedDocument, setSelectedDocument] = useState(null);
   const handleEditSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData(formRef.current);
-    
+
     // Collect all education entries from the form
     const education = [];
     let index = 0;
@@ -160,13 +160,11 @@ const [selectedDocument, setSelectedDocument] = useState(null);
     }));
   };
 
-
-
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-   const handleDocumentUpload = (e) => {
+  const handleDocumentUpload = (e) => {
     const files = Array.from(e.target.files);
     files.forEach((file) => {
       const reader = new FileReader();
@@ -192,8 +190,7 @@ const [selectedDocument, setSelectedDocument] = useState(null);
 
   return (
     <div style={styles.container}>
-<Header/>
-
+      <Header />
       {/* Layout */}
       <div style={{ ...styles.layout, marginTop: '4rem', minHeight: 'calc(100vh - 4rem)' }}>
         {/* Sidebar */}
@@ -233,12 +230,10 @@ const [selectedDocument, setSelectedDocument] = useState(null);
                 <SectionHeader title="Personal Information" icon={<User size={18} style={styles.iconStyle} />} />
                 <div style={styles.infoGrid}>
                   <ProfileItem label="Name" value={profileData.name} />
-                  <ProfileItem label="Phone Number" value={profileData.phone}/>
+                  <ProfileItem label="Phone Number" value={profileData.phone} />
                   <ProfileItem label="Email" value={profileData.email} />
                   <ProfileItem label="Major" value={profileData.major} />
                   <ProfileItem label="Semester" value={profileData.semester} />
-
-
                 </div>
               </div>
 
@@ -259,8 +254,8 @@ const [selectedDocument, setSelectedDocument] = useState(null);
               <div style={styles.profileSection}>
                 <SectionHeader title="Experiences and Interests" icon={<Briefcase size={18} style={styles.iconStyle} />} />
                 <ProfileItem label="Job Interests" value={
-                  Array.isArray(profileData.jobInterests) && profileData.jobInterests.length > 0 
-                    ? profileData.jobInterests.join(', ') 
+                  Array.isArray(profileData.jobInterests) && profileData.jobInterests.length > 0
+                    ? profileData.jobInterests.join(', ')
                     : undefined
                 } />
                 <ProfileItem label="Previous Internships" value={
@@ -288,8 +283,8 @@ const [selectedDocument, setSelectedDocument] = useState(null);
                   ) : undefined
                 } />
                 <ProfileItem label="College Activities" value={
-                  Array.isArray(profileData.collegeActivities) && profileData.collegeActivities.length > 0 
-                    ? profileData.collegeActivities.join(', ') 
+                  Array.isArray(profileData.collegeActivities) && profileData.collegeActivities.length > 0
+                    ? profileData.collegeActivities.join(', ')
                     : undefined
                 } />
               </div>
@@ -307,9 +302,7 @@ const [selectedDocument, setSelectedDocument] = useState(null);
                   <ProfileItem label="" value="Not provided" />
                 )}
               </div>
-              
             </div>
-            
           ) : (
             <div style={styles.emptyProfileMessage}>
               <p>Please create your profile to continue.</p>
@@ -325,10 +318,22 @@ const [selectedDocument, setSelectedDocument] = useState(null);
                   <TextInput name="name" label="Full Name" defaultValue={profileData.name} required />
                   <TextInput name="phone" label="Phone Number" defaultValue={profileData.phone} type="tel" />
                   <TextInput name="email" label="Email" defaultValue={profileData.email} type="email" required />
-                  <TextInput name="major" label="Major" defaultValue={profileData.major} type="major" required />
-                  <TextInput name="semester" label="Semester" defaultValue={profileData.semester} type="semester" required />
-
-
+                  <div style={styles.inputGroup}>
+                    <label style={styles.inputLabel}>Major</label>
+                    <select
+                      name="major"
+                      defaultValue={profileData.major}
+                      style={styles.input}
+                      required
+                    >
+                      <option value="">Select Major</option>
+                      <option value="Computer Science">Computer Science</option>
+                      <option value="Business">Business</option>
+                      <option value="Engineering">Engineering</option>
+                      <option value="Pharmacy">Pharmacy</option>
+                    </select>
+                  </div>
+                  <TextInput name="semester" label="Semester" defaultValue={profileData.semester} required />
 
                   <h4 style={styles.formSectionTitle}>Personal Details</h4>
                   <TextInput name="gender" label="Gender" defaultValue={profileData.gender} />
@@ -337,58 +342,58 @@ const [selectedDocument, setSelectedDocument] = useState(null);
                   <TextInput name="language" label="Language" defaultValue={profileData.language} />
 
                   <h4 style={styles.formSectionTitle}>Experiences and Interests</h4>
-                  <TextInput 
-                    name="jobInterests" 
-                    label="Job Interests (comma-separated)" 
-                    defaultValue={Array.isArray(profileData.jobInterests) ? profileData.jobInterests.join(', ') : ''} 
+                  <TextInput
+                    name="jobInterests"
+                    label="Job Interests (comma-separated)"
+                    defaultValue={Array.isArray(profileData.jobInterests) ? profileData.jobInterests.join(', ') : ''}
                     placeholder="e.g., UI/UX Design, Software Development"
                   />
-                  <TextInput 
-                    name="previousInternships" 
-                    label="Previous Internships (company,role,duration,responsibilities; separated by semicolon)" 
-                    defaultValue={profileData.previousInternships.map(i => `${i.company},${i.role},${i.duration},${i.responsibilities}`).join(';')} 
+                  <TextInput
+                    name="previousInternships"
+                    label="Previous Internships (company,role,duration,responsibilities; separated by semicolon)"
+                    defaultValue={profileData.previousInternships.map(i => `${i.company},${i.role},${i.duration},${i.responsibilities}`).join(';')}
                     placeholder="e.g., Company A,Intern,3 months,Designed UI;Company B,Developer,6 months,Coded features"
                   />
-                  <TextInput 
-                    name="partTimeJobs" 
-                    label="Part-Time Jobs (company,role,duration,responsibilities; separated by semicolon)" 
-                    defaultValue={profileData.partTimeJobs.map(j => `${j.company},${j.role},${j.duration},${j.responsibilities}`).join(';')} 
+                  <TextInput
+                    name="partTimeJobs"
+                    label="Part-Time Jobs (company,role,duration,responsibilities; separated by semicolon)"
+                    defaultValue={profileData.partTimeJobs.map(j => `${j.company},${j.role},${j.duration},${j.responsibilities}`).join(';')}
                     placeholder="e.g., Cafe A,Barista,1 year,Served customers;Store B,Cashier,6 months,Handled transactions"
                   />
-                  <TextInput 
-                    name="collegeActivities" 
-                    label="College Activities (comma-separated)" 
-                    defaultValue={Array.isArray(profileData.collegeActivities) ? profileData.collegeActivities.join(', ') : ''} 
+                  <TextInput
+                    name="collegeActivities"
+                    label="College Activities (comma-separated)"
+                    defaultValue={Array.isArray(profileData.collegeActivities) ? profileData.collegeActivities.join(', ') : ''}
                     placeholder="e.g., Coding Club, Debate Team"
                   />
 
                   <h4 style={styles.formSectionTitle}>Education</h4>
                   {profileData.education.length > 0 ? (
                     profileData.education.map((edu, index) => (
-                      <div key={index | styles.educationFormGroup}>
-                        <TextInput 
-                          name={`education[${index}].degree`} 
-                          label="Degree" 
-                          defaultValue={edu.degree} 
+                      <div key={index} style={styles.educationFormGroup}>
+                        <TextInput
+                          name={`education[${index}].degree`}
+                          label="Degree"
+                          defaultValue={edu.degree}
                         />
-                        <TextInput 
-                          name={`education[${index}].years`} 
-                          label="Year of Graduation" 
-                          defaultValue={edu.years} 
+                        <TextInput
+                          name={`education[${index}].years`}
+                          label="Year of Graduation"
+                          defaultValue={edu.years}
                         />
                       </div>
                     ))
                   ) : (
                     <div style={styles.educationFormGroup}>
-                      <TextInput 
-                        name="education[0].degree" 
-                        label="Degree" 
-                        defaultValue="" 
+                      <TextInput
+                        name="education[0].degree"
+                        label="Degree"
+                        defaultValue=""
                       />
-                      <TextInput 
-                        name="education[0].years" 
-                        label="Year of Graduation" 
-                        defaultValue="" 
+                      <TextInput
+                        name="education[0].years"
+                        label="Year of Graduation"
+                        defaultValue=""
                       />
                     </div>
                   )}
@@ -417,145 +422,142 @@ const [selectedDocument, setSelectedDocument] = useState(null);
             </div>
           )}
 
-                        <div style={styles.doc}>
-  <SectionHeader title="Documents" icon={<Paperclip size={18} style={styles.iconStyle} />} />
-  
-  {/* Upload Button */}
-  <div style={{ marginBottom: '1rem' }}>
-    <label
-      htmlFor="document-upload"
-      style={{
-        padding: '0.5rem 1rem',
-        background: '#2a9d8f',
-        color: '#fff',
-        borderRadius: '0.25rem',
-        display: 'flex',
-        alignItems: 'center',
-        cursor: 'pointer',
-        fontSize: '0.875rem',
-      }}
-      onMouseOver={(e) => (e.target.style.background = '#30b3a3')}
-      onMouseOut={(e) => (e.target.style.background = '#2a9d8f')}
-    >
-      <Upload size={16} style={{ marginRight: '0.5rem' }} /> Upload Documents
-    </label>
-    <input
-      id="document-upload"
-      type="file"
-      multiple
-      accept=".pdf,.doc,.docx,.jpg,.png"
-      style={{ display: 'none' }}
-      onChange={handleDocumentUpload}
-    />
-  </div>
-
-  {/* Documents List */}
-  {documents.length > 0 && (
-    <div style={{ background: '#fff', padding: '1.5rem', borderRadius: '0.375rem', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(15rem, 1fr))', gap: '1.5rem' }}>
-        {documents.map((doc) => (
-          <div
-            key={doc.id}
-            style={{
-              background: '#fff',
-              padding: '1rem',
-              borderRadius: '0.375rem',
-              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-              transition: 'box-shadow 0.3s, background-color 0.3s',
-            }}
-          >
-         <span 
-            style={{
-              cursor: 'pointer',
-              fontWeight: '500',
-              color: '#2a9d8f',
-              textDecoration: 'underline',
-              flex: 1,
-              padding: '0.5rem'
-            }}
-            onClick={() => setSelectedDocument(doc)}
-          >
-            {doc.name}
-          </span>
-          
-            <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.75rem' }}>
-            
-              <button
+          <div style={styles.doc}>
+            <SectionHeader title="Documents" icon={<Paperclip size={18} style={styles.iconStyle} />} />
+            {/* Upload Button */}
+            <div style={{ marginBottom: '1rem' }}>
+              <label
+                htmlFor="document-upload"
                 style={{
                   padding: '0.5rem 1rem',
-                  background: '#ef4444',
+                  background: '#2a9d8f',
                   color: '#fff',
                   borderRadius: '0.25rem',
+                  display: 'flex',
+                  alignItems: 'center',
                   cursor: 'pointer',
                   fontSize: '0.875rem',
                 }}
-                onClick={() => handleDeleteDocument(doc.id)}
-                onMouseOver={(e) => (e.target.style.background = '#dc2626')}
-                onMouseOut={(e) => (e.target.style.background = '#ef4444')}
+                onMouseOver={(e) => (e.target.style.background = '#30b3a3')}
+                onMouseOut={(e) => (e.target.style.background = '#2a9d8f')}
               >
-                Delete
-              </button>
+                <Upload size={16} style={{ marginRight: '0.5rem' }} /> Upload Documents
+              </label>
+              <input
+                id="document-upload"
+                type="file"
+                multiple
+                accept=".pdf,.doc,.docx,.jpg,.png"
+                style={{ display: 'none' }}
+                onChange={handleDocumentUpload}
+              />
             </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  )}
 
-  {/* Document Preview Modal */}
-  {selectedDocument && (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: 'rgba(0,0,0,0.5)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 1003,
-    }}>
-      <div style={{
-        backgroundColor: 'white',
-        padding: '2rem',
-        borderRadius: '0.5rem',
-        maxWidth: '80%',
-        maxHeight: '80%',
-        overflow: 'auto'
-      }}>
-        <h3 style ={{fontSize:"0.4rem"}}>{selectedDocument.name}</h3>
-        {selectedDocument.type.includes('image') ? (
-          <img 
-            src={selectedDocument.data} 
-            alt={selectedDocument.name} 
-            style={{ maxWidth: '100%', maxHeight: '400px' }}
-          />
-        ) : (
-          <iframe 
-            src={selectedDocument.data} 
-            title={selectedDocument.name}
-            style={{ width: '100%', height: '500px', border: 'none' }}
-          />
-        )}
-        <button
-          style={{
-            marginTop: '1rem',
-            padding: '0.5rem 1rem',
-            backgroundColor: '#3b82f6',
-            color: 'white',
-            border: 'none',
-            borderRadius: '0.25rem',
-            cursor: 'pointer'
-          }}
-          onClick={() => setSelectedDocument(null)}
-        >
-          Close
-        </button>
-      </div>
-    </div>
-  )}
-</div>
+            {/* Documents List */}
+            {documents.length > 0 && (
+              <div style={{ background: '#fff', padding: '1.5rem', borderRadius: '0.375rem', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(15rem, 1fr))', gap: '1.5rem' }}>
+                  {documents.map((doc) => (
+                    <div
+                      key={doc.id}
+                      style={{
+                        background: '#fff',
+                        padding: '1rem',
+                        borderRadius: '0.375rem',
+                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                        transition: 'box-shadow 0.3s, background-color 0.3s',
+                      }}
+                    >
+                      <span
+                        style={{
+                          cursor: 'pointer',
+                          fontWeight: '500',
+                          color: '#2a9d8f',
+                          textDecoration: 'underline',
+                          flex: 1,
+                          padding: '0.5rem'
+                        }}
+                        onClick={() => setSelectedDocument(doc)}
+                      >
+                        {doc.name}
+                      </span>
+                      <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.75rem' }}>
+                        <button
+                          style={{
+                            padding: '0.5rem 1rem',
+                            background: '#ef4444',
+                            color: '#fff',
+                            borderRadius: '0.25rem',
+                            cursor: 'pointer',
+                            fontSize: '0.875rem',
+                          }}
+                          onClick={() => handleDeleteDocument(doc.id)}
+                          onMouseOver={(e) => (e.target.style.background = '#dc2626')}
+                          onMouseOut={(e) => (e.target.style.background = '#ef4444')}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Document Preview Modal */}
+            {selectedDocument && (
+              <div style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: 'rgba(0,0,0,0.5)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                zIndex: 1003,
+              }}>
+                <div style={{
+                  backgroundColor: 'white',
+                  padding: '2rem',
+                  borderRadius: '0.5rem',
+                  maxWidth: '80%',
+                  maxHeight: '80%',
+                  overflow: 'auto'
+                }}>
+                  <h3 style={{ fontSize: "0.4rem" }}>{selectedDocument.name}</h3>
+                  {selectedDocument.type.includes('image') ? (
+                    <img
+                      src={selectedDocument.data}
+                      alt={selectedDocument.name}
+                      style={{ maxWidth: '100%', maxHeight: '400px' }}
+                    />
+                  ) : (
+                    <iframe
+                      src={selectedDocument.data}
+                      title={selectedDocument.name}
+                      style={{ width: '100%', height: '500px', border: 'none' }}
+                    />
+                  )}
+                  <button
+                    style={{
+                      marginTop: '1rem',
+                      padding: '0.5rem 1rem',
+                      backgroundColor: '#3b82f6',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '0.25rem',
+                      cursor: 'pointer'
+                    }}
+                    onClick={() => setSelectedDocument(null)}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -583,7 +585,7 @@ const ProfileItem = ({ label, value, icon }) => {
       'Name': <User size={16} style={styles.iconStyle} />,
       'Phone': <Phone size={16} style={styles.iconStyle} />,
       'Email': <Mail size={16} style={styles.iconStyle} />,
-      'Gender': <User size={16} style={styles.iconStyle} />,  
+      'Gender': <User size={16} style={styles.iconStyle} />,
       'Address': <MapPin size={16} style={styles.iconStyle} />,
       'Nationality': <Globe size={16} style={styles.iconStyle} />,
       'Language': <MessageSquare size={16} style={styles.iconStyle} />,
@@ -593,7 +595,7 @@ const ProfileItem = ({ label, value, icon }) => {
   };
 
   const isEmpty = value === undefined || value === null || value === '';
-  
+
   return (
     <div style={styles.profileItem}>
       {label && (
@@ -753,11 +755,10 @@ const styles = {
       boxShadow: '0 6px 16px rgba(0, 0, 0, 0.12)'
     }
   },
-
-  doc:{
+  doc: {
     backgroundColor: '#fff',
     border: '1px solid #e5e7eb',
-    marginTop:'2rem',
+    marginTop: '2rem',
     borderRadius: '0.75rem',
     boxShadow: '0 4px 6px rgba(0, 0, 0, 0.08)',
     padding: '1.5rem',
@@ -772,7 +773,6 @@ const styles = {
       boxShadow: '0 6px 16px rgba(0, 0, 0, 0.12)'
     }
   },
-  
   sectionTitle: {
     fontSize: '1.125rem',
     fontWeight: '600',
@@ -842,7 +842,7 @@ const styles = {
     gap: '0.25rem',
     fontSize: '0.875rem',
     marginBottom: '1rem',
-    paddingBottom: '0.75 Guida rem',
+    paddingBottom: '0.75rem',
     borderBottom: '1px dashed #e5e7eb',
     ':last-child': {
       borderBottom: 'none',
@@ -911,7 +911,7 @@ const styles = {
     gap: '0.5rem',
   },
   inputLabel: {
-    fontSize: '0.875rem',
+    fontSize: '0.875itsu rem',
     fontWeight: '500',
     color: '#4b5563',
   },
@@ -963,17 +963,6 @@ const styles = {
     color: '#4b5563',
     fontSize: '1rem',
   },
-  '@media (max-width: 768px)': {
-    profileBox: {
-      gridTemplateColumns: '1fr',
-    },
-    profileSection: {
-      padding: '1rem',
-    },
-    sectionTitle: {
-      fontSize: '1rem',
-    }
-  }
 };
 
 // Animation keyframes and media query

@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SideBar from './Components/SideBar';
 import { Mail, User, LogOut, Home, Menu } from 'lucide-react';
+import Header from './Components/Header';
 
-function AvailableInternships() {
+function SuggestedInternships() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedIndustry, setSelectedIndustry] = useState('');
@@ -129,33 +130,11 @@ function AvailableInternships() {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  // Simulate adding a new internship (for demo purposes)
 
   return (
     <div style={styles.container}>
       {/* Header */}
-      <header style={{ ...styles.header, position: 'fixed', top: 0, width: '100%', zIndex: 1001, boxSizing: 'border-box' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: '1 0 auto', maxWidth: '50%' }}>
-          <button style={styles.headerBtn} title="Toggle Sidebar" onClick={toggleSidebar}>
-            <Menu size={20} />
-          </button>
-          <h2 style={styles.title}>GUC Internship System</h2>
-        </div>
-        <div style={styles.headerButtons}>
-          <button style={styles.headerBtn} onClick={() => navigate('/student/messages')}>
-            <Mail size={20} />
-          </button>
-          <button style={styles.headerBtn} onClick={() => navigate('/student')}>
-            <Home size={20} />
-          </button>
-          <button style={styles.headerBtn} onClick={() => navigate('/student/Profile')}>
-            <User size={20} />
-          </button>
-          <button style={styles.headerBtn} onClick={() => navigate('/')}>
-            <LogOut size={20} />
-          </button>
-        </div>
-      </header>
+    <Header/>
 
       <div style={{ ...styles.layout, marginTop: '4rem', minHeight: 'calc(100vh - 4rem)' }}>
         {/* Sidebar */}
@@ -532,4 +511,4 @@ styleSheet.textContent = `
 `;
 document.head.appendChild(styleSheet);
 
-export default AvailableInternships;
+export default SuggestedInternships;
