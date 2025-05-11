@@ -9,6 +9,7 @@ const ProfileCompany = () => {
   const companyEmail = location.state?.email || 'No email available';
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarHovered, setIsSidebarHovered] = useState(false);
   const [clickedButtons, setClickedButtons] = useState({});
 
   const [companyInfo, setCompanyInfo] = useState({
@@ -115,10 +116,8 @@ const ProfileCompany = () => {
       </header>
 
       <div className="layout">
-        <div className="sidebar">
-          <SideBarCompany setActivePage={(page) => navigate(`/company/${page}`)} />
-        </div>
-        <div className={`content ${isSidebarOpen && window.innerWidth > 768 ? 'sidebar-open' : 'sidebar-closed'}`}>
+        <SideBarCompany onHoverChange={setIsSidebarHovered} />
+        <div className={`content ${isSidebarHovered && window.innerWidth > 768 ? 'sidebar-expanded' : ''}`}>
           <div className="profile-header">
             <div className="logo-container">
               <img src={companyInfo.logo} alt="Company Logo" className="logo" />

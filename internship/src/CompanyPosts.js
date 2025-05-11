@@ -22,6 +22,7 @@ const JobPostManager = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarHovered, setIsSidebarHovered] = useState(false);
   const [clickedButtons, setClickedButtons] = useState({});
 
   useEffect(() => {
@@ -181,10 +182,8 @@ const JobPostManager = () => {
       </header>
 
       <div className="layout">
-        <div className="sidebar">
-          <SideBarCompany setActivePage={(page) => navigate(`/company/${page}`)} />
-        </div>
-        <div className={`content ${isSidebarOpen && window.innerWidth > 768 ? 'sidebar-open' : 'sidebar-closed'}`}>
+        <SideBarCompany onHoverChange={setIsSidebarHovered} />
+        <div className={`content ${isSidebarHovered && window.innerWidth > 768 ? 'sidebar-expanded' : ''}`}>
           <div className="card">
             <h3 className="section-title">Create Post</h3>
             <button onClick={openModal} className="btn btn-primary">Create Post</button>

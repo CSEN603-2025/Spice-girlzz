@@ -1,53 +1,18 @@
-// import React from 'react'
-
-// function SideBarCompany() {
-//     const SideBarCompany = [
-//         {
-//         title : "My Internship Posts",
-//         link : "/company/posts" ,
-//         },
-    
-//         {
-//             title : "Applications",
-//             link : "/company/applicants",
-//         },
-
-//         {
-//             title : "Interns",
-//             link : "/company/interns",
-//         },
-//         {
-//           title : "Evaluations",
-//           link : "/company/evaluate",
-//       },
-//     ];
-//   return (
-//     <div className='sidebar'>
-//       <ul className='SideBarList'>
-//       {SideBarCompany.map((val, key)=>
-//     {
-//       return <li key={key}
-//       className='row'
-//       id = {window.location.pathname == val.link ? "active" : ""}
-//        onClick={()=>{window.location.pathname=val.link}}>
-//         <div id='title'>
-//         {val.title}
-//         </div></li>
-      
-//     })}</ul></div>
-//   )
-// }
-// export default SideBarCompany;
-
-
- import React, { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FilePlus, Clipboard, Users, CheckSquare } from "lucide-react";
 
-function SideBarCompany() {
+function SideBarCompany({ onHoverChange }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [isSidebarHovered, setIsSidebarHovered] = useState(false);
+
+  const handleHoverChange = (hovered) => {
+    setIsSidebarHovered(hovered);
+    if (onHoverChange) {
+      onHoverChange(hovered);
+    }
+  };
 
   const navItems = [
     {
@@ -97,12 +62,10 @@ function SideBarCompany() {
     };
   };
 
-  
-
   return (
     <div
-      onMouseEnter={() => setIsSidebarHovered(true)}
-      onMouseLeave={() => setIsSidebarHovered(false)}
+      onMouseEnter={() => handleHoverChange(true)}
+      onMouseLeave={() => handleHoverChange(false)}
       style={{
         flex: 1,
         background: "linear-gradient(#fff 100%)",

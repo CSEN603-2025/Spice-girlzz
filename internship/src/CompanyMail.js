@@ -7,6 +7,7 @@ import './CompanyStyles.css';
 const CompanyMail = () => {
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarHovered, setIsSidebarHovered] = useState(false);
   const [mails, setMails] = useState([
     {
       id: 3,
@@ -128,10 +129,8 @@ const CompanyMail = () => {
       </header>
 
       <div className="layout">
-        <div className="sidebar">
-          <SideBarCompany setActivePage={(page) => navigate(`/company/${page}`)} />
-        </div>
-        <div className={`content ${isSidebarOpen && window.innerWidth > 768 ? 'sidebar-open' : 'sidebar-closed'}`}>
+        <SideBarCompany onHoverChange={setIsSidebarHovered} />
+        <div className={`content ${isSidebarHovered && window.innerWidth > 768 ? 'sidebar-expanded' : ''}`}>
           <div className="card">
             <h3 className="section-title">Your Messages</h3>
             <div className="mail-list">
@@ -141,20 +140,20 @@ const CompanyMail = () => {
                 mails.map(mail => (
                   <div 
                     key={mail.id} 
-                    className={`mail-item ${mail.read ? '' : 'unread'} ${mail.type}`}
+                    className={`mail-item ${mail.read ? '' : 'unread'} ${mail.type || 'system'}`}
                     onClick={() => openMail(mail)}
                   >
                     <div className="mail-header">
-                      <span>{mail.from}</span>
-                      <span>{mail.date}</span>
+                      <span>{mail.from || 'Unknown Sender'}</span>
+                      <span>{mail.date || 'No Date'}</span>
                     </div>
                     <div className="mail-subject">
-                      {mail.subject}
-                      {mail.type === 'application' && (
+                      {mail.subject || 'No Subject'}
+                      {mail.type === 'application' ? (
                         <span className="application-badge">New Application</span>
-                      )}
+                      ) : null}
                     </div>
-                    <div className="mail-preview">{mail.body.substring(0, 100)}...</div>
+                    <div className="mail-preview">{(mail.body || 'No content').substring(0, 100)}...</div>
                   </div>
                 ))
               )}
@@ -166,16 +165,16 @@ const CompanyMail = () => {
       {selectedMail && (
         <div className="modal">
           <div className="modal-content">
-            <h3 className="section-title">{selectedMail.subject}</h3>
+            <h3 className="section-title">{selectedMail.subject || 'No Subject'}</h3>
             <div className="mail-meta">
-              <p><strong>From:</strong> {selectedMail.from}</p>
-              <p><strong>Date:</strong> {selectedMail.date}</p>
+              <p><strong>From:</strong> {selectedMail.from || 'Unknown Sender'}</p>
+              <p><strong>Date:</strong> {selectedMail.date || 'No Date'}</p>
               {selectedMail.type === 'application' && (
                 <span className="application-tag">Application Notification</span>
               )}
             </div>
             <div className="mail-body-container">
-              <p className="mail-body">{selectedMail.body}</p>
+              <p className="mail-body">{selectedMail.body || 'No content'}</p>
               {selectedMail.type === 'application' && (
                 <button
                   className="btn btn-primary"
