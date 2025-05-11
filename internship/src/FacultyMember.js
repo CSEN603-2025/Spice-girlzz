@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import SideBar from "./Components/FacultySideBar";
-import Header from "./Components/Header";
+import FacultyHeader from "./Components/FacultyHeader";
 import { useNavigate } from "react-router-dom";
 import { Bell, Flag, Check, X, Download, Search } from "lucide-react";
 
@@ -905,7 +905,7 @@ export default function FacultyMember() {
         onWidthChange={handleWidthChange} // Add this prop
       />
       <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-        <Header />
+        <FacultyHeader />
         {showNotifications && (
           <div
             style={{

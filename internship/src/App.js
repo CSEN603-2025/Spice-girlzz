@@ -18,7 +18,6 @@ import ScheduleCall from './ScheduleCall';
 import StartCall from './StartCall';
 
 
-
 import ProfileCompany from './ProfileCompany';
 import CompanyMail from './CompanyMail';
 import CompanyHomePage from './CompanyHomePage';
@@ -26,6 +25,12 @@ import CompanyPosts from './CompanyPosts';
 import CompanyApplications from './CompanyApplications';
 import CompanyInterns from './CompanyInterns';
 import CompanyEvaluation from './CompanyEvaluation';
+
+import FacultyLayout from './FacultyLayout';
+import FacultyStatistics from './FacultyStatistics';
+import FacultyReport from './FacultyReport';
+
+
 
 function App() {
   const [appliedInternships, setAppliedInternships] = useState(() => {
@@ -89,7 +94,11 @@ function App() {
         <Route path="/student/profile" element={<ProfileStudent />} />
         <Route path="/student/available" element={<AvailableInternships />} />
         <Route path="/staff" element={<SCADStaffDashboard />} />
-        <Route path="/facultyMember" element={<FacultyMember />} />
+
+      <Route path="/faculty" element={<FacultyLayout />}>
+        <Route path="reports" element={<FacultyReport />} />
+        <Route path="statistics" element={<FacultyStatistics />} />
+      </Route>
       </Routes>
     </Router>
   );
