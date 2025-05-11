@@ -42,6 +42,12 @@ function FacultySideBar({ setActivePage, activePage, onWidthChange }) {
       page: "logout",
       icon: <LogOut size={20} />,
     },
+{
+      title: "Company Evaluations",
+      page: "evaluations",
+      icon: <FileText size={20} />,
+      path: 'company/evaluate',
+    },
   ];
 
   const getButtonStyle = (itemPage) => {
@@ -71,6 +77,8 @@ function FacultySideBar({ setActivePage, activePage, onWidthChange }) {
       console.log("Logging out...");
     }
   };
+
+  
 
   const currentWidth = isSidebarHovered ? "16rem" : "4rem";
   React.useEffect(() => {

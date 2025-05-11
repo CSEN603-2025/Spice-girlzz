@@ -18,7 +18,7 @@ import ScheduleCall from './ScheduleCall';
 import StartCall from './StartCall';
 
 
-
+// import CompanyEvaluationsList from './CompanyEvaluationsList';
 import ProfileCompany from './ProfileCompany';
 import CompanyMail from './CompanyMail';
 import CompanyHomePage from './CompanyHomePage';
@@ -84,7 +84,6 @@ function App() {
         <Route path="/company/interns" element={<CompanyInterns />} /> 
         <Route path="/company/posts" element={<CompanyPosts />} /> 
         <Route path="/company/applicants" element={<CompanyApplications />} /> 
-
         
         <Route path="/student/profile" element={<ProfileStudent />} />
         <Route path="/student/available" element={<AvailableInternships />} />
