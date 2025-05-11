@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Mail, User, LogOut, Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import SideBar from "./Components/SideBar";
+import Header from "./Components/Header";
+import "./StudentHomePage.css";
 
 function AppliedInternships() {
   const navigate = useNavigate();
@@ -9,86 +11,144 @@ function AppliedInternships() {
   const [filterStatus, setFilterStatus] = useState("");
   const [filterDate, setFilterDate] = useState("");
   const [selectedInternship, setSelectedInternship] = useState(null);
-  const [appliedInternships, setAppliedInternships] = useState(() => {
-    const saved = sessionStorage.getItem("appliedInternships");
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [sidebarWidth, setSidebarWidth] = useState("4rem");
+  const [appliedInternships, setAppliedInternships] = useState([]);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
   useEffect(() => {
-    sessionStorage.setItem(
-      "appliedInternships",
-      JSON.stringify(appliedInternships)
-    );
-  }, [appliedInternships]);
-
-  // Mock data (only initialize if sessionStorage is empty)
-  useEffect(() => {
-    if (
-      appliedInternships.length === 0 &&
-      !sessionStorage.getItem("appliedInternships")
-    ) {
-      const mockInternships = [
-        {
-          id: 1,
-          title: "Software Engineer",
-          company: "SCAD Technologies",
-          duration: "6 months",
-          isPaid: "paid",
-          expectedSalary: "$2000/month",
-          skillsRequired: "JavaScript, React, Node.js",
-          description: "Develop cutting-edge software solutions.",
-          industry: "Tech",
-          status: "pending",
-          applicationDate: "2025-04-01",
-        },
-        {
-          id: 2,
-          title: "Web Developer",
-          company: "SCAD Systems",
-          duration: "3 months",
-          isPaid: "unpaid",
-          expectedSalary: "$0/month",
-          skillsRequired: "HTML, CSS, JavaScript",
-          description: "Build responsive web applications.",
-          industry: "Tech",
-          status: "current",
-          applicationDate: "2025-03-01",
-          startDate: "2025-04-15",
-        },
-        {
-          id: 3,
-          title: "Data Analyst",
-          company: "SCAD Solutions",
-          duration: "12 months",
-          isPaid: "paid",
-          expectedSalary: "$2500/month",
-          skillsRequired: "Python, SQL, Tableau",
-          description: "Analyze data to drive business decisions.",
-          industry: "Tech",
-          status: "completed",
-          applicationDate: "2024-12-01",
-          startDate: "2025-01-01",
-          endDate: "2025-12-31",
-        },
-      ];
-      setAppliedInternships(mockInternships);
-    }
+    // Load mock internships on mount
+    const mockInternships = [
+      {
+        id: 1,
+        title: "Software Engineer",
+        company: "SCAD Technologies",
+        duration: "6 months",
+        isPaid: "paid",
+        expectedSalary: "$2000/month",
+        skillsRequired: "JavaScript, React, Node.js",
+        description: "Develop cutting-edge software solutions.",
+        industry: "Tech",
+        status: "pending",
+        applicationDate: "2025-04-01",
+        location: "Remote",
+        role: "Software Engineer",
+        reportCreated: true,
+        evaluationCreated: true,
+      },
+      {
+        id: 2,
+        title: "Web Developer",
+        company: "SCAD Systems",
+        duration: "3 months",
+        isPaid: "unpaid",
+        expectedSalary: "$0/month",
+        skillsRequired: "HTML, CSS, JavaScript",
+        description: "Build responsive web applications.",
+        industry: "Tech",
+        status: "current",
+        applicationDate: "2025-03-01",
+        startDate: "2025-04-15",
+        location: "Remote",
+        role: "Web Developer",
+        reportCreated: true,
+        evaluationCreated: true,
+      },
+      {
+        id: 3,
+        title: "Data Analyst",
+        company: "SCAD Solutions",
+        duration: "12 months",
+        isPaid: "paid",
+        expectedSalary: "$2500/month",
+        skillsRequired: "Python, SQL, Tableau",
+        description: "Analyze data to drive business decisions.",
+        industry: "Tech",
+        status: "completed",
+        applicationDate: "2024-12-01",
+        startDate: "2025-01-01",
+        endDate: "2025-12-31",
+        location: "Remote",
+        role: "Data Analyst",
+          reportCreated: false,
+        evaluationCreated: false,
+      },
+      {
+        id: 4,
+        title: "PWC Summer Internship",
+        company: "PWC",
+        duration: "3 months",
+        isPaid: "paid",
+        expectedSalary: "$3000/month",
+        skillsRequired: "AI, Machine Learning",
+        description: "Work on applied AI projects.",
+        industry: "Consulting",
+        status: "current",
+        applicationDate: "2025-01-01",
+        startDate: "2025-02-01",
+        location: "Cairo, Egypt",
+        role: "Applied AI Intern",
+          reportCreated: true,
+        evaluationCreated: true,
+      },
+      {
+        id: 5,
+        title: "Google UI/UX Winter Internship",
+        company: "Google",
+        duration: "6 months",
+        isPaid: "paid",
+        expectedSalary: "$4000/month",
+        skillsRequired: "UI/UX, Figma",
+        description: "Design user interfaces for web applications.",
+        industry: "Tech",
+        status: "completed",
+        applicationDate: "2023-09-01",
+        startDate: "2023-10-01",
+        endDate: "2024-03-31",
+        location: "USA",
+        role: "UX/UI Designer",
+          reportCreated: false,
+        evaluationCreated: false,
+      },
+      {
+        id: 6,
+        title: "Etisalat Hybrid Data Science Internship",
+        company: "Etisalat",
+        duration: "6 months",
+        isPaid: "paid",
+        expectedSalary: "$2500/month",
+        skillsRequired: "Python, Data Engineering",
+        description: "Build data pipelines and analytics solutions.",
+        industry: "Telecom",
+        status: "completed",
+        applicationDate: "2024-09-01",
+        startDate: "2024-10-01",
+        endDate: "2025-03-31",
+        location: "Cairo, Egypt",
+        role: "Data Engineer",
+          reportCreated: false,
+        evaluationCreated: false,
+      },
+    ];
+    setAppliedInternships(mockInternships);
+    console.log("Initialized appliedInternships:", mockInternships);
   }, []);
 
-  // Filtering logic for Pending and Current/Completed Internships
-  const pendingInternships = appliedInternships
-    .filter((internship) =>
-      ["pending", "finalized", "accepted", "rejected"].includes(
-        internship.status
-      )
-    )
-    .filter((internship) => {
+  useEffect(() => {
+    sessionStorage.setItem("appliedInternships", JSON.stringify(appliedInternships));
+    console.log("Saved to sessionStorage:", appliedInternships);
+  }, [appliedInternships]);
+
+  // Common filtering function
+  const filterInternships = (internships) => {
+    const filtered = internships.filter((internship) => {
       const matchesSearch =
         internship.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         internship.company.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesStatus = filterStatus
-        ? internship.status === filterStatus
-        : true;
+      const matchesStatus = filterStatus ? internship.status === filterStatus : true;
       const matchesDate = filterDate
         ? filterDate === "recent"
           ? new Date(internship.applicationDate) >=
@@ -103,74 +163,71 @@ function AppliedInternships() {
         : true;
       return matchesSearch && matchesStatus && matchesDate;
     });
+    console.log("Filtered internships:", filtered);
+    return filtered;
+  };
 
-  const currentAndCompletedInternships = appliedInternships
-    .filter((internship) =>
+  // Filtering logic for Pending Internships
+  const pendingInternships = filterInternships(
+    appliedInternships.filter((internship) =>
+      ["pending", "finalized", "accepted", "rejected"].includes(internship.status)
+    )
+  );
+
+  // Filtering logic for Current/Completed Internships
+  const currentCompletedInternships = filterInternships(
+    appliedInternships.filter((internship) =>
       ["current", "completed"].includes(internship.status)
     )
-    .filter((internship) => {
-      const matchesSearch =
-        internship.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        internship.company.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesStatus = filterStatus
-        ? internship.status === filterStatus
-        : true;
-      const matchesDate = filterDate
-        ? filterDate === "recent"
-          ? new Date(internship.startDate || internship.applicationDate) >=
-            new Date(
-              appliedInternships
-                .filter((i) => i.startDate)
-                .map((i) => i.startDate)
-                .sort()
-                .slice(-1)[0] || internship.applicationDate
-            )
-          : new Date(internship.startDate || internship.applicationDate) <=
-            new Date(
-              appliedInternships
-                .filter((i) => i.startDate)
-                .map((i) => i.startDate)
-                .sort()[0] || internship.applicationDate
-            )
-        : true;
-      return matchesSearch && matchesStatus && matchesDate;
-    });
+  );
+
+const handleCreateReport = (internshipId) => {
+  setAppliedInternships((prev) =>
+    prev.map((internship) =>
+      internship.id === internshipId
+        ? { ...internship, reportCreated: true }
+        : internship
+    )
+  );
+  navigate("/student/report", { state: { internshipId } });
+};
+
+  const handleCreateEvaluation = (internshipId) => {
+    setAppliedInternships((prev) =>
+      prev.map((internship) =>
+        internship.id === internshipId
+          ? { ...internship, evaluationCreated: true }
+          : internship
+      )
+    );
+    navigate("/student/evaluations");
+  };
+
+  console.log("Current/Completed internships:", currentCompletedInternships);
 
   return (
     <div style={styles.container}>
-      {/* Header */}
-      <header style={styles.header}>
-        <h2 style={styles.title}>GUC Internship System</h2>
-        <div style={styles.headerButtons}>
-          <button style={styles.headerBtn}>
-            <Mail size={24} />
-          </button>
-          <button style={styles.headerBtn} onClick={() => navigate("/student")}>
-            <Home size={24} />
-          </button>
-          <button
-            style={styles.headerBtn}
-            onClick={() => navigate("/student/Profile")}
-          >
-            <User size={24} />
-          </button>
-          <button style={styles.headerBtn} onClick={() => navigate("/")}>
-            <LogOut size={24} />
-          </button>
-        </div>
-      </header>
-
-      <div style={styles.layout}>
-        {/* Sidebar */}
+      <Header />
+      <div style={{ ...styles.layout, marginTop: "4rem", minHeight: "calc(100vh - 4rem)" }}>
         <div style={styles.sidebar}>
           <SideBar
-            setActivePage={(page) =>
-              navigate(`/student${page === "home" ? "" : "/" + page}`)
-            }
+            setActivePage={(page) => navigate(`/student${page === "home" ? "" : "/" + page}`)}
+            isOpen={isSidebarOpen}
+            setSidebarWidth={setSidebarWidth}
           />
         </div>
-        {/* Main Content */}
-        <main style={{ flex: 1, padding: "1.5rem", overflowY: "auto" }}>
+        <main
+          style={{
+            flex: 1,
+            padding: "1.5rem",
+            overflowY: "auto",
+            marginLeft: window.innerWidth > 768 ? sidebarWidth : "0",
+            width: window.innerWidth > 768 ? `calc(100% - ${sidebarWidth})` : "100%",
+            transition: "margin-left 0.3s ease-in-out, width 0.3s ease-in-out",
+            boxSizing: "border-box",
+            backgroundColor: "#f9fafb",
+          }}
+        >
           <h2
             style={{
               fontSize: "1.5rem",
@@ -196,14 +253,14 @@ function AppliedInternships() {
               placeholder="Search by job title or company name"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              style={styles.filterButtons}
-              onFocus={(e) => (e.target.style.boxShadow = "0 0 0 2px #3b82f6")}
+              style={{...styles.filterButtons, width: "18rem"}}
+              onFocus={(e) => (e.target.style.boxShadow = "0 0 0 2px #2a9d8f")}
               onBlur={(e) => (e.target.style.boxShadow = "none")}
             />
             <select
               onChange={(e) => setFilterStatus(e.target.value)}
               style={styles.filterButtons}
-              onFocus={(e) => (e.target.style.boxShadow = "0 0 0 2px #3b82f6")}
+              onFocus={(e) => (e.target.style.boxShadow = "0 0 0 2px #2a9d8f")}
               onBlur={(e) => (e.target.style.boxShadow = "none")}
             >
               <option value="">Filter by Status</option>
@@ -217,7 +274,7 @@ function AppliedInternships() {
             <select
               onChange={(e) => setFilterDate(e.target.value)}
               style={styles.filterButtons}
-              onFocus={(e) => (e.target.style.boxShadow = "0 0 0 2px #3b82f6")}
+              onFocus={(e) => (e.target.style.boxShadow = "0 0 0 2px #2a9d8f")}
               onBlur={(e) => (e.target.style.boxShadow = "none")}
             >
               <option value="">Filter by Date</option>
@@ -257,83 +314,33 @@ function AppliedInternships() {
               Pending Applications
             </h3>
             {pendingInternships.length > 0 ? (
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(15rem, 1fr))",
-                  gap: "1.5rem",
-                }}
-              >
+              <div className="cardHolder">
                 {pendingInternships.map((internship) => (
-                  <div
-                    key={internship.id}
-                    style={{
-                      background: "#fff",
-                      padding: "1rem",
-                      borderRadius: "0.375rem",
-                      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                      transition: "box-shadow 0.3s, background-color 0.3s",
-                    }}
-                  >
-                    <h4
-                      style={{
-                        margin: "0 0 0.75rem",
-                        fontSize: "1.25rem",
-                        fontWeight: "bold",
-                        color: "#1f2937",
-                      }}
-                    >
-                      {internship.title}
-                    </h4>
-                    <p
-                      style={{
-                        margin: "0.5rem 0",
-                        fontSize: "0.875rem",
-                        color: "#4b5563",
-                      }}
-                    >
-                      <strong>Company:</strong> {internship.company}
-                    </p>
-                    <p
-                      style={{
-                        margin: "0.5rem 0",
-                        fontSize: "0.875rem",
-                        color: "#4b5563",
-                      }}
-                    >
-                      <strong>Duration:</strong> {internship.duration}
-                    </p>
-                    <p
-                      style={{
-                        margin: "0.5rem 0",
-                        fontSize: "0.875rem",
-                        color: "#4b5563",
-                      }}
-                    >
-                      <strong>Status:</strong>{" "}
-                      {internship.status.charAt(0).toUpperCase() +
-                        internship.status.slice(1)}
-                    </p>
-                    <button
-                      style={{
-                        padding: "0.5rem 1rem",
-                        background: "#6f60fa",
-                        color: "#fff",
-                        borderRadius: "0.25rem",
-                        cursor: "pointer",
-                        fontSize: "0.875rem",
-                        marginTop: "0.75rem",
-                      }}
-                      onClick={() => setSelectedInternship(internship)}
-                      onMouseOver={(e) =>
-                        (e.target.style.background = "#2563eb")
-                      }
-                      onMouseOut={(e) =>
-                        (e.target.style.background = "#3b82f6")
-                      }
-                    >
-                      View Details
-                    </button>
+                  <div className="card" key={internship.id}>
+                    <div className="card-header">
+                      <h3 className="program-title">{internship.title}</h3>
+                      <div className="company-info">
+                        <span className="company-name">{internship.company}</span>
+                        <span className="company-location">
+                          {internship.location || "Location not specified"}
+                        </span>
+                        <span className="company-location">{internship.role || internship.title}</span>
+                      </div>
+                    </div>
+                    <div className="card-footer">
+                      <div className="alumni-count">
+                        <span className="pin-icon">📌</span>
+                        <span className="status">{internship.status}</span>
+                      </div>
+                     
+                      <button
+className="actionButton"
+                        onClick={() => setSelectedInternship(internship)}
+  
+                      >
+                        View Details
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -359,93 +366,51 @@ function AppliedInternships() {
                 color: "#1f2937",
               }}
             >
-              Current & Completed Internships
+              My Internships
             </h3>
-            {currentAndCompletedInternships.length > 0 ? (
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(15rem, 1fr))",
-                  gap: "1.5rem",
-                }}
-              >
-                {currentAndCompletedInternships.map((internship) => (
-                  <div
-                    key={internship.id}
-                    style={{
-                      background: "#fff",
-                      padding: "1rem",
-                      borderRadius: "0.375rem",
-                      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                      transition: "box-shadow 0.3s, background-color 0.3s",
-                    }}
-                  >
-                    <h4
-                      style={{
-                        margin: "0 0 0.75rem",
-                        fontSize: "1.25rem",
-                        fontWeight: "bold",
-                        color: "#1f2937",
-                      }}
-                    >
-                      {internship.title}
-                    </h4>
-                    <p
-                      style={{
-                        margin: "0.5rem 0",
-                        fontSize: "0.875rem",
-                        color: "#4b5563",
-                      }}
-                    >
-                      <strong>Company:</strong> {internship.company}
-                    </p>
-                    <p
-                      style={{
-                        margin: "0.5rem 0",
-                        fontSize: "0.875rem",
-                        color: "#4b5563",
-                      }}
-                    >
-                      <strong>Duration:</strong> {internship.duration}
-                    </p>
-                    <p
-                      style={{
-                        margin: "0.5rem 0",
-                        fontSize: "0.875rem",
-                        color: "#4b5563",
-                      }}
-                    >
-                      <strong>Status:</strong>{" "}
-                      {internship.status.charAt(0).toUpperCase() +
-                        internship.status.slice(1)}
-                    </p>
-                    <button
-                      style={{
-                        padding: "0.5rem 1rem",
-                        background: "#3b82f6",
-                        color: "#fff",
-                        borderRadius: "0.25rem",
-                        cursor: "pointer",
-                        fontSize: "0.875rem",
-                        marginTop: "0.75rem",
-                      }}
-                      onClick={() => setSelectedInternship(internship)}
-                      onMouseOver={(e) =>
-                        (e.target.style.background = "#2563eb")
-                      }
-                      onMouseOut={(e) =>
-                        (e.target.style.background = "#3b82f6")
-                      }
-                    >
-                      View Details
-                    </button>
+            {currentCompletedInternships.length > 0 ? (
+              <div className="cardHolder">
+                {currentCompletedInternships.map((internship) => (
+                  <div className="card" key={internship.id}>
+                    <div className="card-header">
+                      <h3 className="program-title">{internship.title}</h3>
+                      <div className="company-info">
+                        <span className="company-name">{internship.company}</span>
+                        <span className="company-location">
+                          {internship.location || "Location not specified"}
+                        </span>
+                        <span className="company-location">{internship.role || internship.title}</span>
+                      </div>
+                    </div>
+                    <div className="card-footer">
+                      <div className="alumni-count">
+                        <span className="pin-icon">📌</span>
+                                             <span className="post-date">
+                        {internship.startDate
+                          ? `${new Date(internship.startDate).toLocaleString("default", {
+                              month: "short",
+                              year: "numeric",
+                            })} - ${internship.status === "current" ? "Present" : new Date(internship.endDate).toLocaleString("default", {
+                              month: "short",
+                              year: "numeric",
+                            })}`
+                          : "Dates not specified"}
+                      </span>
+                      </div>
+ 
+                      <button
+className="actionButton"
+                        onClick={() => setSelectedInternship(internship)}
+
+                      >
+                        View Details
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <p style={{ color: "#4b5563" }}>
-                No current or completed Internships.
-              </p>
+              <p style={{ color: "#4b5563" }}>No current or completed internships.</p>
             )}
           </div>
         </main>
@@ -520,8 +485,7 @@ function AppliedInternships() {
                 fontSize: "0.875rem",
               }}
             >
-              <strong>Expected Salary:</strong>{" "}
-              {selectedInternship.expectedSalary}
+              <strong>Expected Salary:</strong> {selectedInternship.expectedSalary}
             </p>
             <p
               style={{
@@ -530,8 +494,7 @@ function AppliedInternships() {
                 fontSize: "0.875rem",
               }}
             >
-              <strong>Skills Required:</strong>{" "}
-              {selectedInternship.skillsRequired}
+              <strong>Skills Required:</strong> {selectedInternship.skillsRequired}
             </p>
             <p
               style={{
@@ -553,36 +516,96 @@ function AppliedInternships() {
               {selectedInternship.status.charAt(0).toUpperCase() +
                 selectedInternship.status.slice(1)}
             </p>
-            {/* Simulate status update for demo */}
-            <select
-              value={selectedInternship.status}
-              onChange={(e) => {
-                const newStatus = e.target.value;
-                setAppliedInternships((prev) =>
-                  prev.map((internship) =>
-                    internship.id === selectedInternship.id
-                      ? { ...internship, status: newStatus }
-                      : internship
-                  )
-                );
-                setSelectedInternship({
-                  ...selectedInternship,
-                  status: newStatus,
-                });
-              }}
-              style={{
-                padding: "0.5rem",
-                borderRadius: "0.25rem",
-                marginTop: "1rem",
-              }}
-            >
-              <option value="pending">Pending</option>
-              <option value="finalized">Finalized</option>
-              <option value="accepted">Accepted</option>
-              <option value="rejected">Rejected</option>
-              <option value="current">Current</option>
-              <option value="completed">Completed</option>
-            </select>
+            {["pending", "finalized", "accepted", "rejected"].includes(selectedInternship.status) ? (
+              <p
+                style={{
+                  color: "#4b5563",
+                  marginTop: "1rem",
+                  fontSize: "0.875rem",
+                }}
+              >
+                Status cannot be changed for pending applications.
+              </p>
+            ) : (
+              <select
+                value={selectedInternship.status}
+                onChange={(e) => {
+                  const newStatus = e.target.value;
+                  setAppliedInternships((prev) =>
+                    prev.map((internship) =>
+                      internship.id === selectedInternship.id
+                        ? { ...internship, status: newStatus }
+                        : internship
+                    )
+                  );
+                  setSelectedInternship({ ...selectedInternship, status: newStatus });
+                }}
+                style={{
+                  padding: "0.5rem",
+                  borderRadius: "0.25rem",
+                  marginTop: "1rem",
+                }}
+              >
+                <option value="current">Current</option>
+                <option value="completed">Completed</option>
+              </select>
+            )}
+                        {selectedInternship.status === "completed" && (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0.5rem",
+                  marginTop: "1rem",
+                }}
+              >
+                <button
+                  style={{
+                    padding: "0.5rem 1rem",
+                    background: selectedInternship.reportCreated ? "#d1d5db" : "#2a9d8f",
+                    color: "#fff",
+                    borderRadius: "0.25rem",
+                    cursor: selectedInternship.reportCreated ? "not-allowed" : "pointer",
+                  }}
+                  onClick={() => handleCreateReport(selectedInternship.id)}
+                  disabled={selectedInternship.reportCreated}
+                  onMouseOver={(e) =>
+                    !selectedInternship.reportCreated &&
+                    (e.target.style.background = "#21867a")
+                  }
+                  onMouseOut={(e) =>
+                    !selectedInternship.reportCreated &&
+                    (e.target.style.background = "#2a9d8f")
+                  }
+                >
+                  {selectedInternship.reportCreated ? "Report Created" : "Create a Report"}
+                </button>
+                <button
+                  style={{
+                    padding: "0.5rem 1rem",
+                    background: selectedInternship.evaluationCreated ? "#d1d5db" : "#2a9d8f",
+                    color: "#fff",
+                    borderRadius: "0.25rem",
+                    cursor: selectedInternship.evaluationCreated ? "not-allowed" : "pointer",
+                  }}
+                  onClick={() => handleCreateEvaluation(selectedInternship.id)}
+                  disabled={selectedInternship.evaluationCreated}
+                  onMouseOver={(e) =>
+                    !selectedInternship.evaluationCreated &&
+                    (e.target.style.background = "#21867a")
+                  }
+                  onMouseOut={(e) =>
+                    !selectedInternship.evaluationCreated &&
+                    (e.target.style.background = "#2a9d8f")
+                  }
+                >
+                  {selectedInternship.evaluationCreated
+                    ? "Evaluation Created"
+                    : "Create an Evaluation Form"}
+                </button>
+              </div>
+            )}
+      
             <div
               style={{
                 display: "flex",
@@ -615,8 +638,8 @@ function AppliedInternships() {
 
 const styles = {
   container: {
-    fontFamily: "Segoe UI, sans-serif",
-    backgroundColor: "#f3f4f6",
+    fontFamily: "Inter, sans-serif",
+    backgroundColor: "#F3F4F6",
     minHeight: "100vh",
     display: "flex",
     flexDirection: "column",
@@ -658,32 +681,6 @@ const styles = {
   layout: {
     display: "flex",
     flex: 1,
-  },
-  sidebar: {
-    width: "16rem",
-    background: "#fff",
-    boxShadow: "2px 0 4px rgba(0, 0, 0, 0.1)",
-    display: "flex",
-    flexDirection: "column",
-    height: "calc(100vh - 4rem)", // Fill available height minus header
-    overflowY: "auto", // Handle overflow if content exceeds height
-  },
-  sidebarFooter: {
-    padding: "1rem",
-    borderTop: "1px solid #e5e7eb",
-  },
-  logoutBtn: {
-    width: "100%",
-    padding: "0.75rem",
-    textAlign: "left",
-    color: "#4b5563",
-    borderRadius: "0.375rem",
-    display: "flex",
-    alignItems: "center",
-    background: "none",
-    border: "none",
-    cursor: "pointer",
-    fontSize: "0.875rem",
   },
   filterButtons: {
     fontSize: "0.8rem",

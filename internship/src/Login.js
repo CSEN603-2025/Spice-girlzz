@@ -24,11 +24,30 @@ function LoginPage() {
       alert("Invalid email domain");
       return;
     }
-    if (email.endsWith("mervat")) {
+
+    // Initialize student profile in sessionStorage
+    const initialProfile = {
+      name: "...",
+      isFirstLogin: true,
+      hasProfile: false,
+      email: email,
+      phone: "",
+      gender: "",
+      Address: "",
+      nationality: "",
+      language: "",
+      jobInterests: [],
+      previousInternships: [],
+      partTimeJobs: [],
+      collegeActivities: [],
+      education: [],
+    };
+    sessionStorage.setItem("studentProfile", JSON.stringify(initialProfile));
+
+    if (email.endsWith("@mervat")) {
       navigate("/facultyMember");
-    }
-    if (email.endsWith("@student.guc.edu.eg")) {
-      navigate("/student"); // Redirect to student page for now
+    } else if (email.endsWith("@student.guc.edu.eg")) {
+      navigate("/student");
     } else if (email.endsWith("@guc.edu.eg")) {
       navigate("/staff");
     }

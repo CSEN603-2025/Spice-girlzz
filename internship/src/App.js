@@ -16,6 +16,8 @@ import AppliedInternships from "./Applied internships";
 import ProfileStudent from "./ProfileStudent";
 import AvailableInternships from "./AvailableInternships";
 import FacultyMember from "./FacultyMember";
+import Report from "./Report";
+
 
 function App() {
   const [appliedInternships, setAppliedInternships] = useState(() => {
@@ -59,9 +61,10 @@ function App() {
           }
         />
         <Route path="/student/profile" element={<ProfileStudent />} />
-        <Route path="/student/available" element={<AvailableInternships />} />
+       <Route path="/student/available" element={<AvailableInternships />} />
         <Route path="/staff" element={<SCADStaffDashboard />} />
         <Route path="/facultyMember" element={<FacultyMember />} />
+           <Route path="/student/report" element={<Report />} />
       </Routes>
     </Router>
   );

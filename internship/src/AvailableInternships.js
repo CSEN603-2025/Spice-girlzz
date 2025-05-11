@@ -11,6 +11,8 @@ function AvailableInternships() {
   const [isPaid, setIsPaid] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedInternship, setSelectedInternship] = useState(null);
+  const [sidebarWidth, setSidebarWidth] = useState('4rem'); 
+
   const [appliedInternships, setAppliedInternships] = useState(() => {
     const saved = sessionStorage.getItem('appliedInternships');
     return saved ? JSON.parse(saved) : [];
@@ -138,29 +140,29 @@ function AvailableInternships() {
         </div>
       </header>
 
-      {/* Layout */}
-      <div style={{ ...styles.layout, marginTop: '4rem', minHeight: 'calc(100vh - 4rem)' }}>
-        {/* Sidebar */}
-        <div style={styles.sidebar}>
-          <SideBar
-            setActivePage={(page) => navigate(`/student${page === 'home' ? '' : '/' + page}`)}
-            isOpen={isSidebarOpen}
-          />
-        </div>
+     <div style={{ ...styles.layout, marginTop: '4rem', minHeight: 'calc(100vh - 4rem)' }}>
+          {/* Sidebar */}
+          <div style={styles.sidebar}>
+            <SideBar
+              setActivePage={(page) => navigate(`/student${page === 'home' ? '' : '/' + page}`)}
+              isOpen={isSidebarOpen}
+              setSidebarWidth={setSidebarWidth} // Add setSidebarWidth prop
+            />
+          </div>
 
-        {/* Main Content */}
-        <main
-          style={{
-            flex: 1,
-            padding: '1.5rem',
-            overflowY: 'auto',
-            marginLeft: isSidebarOpen && window.innerWidth > 768 ? '16rem' : '0',
-            transition: 'margin-left 0.3s ease-in-out',
-            width: isSidebarOpen && window.innerWidth > 768 ? 'calc(100% - 16rem)' : '100%',
-            boxSizing: 'border-box',
-            backgroundColor: '#f9fafb',
-          }}
-        >
+          {/* Main Content */}
+          <main
+            style={{
+              flex: 1,
+              padding: '1.5rem',
+              overflowY: 'auto',
+              marginLeft: window.innerWidth > 768 ? sidebarWidth : '0',
+              width: window.innerWidth > 768 ? `calc(100% - ${sidebarWidth})` : '100%',
+              transition: 'margin-left 0.3s ease-in-out, width 0.3s ease-in-out',
+              boxSizing: 'border-box',
+              backgroundColor: '#f9fafb',
+            }}
+            >
           <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem', color: '#1f2937' }}>
             Available Internships
           </h2>

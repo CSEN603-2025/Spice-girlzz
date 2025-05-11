@@ -1,11 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Briefcase, FileText, BarChart2, Search } from "lucide-react";
 
-function SideBar({ setActivePage }) {
+function SideBar({ setActivePage, isOpen, setSidebarWidth }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [isSidebarHovered, setIsSidebarHovered] = useState(false);
+  const [hoveredButton, setHoveredButton] = useState(null);
+
+  useEffect(() => {
+    const width = isSidebarHovered || isOpen ? "16rem" : "4rem";
+    setSidebarWidth(width);
+  }, [isSidebarHovered, isOpen, setSidebarWidth]);
 
   const navItems = [
     {
@@ -15,7 +21,7 @@ function SideBar({ setActivePage }) {
       path: "/student/applied",
     },
     {
-      title: "Weekly Report",
+      title: "Report",
       page: "report",
       icon: <FileText size={20} />,
       path: "/student/report",
@@ -40,8 +46,8 @@ function SideBar({ setActivePage }) {
       width: "100%",
       padding: "0.75rem",
       textAlign: "left",
-      color: "#000",
-      background: isActive ? "#4d8f88" : "transparent",
+      color: isActive || hoveredButton === itemPath ? "#fff" : "#000",
+      background: isActive ? "#2a9d8f" : hoveredButton === itemPath ? "#2a9d8f" : "transparent",
       borderRadius: "0.375rem",
       fontSize: "0.875rem",
       fontWeight: "500",
@@ -63,7 +69,10 @@ function SideBar({ setActivePage }) {
   return (
     <div
       onMouseEnter={() => setIsSidebarHovered(true)}
-      onMouseLeave={() => setIsSidebarHovered(false)}
+      onMouseLeave={() => {
+        setIsSidebarHovered(false);
+        setHoveredButton(null);
+      }}
       style={{
         flex: 1,
         background: "linear-gradient(#fff 100%)",
@@ -86,19 +95,16 @@ function SideBar({ setActivePage }) {
             <button
               style={getButtonStyle(item.path)}
               onClick={() => handleNavigation(item.page, item.path)}
-              onMouseOver={(e) => {
-                if (location.pathname !== item.path) {
-                  e.currentTarget.style.background = "#4d8f88";
-                }
-              }}
-              onMouseOut={(e) => {
-                if (location.pathname !== item.path) {
-                  e.currentTarget.style.background = "transparent";
-                }
-              }}
+              onMouseOver={() => setHoveredButton(item.path)}
+              onMouseOut={() => setHoveredButton(null)}
             >
               {React.cloneElement(item.icon, {
-                color: location.pathname === item.path ? "#bcb8b1" : "#999",
+                color:
+                  location.pathname === item.path
+                    ? "#bcb8b1"
+                    : hoveredButton === item.path
+                    ? "#fff"
+                    : "#999",
               })}
               {isSidebarHovered && (
                 <span style={{ whiteSpace: "nowrap", overflow: "hidden" }}>
