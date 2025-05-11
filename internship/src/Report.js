@@ -290,47 +290,149 @@ function Report() {
   };
 
   const handleDownloadPDF = (reportId) => {
-    const reportToDownload = reports.find((r) => r.id === reportId);
-    if (reportToDownload) {
-      const pdfContent = `
-\\documentclass{article}
-\\usepackage[utf8]{inputenc}
-\\usepackage{geometry}
-\\geometry{a4paper, margin=1in}
-\\usepackage{enumitem}
+  const reportToDownload = evaluations.find((r) => r.id === reportId);
+  if (reportToDownload) {
+    const doc = new jsPDF();
+    
+    // Set document properties
+    doc.setProperties({
+      title: `${reportToDownload.title} Report`,
+      subject: 'Internship Evaluation Report',
+      author: 'GUC Internship System',
+      creator: 'GUC Internship System'
+    });
 
-\\title{${reportToDownload.title}}
-\\author{Student Report}
-\\date{}
+    // Add logo or header
+    doc.setFontSize(20);
+    doc.setTextColor(40, 157, 143); // #2a9d8f color
+    doc.text('German University in Cairo', 105, 20, { align: 'center' });
+    doc.setFontSize(16);
+    doc.setTextColor(0, 0, 0); // Black color
+    doc.text('Internship Evaluation Report', 105, 30, { align: 'center' });
 
-\\begin{document}
+    // Add horizontal line
+    doc.setDrawColor(40, 157, 143);
+    doc.setLineWidth(0.5);
+    doc.line(20, 35, 190, 35);
 
-\\maketitle
+    // Title Section
+    doc.setFontSize(18);
+    doc.setTextColor(40, 157, 143);
+    doc.text(reportToDownload.title, 20, 45);
+    
+    // Internship Info
+    doc.setFontSize(12);
+    doc.setTextColor(0, 0, 0);
+    doc.text(`Internship at: ${reportToDownload.internshipTitle}`, 20, 55);
 
-\\section{Introduction}
-${reportToDownload.introduction}
+    // Introduction Section
+    doc.setFontSize(14);
+    doc.setTextColor(40, 157, 143);
+    doc.text('Introduction', 20, 70);
+    doc.setFontSize(12);
+    doc.setTextColor(0, 0, 0);
+    const introductionLines = doc.splitTextToSize(
+      reportToDownload.introduction, 
+      170
+    );
+    doc.text(introductionLines, 20, 80);
 
-\\section{Body}
-${reportToDownload.body}
-
-\\section{Helpful Courses}
-\\begin{itemize}
-  ${reportToDownload.courses.map((course) => `\\item ${course}`).join("\n  ")}
-\\end{itemize}
-
-\\end{document}
-      `;
-      const blob = new Blob([pdfContent], { type: "text/plain" });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${reportToDownload.title.replace(/ /g, "_")}.tex`;
-      a.click();
-      window.URL.revokeObjectURL(url);
-      alert("Download the .tex file and compile it with LaTeX to generate the PDF.");
+    // Body Section
+    let yPosition = 80 + introductionLines.length * 7;
+    if (yPosition > 250) {
+      doc.addPage();
+      yPosition = 20;
     }
-  };
+    
+    doc.setFontSize(14);
+    doc.setTextColor(40, 157, 143);
+    doc.text('Report Details', 20, yPosition);
+    doc.setFontSize(12);
+    doc.setTextColor(0, 0, 0);
+    yPosition += 10;
+    const bodyLines = doc.splitTextToSize(reportToDownload.body, 170);
+    doc.text(bodyLines, 20, yPosition);
 
+    // Helpful Courses Section
+    yPosition += bodyLines.length * 7 + 10;
+    if (yPosition > 250) {
+      doc.addPage();
+      yPosition = 20;
+    }
+    
+    doc.setFontSize(14);
+    doc.setTextColor(40, 157, 143);
+    doc.text('Helpful Courses', 20, yPosition);
+    doc.setFontSize(12);
+    doc.setTextColor(0, 0, 0);
+    yPosition += 10;
+    
+    reportToDownload.courses.forEach((course, index) => {
+      if (yPosition > 250) {
+        doc.addPage();
+        yPosition = 20;
+      }
+      doc.text(`• ${course}`, 25, yPosition);
+      yPosition += 7;
+    });
+
+    // Recommendation Section
+    yPosition += 10;
+    if (yPosition > 250) {
+      doc.addPage();
+      yPosition = 20;
+    }
+    
+    doc.setFontSize(14);
+    doc.setTextColor(40, 157, 143);
+    doc.text('Recommendation', 20, yPosition);
+    doc.setFontSize(12);
+    doc.setTextColor(0, 0, 0);
+    yPosition += 10;
+    
+    doc.text(
+      `Would you recommend this internship? ${reportToDownload.recommend === "yes" ? "Yes" : "No"}`,
+      20,
+      yPosition
+    );
+    
+    if (reportToDownload.recommend === "yes" && reportToDownload.recommendReason) {
+      yPosition += 10;
+      if (yPosition > 250) {
+        doc.addPage();
+        yPosition = 20;
+      }
+      doc.text('Reason:', 20, yPosition);
+      yPosition += 7;
+      const reasonLines = doc.splitTextToSize(reportToDownload.recommendReason, 170);
+      doc.text(reasonLines, 25, yPosition);
+    }
+
+    // Footer
+    const pageCount = doc.internal.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+      doc.setPage(i);
+      doc.setFontSize(10);
+      doc.setTextColor(150, 150, 150);
+      doc.text(
+        `Page ${i} of ${pageCount}`,
+        105,
+        287,
+        { align: 'center' }
+      );
+      doc.text(
+        'GUC Internship System - Confidential',
+        105,
+        292,
+        { align: 'center' }
+      );
+    }
+
+    // Save the PDF with a proper filename
+    const fileName = `${reportToDownload.title.replace(/[^a-zA-Z0-9]/g, '_')}_Evaluation.pdf`;
+    doc.save(fileName);
+  }
+};
   const closeModal = () => {
     setIsModalOpen(false);
     setViewingReport(null);
