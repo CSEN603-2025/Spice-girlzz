@@ -11,18 +11,16 @@ function AvailableInternships() {
   const [isPaid, setIsPaid] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedInternship, setSelectedInternship] = useState(null);
-  const [sidebarWidth, setSidebarWidth] = useState('4rem'); 
-
+  const [sidebarWidth, setSidebarWidth] = useState('4rem');
   const [appliedInternships, setAppliedInternships] = useState(() => {
     const saved = sessionStorage.getItem('appliedInternships');
     return saved ? JSON.parse(saved) : [];
   });
+  const [alertMessage, setAlertMessage] = useState('');
+  const [showAlert, setShowAlert] = useState(false);
+  const [newInternshipAlert, setNewInternshipAlert] = useState(null);
 
-  useEffect(() => {
-    sessionStorage.setItem('appliedInternships', JSON.stringify(appliedInternships));
-  }, [appliedInternships]);
-
-  const availableInternships = [
+  const [availableInternships, setAvailableInternships] = useState([
     {
       id: 1,
       companyName: 'SCAD Technologies',
@@ -59,7 +57,40 @@ function AvailableInternships() {
       industry: 'Tech',
       status: 'available',
     },
-  ];
+  ]);
+
+  // Trigger alert for applied internships
+  const triggerApplyAlert = (message) => {
+    setAlertMessage(message);
+    setShowAlert(true);
+    setTimeout(() => {
+      setShowAlert(false);
+    }, 1000);
+  };
+
+  // Trigger alert for new internships
+  const triggerNewInternshipAlert = (internship) => {
+    setNewInternshipAlert({
+      message: `New internship cycle starts in 1 week , prepare your documents !`,
+      id: Date.now(),
+    });
+    setTimeout(() => {
+      setNewInternshipAlert(null);
+    }, 3000); // New internship alert lasts 3 seconds
+  };
+
+  // Monitor changes to availableInternships
+  useEffect(() => {
+    sessionStorage.setItem('appliedInternships', JSON.stringify(appliedInternships));
+  }, [appliedInternships]);
+
+  // Detect new internships
+  useEffect(() => {
+    if (availableInternships.length > 0) {
+      const latestInternship = availableInternships[availableInternships.length - 1];
+      triggerNewInternshipAlert(latestInternship);
+    }
+  }, [availableInternships.length]);
 
   const filteredInternships = availableInternships.filter((internship) => {
     const search = searchQuery.toLowerCase();
@@ -73,6 +104,7 @@ function AvailableInternships() {
   });
 
   const handleApply = (internship) => {
+    triggerApplyAlert(`Applied to ${internship.jobTitle} at ${internship.companyName}!`);
     const appliedInternship = {
       id: internship.id,
       title: internship.jobTitle,
@@ -90,7 +122,6 @@ function AvailableInternships() {
       ...prevAppliedInternships,
       appliedInternship,
     ]);
-    alert(`Applied to ${internship.jobTitle} at ${internship.companyName}!`);
     setSelectedInternship(null);
   };
 
@@ -98,71 +129,57 @@ function AvailableInternships() {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  // Simulate adding a new internship (for demo purposes)
+
   return (
     <div style={styles.container}>
       {/* Header */}
       <header style={{ ...styles.header, position: 'fixed', top: 0, width: '100%', zIndex: 1001, boxSizing: 'border-box' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: '1 0 auto', maxWidth: '50%' }}>
-          <button
-            style={styles.headerBtn}
-            title="Toggle Sidebar"
-            onClick={toggleSidebar}
-          >
+          <button style={styles.headerBtn} title="Toggle Sidebar" onClick={toggleSidebar}>
             <Menu size={20} />
           </button>
           <h2 style={styles.title}>GUC Internship System</h2>
         </div>
         <div style={styles.headerButtons}>
-          <button
-            style={styles.headerBtn}
-            onClick={() => navigate('/student/messages')}
-          >
+          <button style={styles.headerBtn} onClick={() => navigate('/student/messages')}>
             <Mail size={20} />
           </button>
-          <button
-            style={styles.headerBtn}
-            onClick={() => navigate('/student')}
-          >
+          <button style={styles.headerBtn} onClick={() => navigate('/student')}>
             <Home size={20} />
           </button>
-          <button
-            style={styles.headerBtn}
-            onClick={() => navigate('/student/Profile')}
-          >
+          <button style={styles.headerBtn} onClick={() => navigate('/student/Profile')}>
             <User size={20} />
           </button>
-          <button
-            style={styles.headerBtn}
-            onClick={() => navigate('/')}
-          >
+          <button style={styles.headerBtn} onClick={() => navigate('/')}>
             <LogOut size={20} />
           </button>
         </div>
       </header>
 
-     <div style={{ ...styles.layout, marginTop: '4rem', minHeight: 'calc(100vh - 4rem)' }}>
-          {/* Sidebar */}
-          <div style={styles.sidebar}>
-            <SideBar
-              setActivePage={(page) => navigate(`/student${page === 'home' ? '' : '/' + page}`)}
-              isOpen={isSidebarOpen}
-              setSidebarWidth={setSidebarWidth} // Add setSidebarWidth prop
-            />
-          </div>
+      <div style={{ ...styles.layout, marginTop: '4rem', minHeight: 'calc(100vh - 4rem)' }}>
+        {/* Sidebar */}
+        <div style={styles.sidebar}>
+          <SideBar
+            setActivePage={(page) => navigate(`/student${page === 'home' ? '' : '/' + page}`)}
+            isOpen={isSidebarOpen}
+            setSidebarWidth={setSidebarWidth}
+          />
+        </div>
 
-          {/* Main Content */}
-          <main
-            style={{
-              flex: 1,
-              padding: '1.5rem',
-              overflowY: 'auto',
-              marginLeft: window.innerWidth > 768 ? sidebarWidth : '0',
-              width: window.innerWidth > 768 ? `calc(100% - ${sidebarWidth})` : '100%',
-              transition: 'margin-left 0.3s ease-in-out, width 0.3s ease-in-out',
-              boxSizing: 'border-box',
-              backgroundColor: '#f9fafb',
-            }}
-            >
+        {/* Main Content */}
+        <main
+          style={{
+            flex: 1,
+            padding: '1.5rem',
+            overflowY: 'auto',
+            marginLeft: window.innerWidth > 768 ? sidebarWidth : '0',
+            width: window.innerWidth > 768 ? `calc(100% - ${sidebarWidth})` : '100%',
+            transition: 'margin-left 0.3s ease-in-out, width 0.3s ease-in-out',
+            boxSizing: 'border-box',
+            backgroundColor: '#f9fafb',
+          }}
+        >
           <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem', color: '#1f2937' }}>
             Available Internships
           </h2>
@@ -359,6 +376,57 @@ function AvailableInternships() {
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
+
+      {/* Existing Apply Alert */}
+      {showAlert && (
+        <div
+          style={{
+            position: 'fixed',
+            top: '1rem',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            backgroundColor: '#10b981',
+            color: '#fff',
+            padding: '0.75rem 1.5rem',
+            borderRadius: '0.5rem',
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+            zIndex: 2000,
+            fontSize: '0.9rem',
+            opacity: showAlert ? 1 : 0,
+            transition: 'opacity 1s ease-in-out',
+          }}
+          role="alert"
+          aria-live="assertive"
+        >
+          {alertMessage}
+        </div>
+      )}
+
+      {/* New Internship Alert */}
+      {newInternshipAlert && (
+        <div
+          style={{
+            position: 'fixed',
+            top: '1rem',
+            right: '1rem',
+            backgroundColor: '#2a9d8f',
+            color: '#fff',
+            padding: '0.75rem 1.5rem',
+            borderRadius: '0.5rem',
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.2)',
+            zIndex: 2001,
+            fontSize: '0.9rem',
+            opacity: 1,
+            transform: 'translateY(0)',
+            transition: 'opacity 0.3s ease-in-out, transform 0.3s ease-in-out',
+            animation: 'fadeIn 0.3s ease-in',
+          }}
+          role="alert"
+          aria-live="assertive"
+        >
+          {newInternshipAlert.message}
+        </div>
+      )}
     </div>
   );
 }
@@ -441,26 +509,24 @@ const styles = {
     boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
     transition: 'background-color 0.2s ease',
   },
-  '@media (max-width: 768px)': {
-    searchInput: {
-      width: '100%',
-    },
-    filterButtons: {
-      minWidth: 'auto',
-    },
-  },
 };
 
 // Animation keyframes and media query
 const styleSheet = document.createElement('style');
 styleSheet.textContent = `
   @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
   }
   @media (max-width: 768px) {
     .main-content {
       margin-left: 0 !important;
+    }
+    .searchInput {
+      width: 100%;
+    }
+    .filterButtons {
+      minWidth: auto;
     }
   }
 `;

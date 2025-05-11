@@ -2,7 +2,7 @@
 
 /* StudentHomePage.css */
 .container {
-font-family: 'Inter', sans-serif;
+  font-family: 'Inter', sans-serif;
   background-color: #F3F4F6;
   min-height: 100vh;
   display: flex;
@@ -19,7 +19,7 @@ font-family: 'Inter', sans-serif;
 }
 
 .title {
-font-family: 'Inter', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 1.25rem;
   font-weight: 600;
   color: #000;
@@ -71,14 +71,23 @@ font-family: 'Inter', sans-serif;
   transition: all 0.4s ease;
 }
 
-
-
-.actionButton:hover{
- background-color: #30b3a3;
-
-  /* Optional subtle scale & shadow */
+.actionButton:hover {
+  background-color: #30b3a3;
   transform: scale(1.02);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.viewAva {
+  background-color: #2a9d8f;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: 0.875rem;
+  transition: all 0.4s ease;
 }
 
 .client-logos {
@@ -92,7 +101,7 @@ font-family: 'Inter', sans-serif;
 }
 
 .client-logo {
-  height: 40px; /* Adjust based on your needs */
+  height: 40px;
   width: auto;
   margin: 0 15px;
   filter: grayscale(100%) contrast(50%);
@@ -112,8 +121,8 @@ font-family: 'Inter', sans-serif;
 .client-logo.visa { color: #1A1F71; }
 .client-logo.amazon { color: #FF9900; }
 
-.cardHolder{
-     display: grid;
+.cardHolder {
+  display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 20px;
   padding: 20px;
@@ -121,12 +130,15 @@ font-family: 'Inter', sans-serif;
   margin: 0 auto;
 }
 
-.card{
+.card {
   background: white;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   padding: 20px;
   transition: transform 0.3s ease;
+  display: flex; /* Make card a flex container */
+  flex-direction: column; /* Stack content vertically */
+  min-height: 200px; /* Ensure cards have a minimum height for uniformity */
 }
 
 .card:hover {
@@ -134,7 +146,12 @@ font-family: 'Inter', sans-serif;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
-/* Card Header */
+.card-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1; /* Allow content to take available space */
+}
+
 .card-header {
   margin-bottom: 15px;
   border-bottom: 1px solid #f0f0f0;
@@ -142,11 +159,10 @@ font-family: 'Inter', sans-serif;
 }
 
 .program-title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #2d3436;
-  margin: 0 0 10px 0;
-  line-height: 1.4;
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #1f2937;
+  margin: 0 0 0.5rem;
 }
 
 .company-info {
@@ -156,21 +172,28 @@ font-family: 'Inter', sans-serif;
   color: #636e72;
 }
 
-.company-name {
-  font-weight: 500;
-  color: #2a9d8f; 
+.company-info .company-name {
+  font-size: 0.875rem;
+  color: #2a9d8f;
 }
 
 .company-location {
   color: #636e72;
 }
 
-.status{
-    color:#E50914;
+.status {
+  color: #E50914;
 }
 
-/* Card Footer */
 .card-footer {
+  margin-top: auto; /* Push footer to the bottom */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+}
+
+.viewfooter {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -193,7 +216,148 @@ font-family: 'Inter', sans-serif;
   font-weight: 500;
 }
 
+.load-more-btn {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
 
+.load-more-btn button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #2a9d8f;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.load-more-btn button:hover {
+  background-color: #35beae;
+}
+
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1002;
+  overflow: hidden; /* Prevent scrolling on the overlay */
+}
+
+.modal-content {
+  position: relative;
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 24rem;
+  width: 100%;
+  margin: 0 auto;
+  max-height: 80vh; /* Set a maximum height relative to viewport */
+  height: 500px; /* Fixed height - adjust as needed */
+  overflow: hidden; /* Hide any content that exceeds the height */
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-body {
+  overflow: hidden; /* Contain any overflowing content */
+  flex-grow: 1; /* Take up remaining space */
+}
+
+.modal-title {
+  margin-bottom: 15px;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 15px;
+    font-size: 1.25rem;
+  font-weight: bold;
+  color: #1f2937;
+  margin: 0 0 0.5rem;
+}
+
+.modal-info {
+  display: flex;
+   border-bottom: 1px solid #f0f0f0;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: #636e72;
+}
+
+.modal-status-message {
+  color: #4b5563;
+  margin-top: 1rem;
+  font-size: 0.875rem;
+}
+
+.modal-status-select {
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  margin-top: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.modal-button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.modal-button {
+  padding: 0.5rem 1rem;
+  background: #2a9d8f;
+  color: #fff;
+  border-radius: 0.25rem;
+  border: none;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: background 0.2s ease;
+}
+
+.modal-button:hover {
+  background: #21867a;
+}
+
+.modal-button-disabled {
+  padding: 0.5rem 1rem;
+  background: #d1d5db;
+  color: #fff;
+  border-radius: 0.25rem;
+  border: none;
+  cursor: not-allowed;
+  font-size: 0.875rem;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.modal-close-button {
+  padding: 0.5rem 1rem;
+  background: #ef4444;
+  color: #fff;
+  border-radius: 0.25rem;
+  border: none;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: background 0.2s ease;
+}
+
+.modal-close-button:hover {
+  background: #dc2626;
+}
 
 /* For responsive design */
 @media (max-width: 768px) {
@@ -203,6 +367,9 @@ font-family: 'Inter', sans-serif;
   .client-logo {
     margin: 10px 15px;
     height: 30px;
+  }
+  .card {
+    min-height: 180px; /* Slightly smaller min-height for mobile */
   }
 }
 

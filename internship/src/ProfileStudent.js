@@ -19,6 +19,8 @@ const [selectedDocument, setSelectedDocument] = useState(null);
     name: '...',
     phone: '',
     email: '',
+    major:'',
+    semester:'',
     gender: '',
     Address: '',
     nationality: '',
@@ -132,6 +134,8 @@ const [selectedDocument, setSelectedDocument] = useState(null);
       name: formData.get('name') || profileData.name,
       phone: formData.get('phone') || profileData.phone,
       email: formData.get('email') || profileData.email,
+      major: formData.get('major') || profileData.major,
+      semester: formData.get('semester') || profileData.semester,
       gender: formData.get('gender') || profileData.gender,
       Address: formData.get('Address') || profileData.Address,
       nationality: formData.get('nationality') || profileData.nationality,
@@ -231,6 +235,10 @@ const [selectedDocument, setSelectedDocument] = useState(null);
                   <ProfileItem label="Name" value={profileData.name} />
                   <ProfileItem label="Phone Number" value={profileData.phone}/>
                   <ProfileItem label="Email" value={profileData.email} />
+                  <ProfileItem label="Major" value={profileData.major} />
+                  <ProfileItem label="Semester" value={profileData.semester} />
+
+
                 </div>
               </div>
 
@@ -317,6 +325,10 @@ const [selectedDocument, setSelectedDocument] = useState(null);
                   <TextInput name="name" label="Full Name" defaultValue={profileData.name} required />
                   <TextInput name="phone" label="Phone Number" defaultValue={profileData.phone} type="tel" />
                   <TextInput name="email" label="Email" defaultValue={profileData.email} type="email" required />
+                  <TextInput name="major" label="Major" defaultValue={profileData.major} type="major" required />
+                  <TextInput name="semester" label="Semester" defaultValue={profileData.semester} type="semester" required />
+
+
 
                   <h4 style={styles.formSectionTitle}>Personal Details</h4>
                   <TextInput name="gender" label="Gender" defaultValue={profileData.gender} />

@@ -17,6 +17,22 @@ import ProfileStudent from "./ProfileStudent";
 import AvailableInternships from "./AvailableInternships";
 import FacultyMember from "./FacultyMember";
 import Report from "./Report";
+import VideoCall from './VideoCall'
+import ScheduleCall from './ScheduleCall';
+import StartCall from './StartCall';
+import EvaluationStudent from "./EvaluationStudent";
+
+
+
+import ProfileCompany from './ProfileCompany';
+import CompanyMail from './CompanyMail';
+import CompanyHomePage from './CompanyHomePage';
+import CompanyPosts from './CompanyPosts';
+import CompanyApplications from './CompanyApplications';
+import CompanyInterns from './CompanyInterns';
+import CompanyEvaluation from './CompanyEvaluation';
+
+
 
 
 function App() {
@@ -29,6 +45,7 @@ function App() {
       return [];
     }
   });
+  
 
   useEffect(() => {
     sessionStorage.setItem(
@@ -51,6 +68,15 @@ function App() {
             />
           }
         />
+         <Route path="/startCall" element={<StartCall />} /> 
+
+        <Route path="/company" element={<CompanyHomePage />} /> 
+        <Route path="/company/mail" element={<CompanyMail />} /> 
+        <Route path="/company/profile" element={<ProfileCompany />} /> 
+        <Route path="/company/evaluate" element={<CompanyEvaluation />} /> 
+        <Route path="/company/interns" element={<CompanyInterns />} /> 
+        <Route path="/company/posts" element={<CompanyPosts />} /> 
+        <Route path="/company/applicants" element={<CompanyApplications />} /> 
         <Route
           path="/student/applied"
           element={
@@ -64,7 +90,10 @@ function App() {
        <Route path="/student/available" element={<AvailableInternships />} />
         <Route path="/staff" element={<SCADStaffDashboard />} />
         <Route path="/facultyMember" element={<FacultyMember />} />
-           <Route path="/student/report" element={<Report />} />
+        <Route path="/student/report" element={<Report />} />
+        <Route path="/student/evaluation" element={<EvaluationStudent />} />
+
+         
       </Routes>
     </Router>
   );

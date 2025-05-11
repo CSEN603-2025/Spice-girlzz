@@ -73,7 +73,7 @@ function AppliedInternships() {
         endDate: "2025-12-31",
         location: "Remote",
         role: "Data Analyst",
-          reportCreated: false,
+        reportCreated: false,
         evaluationCreated: false,
       },
       {
@@ -91,7 +91,7 @@ function AppliedInternships() {
         startDate: "2025-02-01",
         location: "Cairo, Egypt",
         role: "Applied AI Intern",
-          reportCreated: true,
+        reportCreated: true,
         evaluationCreated: true,
       },
       {
@@ -110,7 +110,7 @@ function AppliedInternships() {
         endDate: "2024-03-31",
         location: "USA",
         role: "UX/UI Designer",
-          reportCreated: false,
+        reportCreated: false,
         evaluationCreated: false,
       },
       {
@@ -129,7 +129,7 @@ function AppliedInternships() {
         endDate: "2025-03-31",
         location: "Cairo, Egypt",
         role: "Data Engineer",
-          reportCreated: false,
+        reportCreated: false,
         evaluationCreated: false,
       },
     ];
@@ -181,18 +181,19 @@ function AppliedInternships() {
     )
   );
 
-const handleCreateReport = (internshipId) => {
-  setAppliedInternships((prev) =>
-    prev.map((internship) =>
-      internship.id === internshipId
-        ? { ...internship, reportCreated: true }
-        : internship
-    )
-  );
-  navigate("/student/report", { state: { internshipId } });
-};
+  const handleCreateReport = (internshipId) => {
+    setAppliedInternships((prev) =>
+      prev.map((internship) =>
+        internship.id === internshipId
+          ? { ...internship, reportCreated: true }
+          : internship
+      )
+    );
+    navigate("/student/report", { state: { internshipId } });
+  };
 
   const handleCreateEvaluation = (internshipId) => {
+    const internship = appliedInternships.find((i) => i.id === internshipId);
     setAppliedInternships((prev) =>
       prev.map((internship) =>
         internship.id === internshipId
@@ -200,12 +201,13 @@ const handleCreateReport = (internshipId) => {
           : internship
       )
     );
-    navigate("/student/evaluations");
+    navigate("/student/evaluations", { state: { internshipId, internshipTitle: internship.title } });
   };
 
   console.log("Current/Completed internships:", currentCompletedInternships);
 
   return (
+    <>
     <div style={styles.container}>
       <Header />
       <div style={{ ...styles.layout, marginTop: "4rem", minHeight: "calc(100vh - 4rem)" }}>
@@ -253,7 +255,7 @@ const handleCreateReport = (internshipId) => {
               placeholder="Search by job title or company name"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              style={{...styles.filterButtons, width: "18rem"}}
+              style={{ ...styles.filterButtons, width: "18rem" }}
               onFocus={(e) => (e.target.style.boxShadow = "0 0 0 2px #2a9d8f")}
               onBlur={(e) => (e.target.style.boxShadow = "none")}
             />
@@ -332,13 +334,13 @@ const handleCreateReport = (internshipId) => {
                         <span className="pin-icon">📌</span>
                         <span className="status">{internship.status}</span>
                       </div>
-                     
                       <button
-className="actionButton"
+                        className="actionButton"
                         onClick={() => setSelectedInternship(internship)}
-  
+                    
                       >
                         View Details
+                       
                       </button>
                     </div>
                   </div>
@@ -385,23 +387,21 @@ className="actionButton"
                     <div className="card-footer">
                       <div className="alumni-count">
                         <span className="pin-icon">📌</span>
-                                             <span className="post-date">
-                        {internship.startDate
-                          ? `${new Date(internship.startDate).toLocaleString("default", {
-                              month: "short",
-                              year: "numeric",
-                            })} - ${internship.status === "current" ? "Present" : new Date(internship.endDate).toLocaleString("default", {
-                              month: "short",
-                              year: "numeric",
-                            })}`
-                          : "Dates not specified"}
-                      </span>
+                        <span className="post-date">
+                          {internship.startDate
+                            ? `${new Date(internship.startDate).toLocaleString("default", {
+                                month: "short",
+                                year: "numeric",
+                              })} - ${internship.status === "current" ? "Present" : new Date(internship.endDate).toLocaleString("default", {
+                                month: "short",
+                                year: "numeric",
+                              })}`
+                            : "Dates not specified"}
+                        </span>
                       </div>
- 
                       <button
-className="actionButton"
+                        className="actionButton"
                         onClick={() => setSelectedInternship(internship)}
-
                       >
                         View Details
                       </button>
@@ -417,113 +417,39 @@ className="actionButton"
       </div>
 
       {/* Modal for Internship Details */}
-      {selectedInternship && (
-        <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            background: "rgba(0, 0, 0, 0.5)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 50,
-          }}
-        >
-          <div
-            style={{
-              background: "#fff",
-              padding: "1.5rem",
-              borderRadius: "0.5rem",
-              boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-              maxWidth: "24rem",
-              width: "100%",
-            }}
-          >
-            <h3
-              style={{
-                fontSize: "1.25rem",
-                fontWeight: "bold",
-                color: "#1f2937",
-                marginBottom: "1rem",
-              }}
-            >
-              {selectedInternship.title}
-            </h3>
-            <p
-              style={{
-                color: "#4b5563",
-                marginBottom: "0.25rem",
-                fontSize: "0.875rem",
-              }}
-            >
+     
+    </div>
+     {selectedInternship && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3 className="modal-title">{selectedInternship.title}</h3>
+            <p className="modal-info">
               <strong>Company:</strong> {selectedInternship.company}
             </p>
-            <p
-              style={{
-                color: "#4b5563",
-                marginBottom: "0.25rem",
-                fontSize: "0.875rem",
-              }}
-            >
+            <p className="modal-info">
               <strong>Duration:</strong> {selectedInternship.duration}
             </p>
-            <p
-              style={{
-                color: "#4b5563",
-                marginBottom: "0.25rem",
-                fontSize: "0.875rem",
-              }}
-            >
+            <p className="modal-info">
               <strong>Paid/Unpaid:</strong>{" "}
               {selectedInternship.isPaid.charAt(0).toUpperCase() +
                 selectedInternship.isPaid.slice(1)}
             </p>
-            <p
-              style={{
-                color: "#4b5563",
-                marginBottom: "0.25rem",
-                fontSize: "0.875rem",
-              }}
-            >
+            <p className="modal-info">
               <strong>Expected Salary:</strong> {selectedInternship.expectedSalary}
             </p>
-            <p
-              style={{
-                color: "#4b5563",
-                marginBottom: "0.25rem",
-                fontSize: "0.875rem",
-              }}
-            >
+            <p className="modal-info">
               <strong>Skills Required:</strong> {selectedInternship.skillsRequired}
             </p>
-            <p
-              style={{
-                color: "#4b5563",
-                marginBottom: "0.25rem",
-                fontSize: "0.875rem",
-              }}
-            >
+            <p className="modal-info">
               <strong>Description:</strong> {selectedInternship.description}
             </p>
-            <p
-              style={{
-                color: "#4b5563",
-                marginBottom: "0.25rem",
-                fontSize: "0.875rem",
-              }}
-            >
+            <p className="modal-info">
               <strong>Status:</strong>{" "}
               {selectedInternship.status.charAt(0).toUpperCase() +
                 selectedInternship.status.slice(1)}
             </p>
             {["pending", "finalized", "accepted", "rejected"].includes(selectedInternship.status) ? (
-              <p
-                style={{
-                  color: "#4b5563",
-                  marginTop: "1rem",
-                  fontSize: "0.875rem",
-                }}
-              >
+              <p className="modal-status-message">
                 Status cannot be changed for pending applications.
               </p>
             ) : (
@@ -540,64 +466,25 @@ className="actionButton"
                   );
                   setSelectedInternship({ ...selectedInternship, status: newStatus });
                 }}
-                style={{
-                  padding: "0.5rem",
-                  borderRadius: "0.25rem",
-                  marginTop: "1rem",
-                }}
+                className="modal-status-select"
               >
                 <option value="current">Current</option>
                 <option value="completed">Completed</option>
               </select>
             )}
-                        {selectedInternship.status === "completed" && (
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "0.5rem",
-                  marginTop: "1rem",
-                }}
-              >
+            {selectedInternship.status === "completed" && (
+              <div className="modal-button-group">
                 <button
-                  style={{
-                    padding: "0.5rem 1rem",
-                    background: selectedInternship.reportCreated ? "#d1d5db" : "#2a9d8f",
-                    color: "#fff",
-                    borderRadius: "0.25rem",
-                    cursor: selectedInternship.reportCreated ? "not-allowed" : "pointer",
-                  }}
+                  className={selectedInternship.reportCreated ? "modal-button-disabled" : "modal-button"}
                   onClick={() => handleCreateReport(selectedInternship.id)}
                   disabled={selectedInternship.reportCreated}
-                  onMouseOver={(e) =>
-                    !selectedInternship.reportCreated &&
-                    (e.target.style.background = "#21867a")
-                  }
-                  onMouseOut={(e) =>
-                    !selectedInternship.reportCreated &&
-                    (e.target.style.background = "#2a9d8f")
-                  }
                 >
                   {selectedInternship.reportCreated ? "Report Created" : "Create a Report"}
                 </button>
                 <button
-                  style={{
-                    padding: "0.5rem 1rem",
-                    background: selectedInternship.evaluationCreated ? "#d1d5db" : "#2a9d8f",
-                    color: "#fff",
-                    borderRadius: "0.25rem",
-                    cursor: selectedInternship.evaluationCreated ? "not-allowed" : "pointer",
-                  }}
+                  className={selectedInternship.evaluationCreated ? "modal-button-disabled" : "modal-button"}
                   onClick={() => handleCreateEvaluation(selectedInternship.id)}
                   disabled={selectedInternship.evaluationCreated}
-                  onMouseOver={(e) =>
-                    !selectedInternship.evaluationCreated &&
-                    (e.target.style.background = "#21867a")
-                  }
-                  onMouseOut={(e) =>
-                    !selectedInternship.evaluationCreated &&
-                    (e.target.style.background = "#2a9d8f")
-                  }
                 >
                   {selectedInternship.evaluationCreated
                     ? "Evaluation Created"
@@ -605,26 +492,11 @@ className="actionButton"
                 </button>
               </div>
             )}
-      
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "flex-end",
-                gap: "0.5rem",
-                marginTop: "1.5rem",
-              }}
-            >
+
+            <div className="modal-footer">
               <button
-                style={{
-                  padding: "0.5rem 1rem",
-                  background: "#ef4444",
-                  color: "#fff",
-                  borderRadius: "0.25rem",
-                  cursor: "pointer",
-                }}
+                className="modal-close-button"
                 onClick={() => setSelectedInternship(null)}
-                onMouseOver={(e) => (e.target.style.background = "#dc2626")}
-                onMouseOut={(e) => (e.target.style.background = "#ef4444")}
               >
                 Close
               </button>
@@ -632,7 +504,7 @@ className="actionButton"
           </div>
         </div>
       )}
-    </div>
+      </>
   );
 }
 
@@ -698,6 +570,8 @@ const styles = {
     transition: "background-color 0.2s ease",
   },
 };
+
+
 
 // Animation keyframes
 const styleSheet = document.createElement("style");
