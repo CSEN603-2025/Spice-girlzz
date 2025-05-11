@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Bell, Flag, Check, X, Download, Search } from "lucide-react";
+import { generateStatisticsReport } from "./pdfGenerator";
 
 import FacultyLayout from './FacultyLayout';
 const initialReports = [
@@ -66,6 +67,32 @@ const ProfileItem = ({ label, value }) => (
     <strong>{label}:</strong> {value || "Not provided"}
   </p>
 );
+const initialReport = {
+  reportsPerCycle: { accepted: 12, rejected: 4, flagged: 3, pending: 5 },
+  averageReviewTime: "3 days",
+  popularCourses: [
+    { name: "CS101", reports: 15 },
+    { name: "ENG202", reports: 12 },
+    { name: "DS100", reports: 8 },
+  ],
+  topCompanies: [
+    { name: "TechCorp", rating: 4.7, reports: 6 },
+    { name: "MediHealth", rating: 4.6, reports: 4 },
+    { name: "FinTech Solutions", rating: 4.4, reports: 5 },
+  ],
+  internshipCount: {
+    TechCorp: 6,
+    MediHealth: 4,
+    GreenEnergy: 2,
+    FinTech: 5,
+    EduLearn: 3,
+  },
+  performanceMetrics: {
+    facultyAverage: 3.2,
+    departmentAverage: 2.8,
+    universityAverage: 2.5,
+  },
+};
 
 export default function ReportsPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -77,6 +104,8 @@ export default function ReportsPage() {
   const [clarification, setClarification] = useState("");
   const [notifications, setNotifications] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
+    const [report] = useState(initialReport);
+
 
   const filteredReports = reports.filter(
     (report) =>
@@ -593,7 +622,7 @@ export default function ReportsPage() {
               )}
               <button
                 onClick={() => {
-                  /* PDF download logic */
+                  generateStatisticsReport(report)
                 }}
                 style={{
                   marginTop: "0.5rem",

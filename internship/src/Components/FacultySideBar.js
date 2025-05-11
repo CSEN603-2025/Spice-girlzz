@@ -194,6 +194,7 @@ function SideBarFaculty({ onHoverChange }) {
      onMouseEnter={() => handleHoverChange(true)}
       onMouseLeave={() => handleHoverChange(false)}
       style={{
+        marginTop: 60,
         background: "linear-gradient(#fff 100%)",
         display: "flex",
         flexDirection: "column",
