@@ -8,6 +8,13 @@ import {
   Link,
 } from "react-router-dom";
 import React, { useState, useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  Link,
+} from "react-router-dom";
 
 import Login from "./Login";
 import Register from "./Register";
@@ -16,7 +23,8 @@ import ProfileStudent from "./ProfileStudent";
 
 import SCADStaffDashboard from "./SCADStaffDashboard";
 import AppliedInternships from "./Applied internships";
-import AvailableInternships from "./AvailableInternships";
+import ProfileStudent from "./ProfileStudent";
+import SuggestedInternships from "./SuggestedInternships";
 import FacultyMember from "./FacultyMember";
 
 import VideoCall from "./VideoCall";
@@ -48,6 +56,7 @@ function App() {
       return [];
     }
   });
+  
 
   useEffect(() => {
     sessionStorage.setItem(
@@ -65,6 +74,26 @@ function App() {
           path="/student"
           element={
             <StudentHomePage
+              appliedInternships={appliedInternships}
+              setAppliedInternships={setAppliedInternships}
+            />
+          }
+        />
+         <Route path="/startCall" element={<StartCall />} /> 
+
+        <Route path="/company" element={<CompanyHomePage />} /> 
+                <Route path="/student/evaluation" element={<EvaluationStudent />} /> 
+
+        <Route path="/company/mail" element={<CompanyMail />} /> 
+        <Route path="/company/profile" element={<ProfileCompany />} /> 
+        <Route path="/company/evaluate" element={<CompanyEvaluation />} /> 
+        <Route path="/company/interns" element={<CompanyInterns />} /> 
+        <Route path="/company/posts" element={<CompanyPosts />} /> 
+        <Route path="/company/applicants" element={<CompanyApplications />} /> 
+        <Route
+          path="/student/applied"
+          element={
+            <AppliedInternships
               appliedInternships={appliedInternships}
               setAppliedInternships={setAppliedInternships}
             />
@@ -106,14 +135,17 @@ function App() {
         <Route path="/company/posts" element={<CompanyPosts />} />
         <Route path="/company/applicants" element={<CompanyApplications />} />
         <Route path="/student/profile" element={<ProfileStudent />} />
-        <Route path="/student/available" element={<AvailableInternships />} />
-        <Route path="/student/workshops" element={<UpcomingWorkshops />} />{" "}
-        {/* Added Route */}
+       <Route path="/student/suggested" element={<SuggestedInternships />} />
+        <Route path="/student/workshops" element={<UpcomingWorkshops />} /> {/* Added Route */}
         <Route path="/staff" element={<SCADStaffDashboard />} />
         <Route path="/faculty" element={<FacultyLayout />}>
           <Route path="reports" element={<FacultyReport />} />
           <Route path="statistics" element={<FacultyStatistics />} />
         </Route>
+        <Route path="/student/report" element={<Report />} />
+        <Route path="/student/evaluation" element={<EvaluationStudent />} />
+
+         
       </Routes>
     </Router>
   );

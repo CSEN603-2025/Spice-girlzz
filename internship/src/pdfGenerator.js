@@ -1,5 +1,6 @@
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 
+// Generate a simple internship report PDF using pdf-lib
 export const generateDummyPDF = async (report) => {
   try {
     const pdfDoc = await PDFDocument.create();
@@ -43,6 +44,7 @@ export const generateDummyPDF = async (report) => {
   }
 };
 
+// Generate comprehensive statistics report using pdf-lib
 export const generateStatisticsReport = async (stats) => {
   try {
     const now = new Date();

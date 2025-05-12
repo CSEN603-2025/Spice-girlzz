@@ -4,6 +4,7 @@ import FacultyHeader from "./Components/FacultyHeader";
 import { useNavigate } from "react-router-dom";
 import { Bell, Flag, Check, X, Download, Search } from "lucide-react";
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
+import FacultySideBar from "./Components/FacultySideBar";
 
 const generateDummyPDF = async (report) => {
   try {
@@ -1222,7 +1223,7 @@ export default function FacultyMember() {
 
   return (
     <div style={{ display: "flex", height: "100vh", background: "#f3f4f6" }}>
-      <SideBar
+      <FacultySideBar
         setActivePage={setActivePage}
         activePage={activePage}
         onWidthChange={handleWidthChange} // Add this prop

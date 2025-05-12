@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
-import SideBarFaculty from "./Components/FacultySideBar";
 import FacultyHeader from "./Components/FacultyHeader";
+import FacultySideBar from "./Components/FacultySideBar";
 
 export default function FacultyLayout() {
   const [sidebarExpanded, setSidebarExpanded] = useState(false);
@@ -14,7 +14,7 @@ export default function FacultyLayout() {
       marginLeft: sidebarExpanded ? "16rem" : "4rem",
       transition: "margin-left 0.3s ease-in-out"
     }}>
-      <SideBarFaculty onHoverChange={setSidebarExpanded} />
+      <FacultySideBar onHoverChange={setSidebarExpanded} />
       
       <div style={{ 
         flex: 1, 
