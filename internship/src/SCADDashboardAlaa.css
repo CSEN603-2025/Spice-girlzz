@@ -1,0 +1,201 @@
+/* From FacultyStatistics CSS */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");
+
+.faculty-page {
+  padding: 1.5rem;
+}
+
+.reports-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 0.5rem;
+  padding: 0 0.25rem;
+}
+
+.report-box {
+  border-radius: 0.375rem;
+  padding: 0.75rem;
+  text-align: center;
+}
+
+.report-box.accepted {
+  background: #d1fae5;
+}
+
+.report-box.rejected {
+  background: #fee2e2;
+}
+
+.report-box.flagged {
+  background: #fefcbf;
+}
+
+.report-box.pending {
+  background: #dbeafe;
+}
+
+.report-count {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.report-box.accepted .report-count,
+.report-box.accepted .report-label {
+  color: #065f46;
+}
+
+.report-box.rejected .report-count,
+.report-box.rejected .report-label {
+  color: #991b1b;
+}
+
+.report-box.flagged .report-count,
+.report-box.flagged .report-label {
+  color: #975a16;
+}
+
+.report-box.pending .report-count,
+.report-box.pending .report-label {
+  color: #1e40af;
+}
+
+.report-label {
+  font-size: 0.875rem;
+}
+
+.metric-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.metric-label {
+  color: #6b7280;
+}
+
+.metric-value {
+  font-weight: bold;
+  color: #3b82f6;
+}
+
+.progress-bar {
+  width: 100%;
+  background: #e5e7eb;
+  border-radius: 9999px;
+  height: 0.625rem;
+  overflow: hidden;
+}
+
+.progress-bar .progress-fill {
+  background: #3b82f6;
+  height: 100%;
+  border-radius: 9999px;
+  width: 70%; /* Adjust dynamically if needed */
+}
+
+.list {
+  padding-left: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.list-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.list-bullet {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+  background: #3b82f6;
+}
+
+.company-row {
+  margin-bottom: 0.5rem;
+}
+
+.company-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+}
+
+.company-name {
+  color: #4b5563;
+}
+
+.company-count {
+  color: #4b5563;
+  font-weight: bold;
+}
+
+.report-button-container {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.report-description {
+  color: #6b7280;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+
+/* Ensure existing .card styles are compatible */
+.card {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+  margin-bottom: 15px;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 15px;
+}
+
+.program-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #1f2937;
+  margin: 0 0 0.5rem;
+}
+
+/* Ensure .container is compatible */
+.container {
+  font-family: "Inter", sans-serif;
+  background-color: #f3f4f6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ensure .actionButton is compatible */
+.actionButton {
+  background-color: #2a9d8f;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: 0.875rem;
+  transition: all 0.4s ease;
+}
+
+.actionButton:hover {
+  background-color: #30b3a3;
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}

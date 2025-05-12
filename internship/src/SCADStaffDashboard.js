@@ -1,7 +1,12 @@
 import { useState, useEffect } from "react";
 import SideBar from "./Components/ScadSideBar";
 import Header from "./Components/Header";
+import ManageCompanies from "./SCADDahboardCompanies";
 import { useNavigate } from "react-router-dom";
+import { generateStatisticsReport } from "./pdfGenerator.js";
+import "./StudentHomePage.css";
+import "./SCADDashboardAlaa.css";
+
 import {
   Bell,
   Mail,
@@ -89,7 +94,7 @@ const initialStudents = [
     internshipStatus: "Pending",
     major: "Engineering",
     semester: "Semester 3",
-    avatar: "/api/placeholder/40/40",
+    avatar: "/imgs/Menna.jpeg",
     email: "mennatullah.elsabagh@student.guc.edu.eg",
     jobInterests: "Mechanical Design",
     previousInternships: "None",
@@ -115,7 +120,7 @@ const initialStudents = [
     internshipStatus: "Active",
     major: "Data Science",
     semester: "Semester 5",
-    avatar: "/api/placeholder/40/40",
+    avatar: "/imgs/Malak.jpeg",
     email: "malak.hisham@student.guc.edu.eg",
     jobInterests: "Data Analysis",
     previousInternships: "DataSync (2023)",
@@ -198,27 +203,29 @@ const initialReports = [
 ];
 
 const initialStatistics = {
-  reportsPerCycle: { accepted: 10, rejected: 3, flagged: 2 },
-  averageReviewTime: "2 days",
-  popularCourses: ["CS101", "ENG202", "DS100", "CS301"],
+  reportsPerCycle: { accepted: 12, rejected: 4, flagged: 3, pending: 5 },
+  averageReviewTime: "3 days",
+  popularCourses: [
+    { name: "CS101", reports: 15 },
+    { name: "ENG202", reports: 12 },
+    { name: "DS100", reports: 8 },
+  ],
   topCompanies: [
-    "TechCorp (Rating: 4.8)",
-    "MediHealth (Rating: 4.5)",
-    "FinTech Solutions (Rating: 4.3)",
+    { name: "TechCorp", rating: 4.7, reports: 6 },
+    { name: "MediHealth", rating: 4.6, reports: 4 },
+    { name: "FinTech Solutions", rating: 4.4, reports: 5 },
   ],
   internshipCount: {
-    TechCorp: 5,
-    MediHealth: 3,
+    TechCorp: 6,
+    MediHealth: 4,
     GreenEnergy: 2,
-    FinTech: 4,
-    EduLearn: 2,
+    FinTech: 5,
+    EduLearn: 3,
   },
-  studentStatsByMajor: {
-    "Computer Science": 45,
-    Engineering: 38,
-    "Data Science": 23,
-    Business: 18,
-    Design: 12,
+  performanceMetrics: {
+    facultyAverage: 3.2,
+    departmentAverage: 2.8,
+    universityAverage: 2.5,
   },
 };
 
@@ -249,6 +256,15 @@ export default function SCADStaffDashboard() {
   const [endDateFilter, setEndDateFilter] = useState("");
   const [sidebarWidth, setSidebarWidth] = useState("4rem"); // Default width (collapsed)
 
+  const downloadPDF = (companyName) => {
+    const fileName = `${companyName.replace(/\s+/g, "_")}.pdf`;
+    const link = document.createElement("a");
+    link.href = `/pdfs/${fileName}`;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
   const filteredCompanies = companies.filter(
     (company) =>
       company.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
@@ -383,544 +399,80 @@ export default function SCADStaffDashboard() {
     setShowModal(false);
     setSelectedItem(null);
   };
-
   const renderModalContent = () => {
     if (!selectedItem) return null;
 
     switch (modalType) {
       case "companies":
         return (
-          <div style={{ animation: "fadeIn 0.3s" }}>
-            <h2
-              style={{
-                fontSize: "1.5rem",
-                fontWeight: "bold",
-                marginBottom: "1.5rem",
-                color: "#1f2937",
-              }}
-            >
-              Manage Companies
-            </h2>
+          <div
+            style={{
+              background: "#fff",
+              padding: "1.5rem",
+              borderRadius: "0.5rem",
+              boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+              maxWidth: "20rem",
+              width: "100%",
+            }}
+          >
             <div
               style={{
-                marginBottom: "1.5rem",
                 display: "flex",
-                flexWrap: "wrap",
-                gap: "0.75rem",
-                alignItems: "flex-start",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "1rem",
               }}
             >
-              <div
+              <h3
                 style={{
-                  position: "relative",
-                  flex: "1 1 20rem",
-                  minWidth: "15rem",
+                  fontSize: "1.25rem",
+                  fontWeight: "bold",
+                  color: "#1f2937",
                 }}
               >
-                <Search
-                  style={{
-                    position: "absolute",
-                    left: "0.5rem",
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    color: "#9ca3af",
-                  }}
-                  size={16}
-                />
-                <input
-                  type="text"
-                  placeholder="Search by company name..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  style={{
-                    padding: "0.4rem 0.4rem 0.4rem 2rem",
-                    width: "100%",
-                    border: "1px solid #d1d5db",
-                    borderRadius: "0.375rem",
-                    outline: "none",
-                    boxSizing: "border-box",
-                    fontSize: "0.875rem",
-                  }}
-                  onFocus={(e) =>
-                    (e.target.style.boxShadow = "0 0 0 2px #3b82f6")
-                  }
-                  onBlur={(e) => (e.target.style.boxShadow = "none")}
-                />
-              </div>
-              <div style={{ flex: "0 0 auto" }}>
-                <select
-                  value={industryFilter}
-                  onChange={(e) => setIndustryFilter(e.target.value)}
-                  style={{
-                    padding: "0.4rem",
-                    border: "1px solid #d1d5db",
-                    borderRadius: "0.375rem",
-                    outline: "none",
-                    minWidth: "12rem",
-                    width: "12rem",
-                    maxWidth: "12rem",
-                    fontSize: "0.875rem",
-                  }}
-                  onFocus={(e) =>
-                    (e.target.style.boxShadow = "0 0 0 2px #3b82f6")
-                  }
-                  onBlur={(e) => (e.target.style.boxShadow = "none")}
-                >
-                  <option value="">All Industries</option>
-                  <option value="Technology">Technology</option>
-                  <option value="Healthcare">Healthcare</option>
-                  <option value="Energy">Energy</option>
-                  <option value="Finance">Finance</option>
-                  <option value="Education">Education</option>
-                </select>
-              </div>
-              <div style={{ flex: "0 0 auto" }}>
-                <select
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                  style={{
-                    padding: "0.4rem",
-                    border: "1px solid #d1d5db",
-                    borderRadius: "0.375rem",
-                    outline: "none",
-                    minWidth: "12rem",
-                    width: "12rem",
-                    maxWidth: "12rem",
-                    fontSize: "0.875rem",
-                  }}
-                  onFocus={(e) =>
-                    (e.target.style.boxShadow = "0 0 0 2px #3b82f6")
-                  }
-                  onBlur={(e) => (e.target.style.boxShadow = "none")}
-                >
-                  <option value="">All Statuses</option>
-                  <option value="Accepted">Accepted</option>
-                  <option value="Rejected">Rejected</option>
-                  <option value="Pending">Pending</option>
-                </select>
-              </div>
-            </div>
-            {filteredCompanies.length === 0 ? (
-              <div style={{ textAlign: "center", padding: "3rem" }}>
-                <p style={{ color: "#6b7280" }}>
-                  No companies match your search criteria.
-                </p>
-              </div>
-            ) : (
-              <div
-                style={{
-                  background: "#fff",
-                  borderRadius: "0.375rem",
-                  boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-                  overflow: "hidden",
-                }}
-              >
-                <div style={{ overflowX: "auto" }}>
-                  <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                    <thead>
-                      <tr style={{ background: "#f3f4f6" }}>
-                        <th
-                          style={{
-                            padding: "1rem",
-                            textAlign: "left",
-                            color: "#1f2937",
-                          }}
-                        >
-                          Name
-                        </th>
-                        <th
-                          style={{
-                            padding: "1rem",
-                            textAlign: "left",
-                            color: "#1f2937",
-                          }}
-                        >
-                          Industry
-                        </th>
-                        <th
-                          style={{
-                            padding: "1rem",
-                            textAlign: "left",
-                            color: "#1f2937",
-                          }}
-                        >
-                          Status
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredCompanies.map((company) => (
-                        <tr
-                          key={company.id}
-                          style={{
-                            background: "none",
-                            transition: "background-color 0.3s",
-                          }}
-                          onMouseOver={(e) =>
-                            (e.target.style.background = "#f9fafb")
-                          }
-                          onMouseOut={(e) =>
-                            (e.target.style.background = "none")
-                          }
-                        >
-                          <td
-                            style={{
-                              padding: "1rem",
-                              borderBottom: "1px solid #e5e7eb",
-                            }}
-                          >
-                            {company.name}
-                          </td>
-                          <td
-                            style={{
-                              padding: "1rem",
-                              borderBottom: "1px solid #e5e7eb",
-                            }}
-                          >
-                            {company.industry}
-                          </td>
-                          <td
-                            style={{
-                              padding: "1rem",
-                              borderBottom: "1px solid #e5e7eb",
-                            }}
-                          >
-                            <span
-                              style={{
-                                padding: "0.25rem 0.5rem",
-                                borderRadius: "9999px",
-                                fontSize: "0.75rem",
-                                ...(company.status === "Accepted"
-                                  ? { background: "#d1fae5", color: "#065f46" }
-                                  : company.status === "Rejected"
-                                  ? { background: "#fee2e2", color: "#991b1b" }
-                                  : {
-                                      background: "#fefcbf",
-                                      color: "#975a16",
-                                    }),
-                              }}
-                            >
-                              {company.status}
-                            </span>
-                          </td>
-                          <td
-                            style={{
-                              padding: "1rem",
-                              borderBottom: "1px solid #e5e7eb",
-                            }}
-                          >
-                            <div style={{ display: "flex", gap: "0.5rem" }}>
-                              <button
-                                onClick={() => openModal("companies", company)}
-                                style={{ color: "#3b82f6", cursor: "pointer" }}
-                                onMouseOver={(e) =>
-                                  (e.target.style.color = "#2563eb")
-                                }
-                                onMouseOut={(e) =>
-                                  (e.target.style.color = "#3b82f6")
-                                }
-                              >
-                                View Details
-                              </button>
-
-                              <button
-                                style={{
-                                  color: "#6b7280",
-                                  cursor: "pointer",
-                                  display: "flex",
-                                  alignItems: "center",
-                                }}
-                                onMouseOver={(e) =>
-                                  (e.target.style.color = "#4b5563")
-                                }
-                                onMouseOut={(e) =>
-                                  (e.target.style.color = "#6b7280")
-                                }
-                              >
-                                <Download
-                                  size={16}
-                                  style={{ marginRight: "0.25rem" }}
-                                />{" "}
-                                PDF
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            )}
-          </div>
-        );
-
-      case "students":
-        return (
-          <div style={{ animation: "fadeIn 0.3s" }}>
-            <h2
-              style={{
-                fontSize: "1.5rem",
-                fontWeight: "bold",
-                marginBottom: "1.5rem",
-                color: "#1f2937",
-              }}
-            >
-              Manage Students
-            </h2>
-            <div
-              style={{
-                marginBottom: "1.5rem",
-                display: "flex",
-                flexWrap: "wrap",
-                gap: "0.75rem",
-                alignItems: "flex-start",
-              }}
-            >
-              <div
-                style={{
-                  position: "relative",
-                  flex: "1 1 20rem",
-                  minWidth: "15rem",
-                }}
-              >
-                <Search
-                  style={{
-                    position: "absolute",
-                    left: "0.5rem",
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    color: "#9ca3af",
-                  }}
-                  size={16}
-                />
-                <input
-                  type="text"
-                  placeholder="Search by student name..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  style={{
-                    padding: "0.4rem 0.4rem 0.4rem 2rem",
-                    width: "100%",
-                    border: "1px solid #d1d5db",
-                    borderRadius: "0.375rem",
-                    outline: "none",
-                    boxSizing: "border-box",
-                    fontSize: "0.875rem",
-                  }}
-                  onFocus={(e) =>
-                    (e.target.style.boxShadow = "0 0 0 2px #3b82f6")
-                  }
-                  onBlur={(e) => (e.target.style.boxShadow = "none")}
-                />
-              </div>
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                style={{
-                  padding: "0.4rem",
-                  border: "1px solid #d1d5db",
-                  borderRadius: "0.375rem",
-                  outline: "none",
-                  minWidth: "12rem",
-                  width: "12rem",
-                  fontSize: "0.875rem",
-                }}
-                onFocus={(e) =>
-                  (e.target.style.boxShadow = "0 0 0 2px #3b82f6")
-                }
-                onBlur={(e) => (e.target.style.boxShadow = "none")}
-              >
-                <option value="">All Statuses</option>
-                <option value="Active">Active</option>
-                <option value="Pending">Pending</option>
-                <option value="Completed">Completed</option>
-              </select>
-              <select
-                value={majorFilter}
-                onChange={(e) => setMajorFilter(e.target.value)}
-                style={{
-                  padding: "0.4rem",
-                  border: "1px solid #d1d5db",
-                  borderRadius: "0.375rem",
-                  outline: "none",
-                  minWidth: "12rem",
-                  width: "12rem",
-                  fontSize: "0.875rem",
-                }}
-                onFocus={(e) =>
-                  (e.target.style.boxShadow = "0 0 0 2px #3b82f6")
-                }
-                onBlur={(e) => (e.target.style.boxShadow = "none")}
-              >
-                <option value="">All Majors</option>
-                <option value="Computer Science">Computer Science</option>
-                <option value="Engineering">Engineering</option>
-                <option value="Data Science">Data Science</option>
-              </select>
-            </div>
-            {filteredStudents.length === 0 ? (
-              <div style={{ textAlign: "center", padding: "3rem" }}>
-                <p style={{ color: "#6b7280" }}>
-                  No students match your search criteria.
-                </p>
-              </div>
-            ) : (
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(15rem, 1fr))",
-                  gap: "1.5rem",
-                }}
-              >
-                {filteredStudents.map((student) => (
-                  <div
-                    key={student.id}
-                    style={{
-                      background: "#fff",
-                      padding: "1rem",
-                      borderRadius: "0.375rem",
-                      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                      transition: "box-shadow 0.3s",
-                      cursor: "pointer",
-                    }}
-                    onMouseOver={(e) =>
-                      (e.target.style.boxShadow =
-                        "0 4px 6px rgba(0, 0, 0, 0.1)")
-                    }
-                    onMouseOut={(e) =>
-                      (e.target.style.boxShadow =
-                        "0 2px 4px rgba(0, 0, 0, 0.1)")
-                    }
-                    onClick={() => openModal("profile", student)}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        marginBottom: "0.75rem",
-                      }}
-                    >
-                      <img
-                        src={student.avatar}
-                        alt={student.name}
-                        style={{
-                          width: "5rem",
-                          height: "5rem",
-                          borderRadius: "9999px",
-                          marginRight: "1rem",
-                        }}
-                      />
-                      <div>
-                        <h3 style={{ fontWeight: "bold", color: "#1f2937" }}>
-                          {student.name}
-                        </h3>
-                        <p style={{ color: "#6b7280", fontSize: "0.875rem" }}>
-                          {student.major}
-                        </p>
-                      </div>
-                    </div>
-                    <div style={{ marginBottom: "0.75rem" }}>
-                      <span
-                        style={{
-                          padding: "0.25rem 0.5rem",
-                          borderRadius: "9999px",
-                          fontSize: "0.75rem",
-                          ...(student.internshipStatus === "Active"
-                            ? { background: "#d1fae5", color: "#065f46" }
-                            : student.internshipStatus === "Completed"
-                            ? { background: "#dbeafe", color: "#1e40af" }
-                            : { background: "#fefcbf", color: "#975a16" }),
-                        }}
-                      >
-                        {student.internshipStatus}
-                      </span>
-                    </div>
-                    <p style={{ color: "#4b5563", fontSize: "0.875rem" }}>
-                      {student.profile}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        );
-
-      case "profile":
-        return (
-          <div style={{ animation: "fadeIn 0.3s", padding: "1.5rem" }}>
-            <h2
-              style={{
-                fontSize: "1.5rem",
-                fontWeight: "bold",
-                marginBottom: "1.5rem",
-                color: "#1f2937",
-              }}
-            >
-              Student Profile: {selectedItem.name}
-            </h2>
-            <div
-              style={{
-                background: "#fff",
-                padding: "1.5rem",
-                borderRadius: "0.375rem",
-                boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-                width: "40rem", // Fixed width for consistency
-                margin: "0 auto", // Center the container
-              }}
-            >
-              <div style={{ marginBottom: "1.5rem" }}>
-                <img
-                  src={selectedItem.avatar}
-                  alt={selectedItem.name}
-                  style={{
-                    width: "10rem",
-                    height: "10rem",
-                    borderRadius: "9999px",
-                    marginBottom: "1rem",
-                  }}
-                />
-                <h3
-                  style={{
-                    fontWeight: "bold",
-                    color: "#1f2937",
-                    marginBottom: "0.5rem",
-                  }}
-                >
-                  {selectedItem.name}
-                </h3>
-                <p style={{ color: "#6b7280", fontSize: "0.875rem" }}>
-                  {selectedItem.major} - {selectedItem.semester}
-                </p>
-              </div>
-              <div style={{ display: "grid", gap: "1rem" }}>
-                <ProfileItem label="Email" value={selectedItem.email} />
-                <ProfileItem
-                  label="Job Interests"
-                  value={selectedItem.jobInterests}
-                />
-                <ProfileItem
-                  label="Previous Internships"
-                  value={selectedItem.previousInternships}
-                />
-                <ProfileItem label="Major" value={selectedItem.major} />
-              </div>
-
+                Company Details: {selectedItem.name}
+              </h3>
               <button
-                onClick={() => setShowModal(false)}
+                onClick={closeModal}
+                style={{ color: "#6b7280", cursor: "pointer" }}
+              >
+                <X size={24} />
+              </button>
+            </div>
+            <div style={{ marginBottom: "1rem" }}>
+              <p style={{ color: "#4b5563", marginBottom: "0.25rem" }}>
+                <strong>Industry:</strong> {selectedItem.industry}
+              </p>
+              <p style={{ color: "#4b5563", marginBottom: "0.25rem" }}>
+                <strong>Status:</strong> {selectedItem.status}
+              </p>
+              <p style={{ color: "#4b5563", marginBottom: "0.25rem" }}>
+                <strong>Details:</strong> {selectedItem.details}
+              </p>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: "0.5rem",
+              }}
+            >
+              <button
+                onClick={() => downloadPDF(selectedItem.name)}
                 style={{
-                  marginTop: "1.5rem",
-                  paddingLeft: "2000rem",
                   padding: "0.5rem 1rem",
-                  background: "#4E4F50",
+                  background: "#3b82f6",
                   color: "#fff",
                   borderRadius: "0.25rem",
+                  display: "flex",
+                  alignItems: "center",
                   cursor: "pointer",
                 }}
-                onMouseOver={(e) => (e.target.style.background = "#746C70")}
-                onMouseOut={(e) => (e.target.style.background = "#4E4F50")}
+                onMouseOver={(e) => (e.target.style.background = "#2563eb")}
+                onMouseOut={(e) => (e.target.style.background = "#3b82f6")}
               >
-                Close
+                <Download size={16} style={{ marginRight: "0.5rem" }} />{" "}
+                Download
               </button>
             </div>
           </div>
@@ -993,68 +545,123 @@ export default function SCADStaffDashboard() {
                 justifyContent: "flex-end",
                 gap: "0.5rem",
               }}
+            ></div>
+          </div>
+        );
+      case "profile":
+        return (
+          <div
+            style={{
+              background: "#fff",
+              padding: "1.5rem",
+              borderRadius: "0.5rem",
+              boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+              maxWidth: "25rem",
+              width: "100%",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "1rem",
+              }}
+            >
+              <h3
+                style={{
+                  fontSize: "1.25rem",
+                  fontWeight: "bold",
+                  color: "#1f2937",
+                }}
+              >
+                Student Profile: {selectedItem.name}
+              </h3>
+              <img
+                src={selectedItem.avatar}
+                alt={selectedItem.name}
+                style={{
+                  width: "4rem", // Slightly larger for wider card
+                  height: "4rem",
+                  borderRadius: "9999px",
+                  marginRight: "1rem",
+                }}
+              />
+            </div>
+
+            <div style={{ marginBottom: "1rem" }}>
+              <p style={{ color: "#4b5563", marginBottom: "0.25rem" }}>
+                <strong>Major:</strong> {selectedItem.major}
+              </p>
+              <p style={{ color: "#4b5563", marginBottom: "0.25rem" }}>
+                <strong>Semester:</strong> {selectedItem.semester}
+              </p>
+              <p style={{ color: "#4b5563", marginBottom: "0.25rem" }}>
+                <strong>Email:</strong> {selectedItem.email}
+              </p>
+              <p style={{ color: "#4b5563", marginBottom: "0.25rem" }}>
+                <strong>Internship Status:</strong>{" "}
+                {selectedItem.internshipStatus}
+              </p>
+              <p style={{ color: "#4b5563", marginBottom: "0.25rem" }}>
+                <strong>Job Interests:</strong> {selectedItem.jobInterests}
+              </p>
+              <p style={{ color: "#4b5563", marginBottom: "0.25rem" }}>
+                <strong>Previous Internships:</strong>{" "}
+                {selectedItem.previousInternships || "None"}
+              </p>
+              <h4
+                style={{
+                  fontSize: "1rem",
+                  fontWeight: "bold",
+                  color: "#1f2937",
+                  marginTop: "0.5rem",
+                  marginBottom: "0.25rem",
+                }}
+              >
+                Applied Internships
+              </h4>
+              {selectedItem.appliedInternships &&
+              selectedItem.appliedInternships.length > 0 ? (
+                selectedItem.appliedInternships.map((internship, index) => (
+                  <p
+                    key={index}
+                    style={{ color: "#4b5563", marginBottom: "0.25rem" }}
+                  >
+                    <strong>Company:</strong> {internship.companyName} -{" "}
+                    <strong>Job Title:</strong> {internship.jobTitle}
+                  </p>
+                ))
+              ) : (
+                <p style={{ color: "#6b7280", marginBottom: "0.25rem" }}>
+                  No applied internships yet.
+                </p>
+              )}
+            </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: "0.5rem",
+              }}
             >
               <button
-                onClick={() => {
-                  handleReportStatusChange(selectedItem.id, "flagged");
-                  closeModal();
-                }}
+                onClick={closeModal}
                 style={{
                   padding: "0.5rem 1rem",
-                  background: "#f59e0b",
+                  background: "#1f2937",
                   color: "#fff",
                   borderRadius: "0.25rem",
-                  display: "flex",
-                  alignItems: "center",
                   cursor: "pointer",
                 }}
-                onMouseOver={(e) => (e.target.style.background = "#d97706")}
-                onMouseOut={(e) => (e.target.style.background = "#f59e0b")}
+                onMouseOver={(e) => (e.target.style.background = "#111827")}
+                onMouseOut={(e) => (e.target.style.background = "#1f2937")}
               >
-                <Flag size={16} style={{ marginRight: "0.5rem" }} /> Flag
-              </button>
-              <button
-                onClick={() => {
-                  handleReportStatusChange(selectedItem.id, "rejected");
-                  closeModal();
-                }}
-                style={{
-                  padding: "0.5rem 1rem",
-                  background: "#ef4444",
-                  color: "#fff",
-                  borderRadius: "0.25rem",
-                  display: "flex",
-                  alignItems: "center",
-                  cursor: "pointer",
-                }}
-                onMouseOver={(e) => (e.target.style.background = "#dc2626")}
-                onMouseOut={(e) => (e.target.style.background = "#ef4444")}
-              >
-                <X size={16} style={{ marginRight: "0.5rem" }} /> Reject
-              </button>
-              <button
-                onClick={() => {
-                  handleReportStatusChange(selectedItem.id, "accepted");
-                  closeModal();
-                }}
-                style={{
-                  padding: "0.5rem 1rem",
-                  background: "#10b981",
-                  color: "#fff",
-                  borderRadius: "0.25rem",
-                  display: "flex",
-                  alignItems: "center",
-                  cursor: "pointer",
-                }}
-                onMouseOver={(e) => (e.target.style.background = "#059669")}
-                onMouseOut={(e) => (e.target.style.background = "#10b981")}
-              >
-                <Check size={16} style={{ marginRight: "0.5rem" }} /> Accept
+                Close
               </button>
             </div>
           </div>
         );
-
       default:
         return null;
     }
@@ -1073,35 +680,37 @@ export default function SCADStaffDashboard() {
                 color: "#1f2937",
               }}
             >
-              Set Internship Cycle
+              Set Your Internship Cycle
             </h2>
             <div
               style={{
                 background: "#fff",
-                padding: "1.5rem",
-                borderRadius: "0.375rem",
-                boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                padding: "2rem",
+                borderRadius: "0.5rem",
+                boxShadow: "0 6px 12px rgba(0, 0, 0, 0.1)",
+                width: "70%",
               }}
             >
               <div
                 style={{
                   display: "flex",
                   flexWrap: "wrap",
-                  gap: "1rem",
+                  gap: "2rem",
                   marginBottom: "1.5rem",
+                  justifyContent: "space-between",
                 }}
               >
                 <div style={{ flex: "0 0 auto" }}>
                   <label
                     style={{
                       display: "block",
-                      fontSize: "0.875rem",
-                      fontWeight: "bold",
-                      color: "#1f2937",
+                      fontSize: "1rem",
+                      fontWeight: "600",
+                      color: "#2a9d8f",
                       marginBottom: "0.5rem",
                     }}
                   >
-                    Start Date
+                    Select Cycle Start Date
                   </label>
                   <input
                     type="date"
@@ -1114,17 +723,16 @@ export default function SCADStaffDashboard() {
                       );
                     }}
                     style={{
-                      padding: "0.4rem",
+                      padding: "0.5rem",
                       border: "1px solid #d1d5db",
                       borderRadius: "0.375rem",
                       outline: "none",
                       minWidth: "12rem",
                       width: "12rem",
-                      maxWidth: "12rem",
-                      fontSize: "0.875rem",
+                      fontSize: "0.9rem",
                     }}
                     onFocus={(e) =>
-                      (e.target.style.boxShadow = "0 0 0 2px #3b82f6")
+                      (e.target.style.boxShadow = "0 0 0 2px #2a9d8f")
                     }
                     onBlur={(e) => (e.target.style.boxShadow = "none")}
                   />
@@ -1133,13 +741,13 @@ export default function SCADStaffDashboard() {
                   <label
                     style={{
                       display: "block",
-                      fontSize: "0.875rem",
-                      fontWeight: "bold",
-                      color: "#1f2937",
+                      fontSize: "1rem",
+                      fontWeight: "600",
+                      color: "#2a9d8f",
                       marginBottom: "0.5rem",
                     }}
                   >
-                    End Date
+                    Select Cycle End Date
                   </label>
                   <input
                     type="date"
@@ -1152,17 +760,16 @@ export default function SCADStaffDashboard() {
                       );
                     }}
                     style={{
-                      padding: "0.4rem",
+                      padding: "0.5rem",
                       border: "1px solid #d1d5db",
                       borderRadius: "0.375rem",
                       outline: "none",
                       minWidth: "12rem",
                       width: "12rem",
-                      maxWidth: "12rem",
-                      fontSize: "0.875rem",
+                      fontSize: "0.9rem",
                     }}
                     onFocus={(e) =>
-                      (e.target.style.boxShadow = "0 0 0 2px #3b82f6")
+                      (e.target.style.boxShadow = "0 0 0 2px #2a9d8f")
                     }
                     onBlur={(e) => (e.target.style.boxShadow = "none")}
                   />
@@ -1173,24 +780,25 @@ export default function SCADStaffDashboard() {
                   style={{
                     marginTop: "1rem",
                     padding: "1rem",
-                    background: "#f3f4f6",
-                    borderRadius: "0.375rem",
+                    background: "#e0f7f4",
+                    borderRadius: "0.5rem",
+                    borderLeft: "5px solid #2a9d8f",
                   }}
                 >
                   <h3
                     style={{
-                      fontSize: "1rem",
+                      fontSize: "1.1rem",
                       fontWeight: "bold",
                       color: "#1f2937",
                       marginBottom: "0.5rem",
                     }}
                   >
-                    Current Cycle
+                    📌 Your Current Internship Cycle
                   </h3>
-                  <p style={{ color: "#4b5563", fontSize: "0.875rem" }}>
+                  <p style={{ color: "#4b5563", fontSize: "0.95rem" }}>
                     <strong>Start:</strong> {startDateFilter || "Not set"}
                   </p>
-                  <p style={{ color: "#4b5563", fontSize: "0.875rem" }}>
+                  <p style={{ color: "#4b5563", fontSize: "0.95rem" }}>
                     <strong>End:</strong> {endDateFilter || "Not set"}
                   </p>
                 </div>
@@ -1198,7 +806,28 @@ export default function SCADStaffDashboard() {
             </div>
           </div>
         );
+
       case "companies":
+        const handleCompanyAction = (id, action) => {
+          setCompanies((prevCompanies) =>
+            prevCompanies.map((company) =>
+              company.id === id
+                ? {
+                    ...company,
+                    status: action === "accept" ? "Accepted" : "Rejected",
+                  }
+                : company
+            )
+          );
+          const company = companies.find((c) => c.id === id);
+          addNotification(
+            `Company ${company.name} has been ${
+              action === "accept" ? "accepted" : "rejected"
+            }`,
+            "company"
+          );
+        };
+
         return (
           <div style={{ animation: "fadeIn 0.3s" }}>
             <h2
@@ -1234,6 +863,7 @@ export default function SCADStaffDashboard() {
                     top: "50%",
                     transform: "translateY(-50%)",
                     color: "#9ca3af",
+                    pointerEvents: "none", // Prevent Search icon from interfering
                   }}
                   size={16}
                 />
@@ -1250,71 +880,39 @@ export default function SCADStaffDashboard() {
                     outline: "none",
                     boxSizing: "border-box",
                     fontSize: "0.875rem",
+                    transition: "border-color 0.3s ease",
                   }}
-                  onFocus={(e) =>
-                    (e.target.style.boxShadow = "0 0 0 2px #3b82f6")
-                  }
-                  onBlur={(e) => (e.target.style.boxShadow = "none")}
+                  onFocus={(e) => (e.target.style.borderColor = "#3b82f6")}
+                  onBlur={(e) => (e.target.style.borderColor = "#d1d5db")}
                 />
               </div>
-              <div style={{ flex: "0 0 auto" }}>
-                <select
-                  value={industryFilter}
-                  onChange={(e) => setIndustryFilter(e.target.value)}
-                  style={{
-                    padding: "0.4rem",
-                    border: "1px solid #d1d5db",
-                    borderRadius: "0.375rem",
-                    outline: "none",
-                    minWidth: "12rem",
-                    width: "12rem",
-                    maxWidth: "12rem",
-                    fontSize: "0.875rem",
-                  }}
-                  onFocus={(e) =>
-                    (e.target.style.boxShadow = "0 0 0 2px #3b82f6")
-                  }
-                  onBlur={(e) => (e.target.style.boxShadow = "none")}
-                >
-                  <option value="">All Industries</option>
-                  <option value="Technology">Technology</option>
-                  <option value="Healthcare">Healthcare</option>
-                  <option value="Energy">Energy</option>
-                  <option value="Finance">Finance</option>
-                  <option value="Education">Education</option>
-                </select>
-              </div>
-              <div style={{ flex: "0 0 auto" }}>
-                <select
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                  style={{
-                    padding: "0.4rem",
-                    border: "1px solid #d1d5db",
-                    borderRadius: "0.375rem",
-                    outline: "none",
-                    minWidth: "12rem",
-                    width: "12rem",
-                    maxWidth: "12rem",
-                    fontSize: "0.875rem",
-                  }}
-                  onFocus={(e) =>
-                    (e.target.style.boxShadow = "0 0 0 2px #3b82f6")
-                  }
-                  onBlur={(e) => (e.target.style.boxShadow = "none")}
-                >
-                  <option value="">All Statuses</option>
-                  <option value="Accepted">Accepted</option>
-                  <option value="Rejected">Rejected</option>
-                  <option value="Pending">Pending</option>
-                </select>
-              </div>
+              <select
+                value={industryFilter}
+                onChange={(e) => setIndustryFilter(e.target.value)}
+                style={{
+                  padding: "0.4rem",
+                  border: "1px solid #d1d5db",
+                  borderRadius: "0.375rem",
+                  outline: "none",
+                  minWidth: "12rem",
+                  width: "12rem",
+                  fontSize: "0.875rem",
+                  transition: "border-color 0.3s ease",
+                }}
+                onFocus={(e) => (e.target.style.borderColor = "#3b82f6")}
+                onBlur={(e) => (e.target.style.borderColor = "#d1d5db")}
+              >
+                <option value="">All Industries</option>
+                <option value="Technology">Technology</option>
+                <option value="Healthcare">Healthcare</option>
+                <option value="Energy">Energy</option>
+                <option value="Education">Education</option>
+                <option value="Finance">Finance</option>
+              </select>
             </div>
-            {filteredCompanies.length === 0 ? (
+            {companies.length === 0 ? (
               <div style={{ textAlign: "center", padding: "3rem" }}>
-                <p style={{ color: "#6b7280" }}>
-                  No companies match your search criteria.
-                </p>
+                <p style={{ color: "#6b7280" }}>No companies found.</p>
               </div>
             ) : (
               <div
@@ -1325,8 +923,14 @@ export default function SCADStaffDashboard() {
                   overflow: "hidden",
                 }}
               >
-                <div style={{ overflowX: "auto" }}>
-                  <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                <div style={{ overflowX: "auto", maxWidth: "100%" }}>
+                  <table
+                    style={{
+                      width: "100%",
+                      borderCollapse: "collapse",
+                      tableLayout: "fixed",
+                    }}
+                  >
                     <thead>
                       <tr style={{ background: "#f3f4f6" }}>
                         <th
@@ -1334,6 +938,7 @@ export default function SCADStaffDashboard() {
                             padding: "1rem",
                             textAlign: "left",
                             color: "#1f2937",
+                            width: "25%",
                           }}
                         >
                           Name
@@ -1343,6 +948,7 @@ export default function SCADStaffDashboard() {
                             padding: "1rem",
                             textAlign: "left",
                             color: "#1f2937",
+                            width: "25%",
                           }}
                         >
                           Industry
@@ -1352,6 +958,7 @@ export default function SCADStaffDashboard() {
                             padding: "1rem",
                             textAlign: "left",
                             color: "#1f2937",
+                            width: "20%",
                           }}
                         >
                           Status
@@ -1361,6 +968,7 @@ export default function SCADStaffDashboard() {
                             padding: "1rem",
                             textAlign: "left",
                             color: "#1f2937",
+                            width: "30%",
                           }}
                         >
                           Actions
@@ -1368,76 +976,98 @@ export default function SCADStaffDashboard() {
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredCompanies.map((company) => (
-                        <tr
-                          key={company.id}
-                          style={{
-                            background: "none",
-                            transition: "background-color 0.3s",
-                          }}
-                          onMouseOver={(e) =>
-                            (e.target.style.background = "#f9fafb")
-                          }
-                          onMouseOut={(e) =>
-                            (e.target.style.background = "none")
-                          }
-                        >
-                          <td
+                      {companies
+                        .filter(
+                          (company) =>
+                            company.name
+                              .toLowerCase()
+                              .includes(searchTerm.toLowerCase()) &&
+                            (industryFilter
+                              ? company.industry === industryFilter
+                              : true)
+                        )
+                        .map((company) => (
+                          <tr
+                            key={company.id}
                             style={{
-                              padding: "1rem",
-                              borderBottom: "1px solid #e5e7eb",
+                              background: "none",
+                              transition: "background-color 0.3s ease",
                             }}
+                            onMouseEnter={(e) =>
+                              (e.currentTarget.style.background = "#f9fafb")
+                            }
+                            onMouseLeave={(e) =>
+                              (e.currentTarget.style.background = "transparent")
+                            }
                           >
-                            {company.name}
-                          </td>
-                          <td
-                            style={{
-                              padding: "1rem",
-                              borderBottom: "1px solid #e5e7eb",
-                            }}
-                          >
-                            {company.industry}
-                          </td>
-                          <td
-                            style={{
-                              padding: "1rem",
-                              borderBottom: "1px solid #e5e7eb",
-                            }}
-                          >
-                            <span
+                            <td
                               style={{
-                                padding: "0.25rem 0.5rem",
-                                borderRadius: "9999px",
-                                fontSize: "0.75rem",
-                                ...(company.status === "Accepted"
-                                  ? { background: "#d1fae5", color: "#065f46" }
-                                  : company.status === "Rejected"
-                                  ? { background: "#fee2e2", color: "#991b1b" }
-                                  : {
-                                      background: "#fefcbf",
-                                      color: "#975a16",
-                                    }),
+                                padding: "1rem",
+                                borderBottom: "1px solid #e5e7eb",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap",
                               }}
                             >
-                              {company.status}
-                            </span>
-                          </td>
-                          <td
-                            style={{
-                              padding: "1rem",
-                              borderBottom: "1px solid #e5e7eb",
-                            }}
-                          >
-                            <div style={{ display: "flex", gap: "0.5rem" }}>
+                              {company.name}
+                            </td>
+                            <td
+                              style={{
+                                padding: "1rem",
+                                borderBottom: "1px solid #e5e7eb",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap",
+                              }}
+                            >
+                              {company.industry}
+                            </td>
+                            <td
+                              style={{
+                                padding: "1rem",
+                                borderBottom: "1px solid #e5e7eb",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap",
+                              }}
+                            >
+                              <span
+                                style={{
+                                  padding: "0.25rem 0.5rem",
+                                  borderRadius: "9999px",
+                                  fontSize: "0.75rem",
+                                  ...(company.status === "Accepted"
+                                    ? {
+                                        background: "#d1fae5",
+                                        color: "#065f46",
+                                      }
+                                    : company.status === "Rejected"
+                                    ? {
+                                        background: "#fee2e2",
+                                        color: "#991b1b",
+                                      }
+                                    : {
+                                        background: "#fefcbf",
+                                        color: "#975a16",
+                                      }),
+                                }}
+                              >
+                                {company.status}
+                              </span>
+                            </td>
+                            <td
+                              style={{
+                                padding: "1rem",
+                                borderBottom: "1px solid #e5e7eb",
+                                display: "flex",
+                                gap: "0.5rem",
+                                alignItems: "center",
+                                minWidth: "0",
+                              }}
+                            >
                               <button
-                                onClick={() => openModal("company", company)}
-                                style={{ color: "#3b82f6", cursor: "pointer" }}
-                                onMouseOver={(e) =>
-                                  (e.target.style.color = "#2563eb")
-                                }
-                                onMouseOut={(e) =>
-                                  (e.target.style.color = "#3b82f6")
-                                }
+                                className="actionButton"
+                                onClick={() => openModal("companies", company)}
                               >
                                 View Details
                               </button>
@@ -1448,14 +1078,22 @@ export default function SCADStaffDashboard() {
                                       handleCompanyAction(company.id, "accept")
                                     }
                                     style={{
-                                      color: "#10b981",
+                                      padding: "0.5rem 0.75rem",
+                                      background: "#10b981",
+                                      color: "#fff",
+                                      border: "none",
+                                      borderRadius: "0.375rem",
                                       cursor: "pointer",
+                                      transition: "background-color 0.3s ease",
+                                      whiteSpace: "nowrap",
+                                      minWidth: "5rem",
+                                      textAlign: "center",
                                     }}
                                     onMouseOver={(e) =>
-                                      (e.target.style.color = "#059669")
+                                      (e.target.style.background = "#059669")
                                     }
                                     onMouseOut={(e) =>
-                                      (e.target.style.color = "#10b981")
+                                      (e.target.style.background = "#10b981")
                                     }
                                   >
                                     Accept
@@ -1465,44 +1103,31 @@ export default function SCADStaffDashboard() {
                                       handleCompanyAction(company.id, "reject")
                                     }
                                     style={{
-                                      color: "#ef4444",
+                                      padding: "0.5rem 0.75rem",
+                                      background: "#ef4444",
+                                      color: "#fff",
+                                      border: "none",
+                                      borderRadius: "0.375rem",
                                       cursor: "pointer",
+                                      transition: "background-color 0.3s ease",
+                                      whiteSpace: "nowrap",
+                                      minWidth: "5rem",
+                                      textAlign: "center",
                                     }}
                                     onMouseOver={(e) =>
-                                      (e.target.style.color = "#dc2626")
+                                      (e.target.style.background = "#dc2626")
                                     }
                                     onMouseOut={(e) =>
-                                      (e.target.style.color = "#ef4444")
+                                      (e.target.style.background = "#ef4444")
                                     }
                                   >
                                     Reject
                                   </button>
                                 </>
                               )}
-                              <button
-                                style={{
-                                  color: "#6b7280",
-                                  cursor: "pointer",
-                                  display: "flex",
-                                  alignItems: "center",
-                                }}
-                                onMouseOver={(e) =>
-                                  (e.target.style.color = "#4b5563")
-                                }
-                                onMouseOut={(e) =>
-                                  (e.target.style.color = "#6b7280")
-                                }
-                              >
-                                <Download
-                                  size={16}
-                                  style={{ marginRight: "0.25rem" }}
-                                />{" "}
-                                PDF
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
+                            </td>
+                          </tr>
+                        ))}
                     </tbody>
                   </table>
                 </div>
@@ -1512,7 +1137,7 @@ export default function SCADStaffDashboard() {
         );
       case "students":
         return (
-          <div style={{ animation: "fadeIn 0.3s" }}>
+          <div className="container" style={{ animation: "fadeIn 0.3s" }}>
             <h2
               style={{
                 fontSize: "1.5rem",
@@ -1554,6 +1179,7 @@ export default function SCADStaffDashboard() {
                   placeholder="Search by student name..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
+                  className="headerBtn"
                   style={{
                     padding: "0.4rem 0.4rem 0.4rem 2rem",
                     width: "100%",
@@ -1572,6 +1198,7 @@ export default function SCADStaffDashboard() {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
+                className="headerBtn"
                 style={{
                   padding: "0.4rem",
                   border: "1px solid #d1d5db",
@@ -1594,6 +1221,7 @@ export default function SCADStaffDashboard() {
               <select
                 value={majorFilter}
                 onChange={(e) => setMajorFilter(e.target.value)}
+                className="headerBtn"
                 style={{
                   padding: "0.4rem",
                   border: "1px solid #d1d5db",
@@ -1624,74 +1252,133 @@ export default function SCADStaffDashboard() {
               <div
                 style={{
                   display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(15rem, 1fr))",
-                  gap: "1.5rem",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", // Two cards per row
+                  gap: "20px",
+                  padding: "10px",
+                  maxWidth: "1600px",
+                  margin: "0 auto",
                 }}
               >
                 {filteredStudents.map((student) => (
                   <div
                     key={student.id}
                     style={{
-                      background: "#fff",
-                      padding: "1rem",
-                      borderRadius: "0.375rem",
-                      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                      cursor: "pointer",
+                      maxWidth: "320px", // Wider card
+                      background: "white",
+                      borderRadius: "10px",
+                      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+                      padding: "20px",
+                      transition: "transform 0.3s ease",
                     }}
-                    onClick={() => openModal("profile", student)}
+                    onMouseOver={(e) =>
+                      Object.assign(e.currentTarget.style, {
+                        transform: "translateY(-5px)",
+                        boxShadow: "0 8px 20px rgba(0, 0, 0, 0.15)",
+                      })
+                    }
+                    onMouseOut={(e) =>
+                      Object.assign(e.currentTarget.style, {
+                        transform: "translateY(0)",
+                        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+                      })
+                    }
                   >
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        marginBottom: "0.75rem",
-                      }}
-                    >
-                      <img
-                        src={student.avatar}
-                        alt={student.name}
+                    <div className="card-header">
+                      <div
                         style={{
-                          width: "5rem",
-                          height: "5rem",
-                          borderRadius: "9999px",
-                          marginRight: "1rem",
-                        }}
-                      />
-                      <div>
-                        <h3 style={{ fontWeight: "bold", color: "#1f2937" }}>
-                          {student.name}
-                        </h3>
-                        <p style={{ color: "#6b7280", fontSize: "0.875rem" }}>
-                          {student.major}
-                        </p>
-                      </div>
-                    </div>
-                    <div style={{ marginBottom: "0.75rem" }}>
-                      <span
-                        style={{
-                          padding: "0.25rem 0.5rem",
-                          borderRadius: "9999px",
-                          fontSize: "0.75rem",
-                          ...(student.internshipStatus === "Active"
-                            ? { background: "#d1fae5", color: "#065f46" }
-                            : student.internshipStatus === "Completed"
-                            ? { background: "#dbeafe", color: "#1e40af" }
-                            : { background: "#fefcbf", color: "#975a16" }),
+                          display: "flex",
+                          alignItems: "center",
+                          marginBottom: "0.75rem",
                         }}
                       >
-                        {student.internshipStatus}
-                      </span>
+                        <img
+                          src={student.avatar}
+                          alt={student.name}
+                          style={{
+                            width: "4rem", // Slightly larger for wider card
+                            height: "4rem",
+                            borderRadius: "9999px",
+                            marginRight: "1rem",
+                          }}
+                        />
+                        <div>
+                          <h3
+                            className="program-title"
+                            style={{ fontSize: "1.1rem" }}
+                          >
+                            {student.name}
+                          </h3>
+                          <p
+                            className="company-info"
+                            style={{ color: "#636e72", fontSize: "0.85rem" }}
+                          >
+                            {student.major}
+                          </p>
+                        </div>
+                      </div>
+                      <div style={{ marginBottom: "0.75rem" }}>
+                        <span
+                          className="status"
+                          style={{
+                            padding: "0.25rem 0.5rem",
+                            borderRadius: "9999px",
+                            fontSize: "0.7rem",
+                            ...(student.internshipStatus === "Active"
+                              ? { background: "#d1fae5", color: "#065f46" }
+                              : student.internshipStatus === "Completed"
+                              ? { background: "#dbeafe", color: "#1e40af" }
+                              : { background: "#fefcbf", color: "#975a16" }),
+                          }}
+                        >
+                          {student.internshipStatus}
+                        </span>
+                      </div>
                     </div>
-                    <p style={{ color: "#4b5563", fontSize: "0.875rem" }}>
-                      {student.profile}
+                    <p
+                      className="company-info"
+                      style={{ color: "#4b5563", fontSize: "0.8rem" }}
+                    >
+                      {student.details || "No additional details provided"}
                     </p>
+                    <button
+                      onClick={() => openModal("profile", student)}
+                      style={{
+                        marginTop: "0.75rem",
+                        width: "40%",
+                        backgroundColor: "#2a9d8f",
+                        color: "#fff",
+                        padding: "0.5rem 1rem",
+                        border: "none",
+                        borderRadius: "0.375rem",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        fontSize: "0.875rem",
+                        transition: "all 0.4s ease",
+                      }}
+                      onMouseOver={(e) =>
+                        Object.assign(e.currentTarget.style, {
+                          backgroundColor: "#30b3a3",
+                          transform: "scale(1.02)",
+                          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+                        })
+                      }
+                      onMouseOut={(e) =>
+                        Object.assign(e.currentTarget.style, {
+                          backgroundColor: "#2a9d8f",
+                          transform: "scale(1)",
+                          boxShadow: "none",
+                        })
+                      }
+                    >
+                      View Profile
+                    </button>
                   </div>
                 ))}
               </div>
             )}
           </div>
         );
-
       case "profile":
         const currentStudent =
           filteredStudents.find((student) => student.id === selectedItem.id) ||
@@ -1996,12 +1683,6 @@ export default function SCADStaffDashboard() {
                             background: "none",
                             transition: "background-color 0.3s",
                           }}
-                          onMouseOver={(e) =>
-                            (e.target.style.background = "#f9fafb")
-                          }
-                          onMouseOut={(e) =>
-                            (e.target.style.background = "none")
-                          }
                         >
                           <td
                             style={{
@@ -2061,81 +1742,11 @@ export default function SCADStaffDashboard() {
                           >
                             <div style={{ display: "flex", gap: "0.5rem" }}>
                               <button
+                                className="actionButton"
                                 onClick={() => openModal("report", report)}
-                                style={{ color: "#3b82f6", cursor: "pointer" }}
-                                onMouseOver={(e) =>
-                                  (e.target.style.color = "#2563eb")
-                                }
-                                onMouseOut={(e) =>
-                                  (e.target.style.color = "#3b82f6")
-                                }
                               >
                                 View Details
                               </button>
-                              {report.status === "Pending" && (
-                                <>
-                                  <button
-                                    onClick={() =>
-                                      handleReportStatusChange(
-                                        report.id,
-                                        "flagged"
-                                      )
-                                    }
-                                    style={{
-                                      color: "#f59e0b",
-                                      cursor: "pointer",
-                                    }}
-                                    onMouseOver={(e) =>
-                                      (e.target.style.color = "#d97706")
-                                    }
-                                    onMouseOut={(e) =>
-                                      (e.target.style.color = "#f59e0b")
-                                    }
-                                  >
-                                    Flag
-                                  </button>
-                                  <button
-                                    onClick={() =>
-                                      handleReportStatusChange(
-                                        report.id,
-                                        "rejected"
-                                      )
-                                    }
-                                    style={{
-                                      color: "#ef4444",
-                                      cursor: "pointer",
-                                    }}
-                                    onMouseOver={(e) =>
-                                      (e.target.style.color = "#dc2626")
-                                    }
-                                    onMouseOut={(e) =>
-                                      (e.target.style.color = "#ef4444")
-                                    }
-                                  >
-                                    Reject
-                                  </button>
-                                  <button
-                                    onClick={() =>
-                                      handleReportStatusChange(
-                                        report.id,
-                                        "accepted"
-                                      )
-                                    }
-                                    style={{
-                                      color: "#10b981",
-                                      cursor: "pointer",
-                                    }}
-                                    onMouseOver={(e) =>
-                                      (e.target.style.color = "#059669")
-                                    }
-                                    onMouseOut={(e) =>
-                                      (e.target.style.color = "#10b981")
-                                    }
-                                  >
-                                    Accept
-                                  </button>
-                                </>
-                              )}
                             </div>
                           </td>
                         </tr>
@@ -2150,372 +1761,186 @@ export default function SCADStaffDashboard() {
 
       case "statistics":
         return (
-          <div style={{ animation: "fadeIn 0.3s" }}>
-            <h2
-              style={{
-                fontSize: "1.5rem",
-                fontWeight: "bold",
-                marginBottom: "1.5rem",
-                color: "#1f2937",
-              }}
-            >
-              Real-Time Statistics
-            </h2>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(15rem, 1fr))",
-                gap: "1.5rem",
-              }}
-            >
-              <div
-                style={{
-                  background: "#fff",
-                  padding: "1.5rem",
-                  borderRadius: "0.375rem",
-                  boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-                }}
-              >
-                <h3
-                  style={{
-                    fontSize: "1.25rem",
-                    fontWeight: "bold",
-                    marginBottom: "1rem",
-                    color: "#1f2937",
-                  }}
-                >
-                  Reports This Cycle
-                </h3>
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "0.3rem",
-                    padding: "0 0.25rem",
-                  }}
-                >
-                  <div
-                    style={{
-                      background: "#d1fae5",
-                      borderRadius: "0.375rem",
-                      padding: "0.75rem",
-                      flex: 1,
-                      textAlign: "center",
-                    }}
-                  >
-                    <p
-                      style={{
-                        fontSize: "1.5rem",
-                        fontWeight: "bold",
-                        color: "#065f46",
-                      }}
-                    >
-                      {statistics.reportsPerCycle.accepted}
+          <div
+            style={{ maxWidth: "100%", animation: "fadeIn 0.3s" }}
+            className={`container faculty-page ${
+              sidebarWidth === "16rem" ? "sidebar-open" : ""
+            }`}
+          >
+            <h2 className="title">Real-Time Statistics</h2>
+            <div className="cardHolder">
+              {/* Reports This Cycle */}
+              <div className="card">
+                <div className="card-header">
+                  <h3 className="program-title">Reports This Cycle</h3>
+                </div>
+                <div className="reports-grid">
+                  <div className="report-box accepted">
+                    <p className="report-count">
+                      {statistics.reportsPerCycle?.accepted || 0}
                     </p>
-                    <p style={{ fontSize: "0.875rem", color: "#065f46" }}>
-                      Accepted
-                    </p>
+                    <p className="report-label">Accepted</p>
                   </div>
-                  <div
-                    style={{
-                      background: "#fee2e2",
-                      borderRadius: "0.375rem",
-                      padding: "0.75rem",
-                      flex: 1,
-                      textAlign: "center",
-                    }}
-                  >
-                    <p
-                      style={{
-                        fontSize: "1.5rem",
-                        fontWeight: "bold",
-                        color: "#991b1b",
-                      }}
-                    >
-                      {statistics.reportsPerCycle.rejected}
+                  <div className="report-box rejected">
+                    <p className="report-count">
+                      {statistics.reportsPerCycle?.rejected || 0}
                     </p>
-                    <p style={{ fontSize: "0.875rem", color: "#991b1b" }}>
-                      Rejected
-                    </p>
+                    <p className="report-label">Rejected</p>
                   </div>
-                  <div
-                    style={{
-                      background: "#fefcbf",
-                      borderRadius: "0.375rem",
-                      padding: "0.75rem",
-                      flex: 1,
-                      textAlign: "center",
-                    }}
-                  >
-                    <p
-                      style={{
-                        fontSize: "1.5rem",
-                        fontWeight: "bold",
-                        color: "#975a16",
-                      }}
-                    >
-                      {statistics.reportsPerCycle.flagged}
+                  <div className="report-box flagged">
+                    <p className="report-count">
+                      {statistics.reportsPerCycle?.flagged || 0}
                     </p>
-                    <p style={{ fontSize: "0.875rem", color: "#975a16" }}>
-                      Flagged
+                    <p className="report-label">Flagged</p>
+                  </div>
+                  <div className="report-box pending">
+                    <p className="report-count">
+                      {statistics.reportsPerCycle?.pending || 0}
                     </p>
+                    <p className="report-label">Pending</p>
                   </div>
                 </div>
               </div>
-              <div
-                style={{
-                  background: "#fff",
-                  padding: "1.7rem",
-                  borderRadius: "0.375rem",
-                  boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-                }}
-              >
-                <h3
-                  style={{
-                    fontWeight: "bold",
-                    color: "#1f2937",
-                    marginBottom: "0.75rem",
-                  }}
-                >
-                  Performance Metrics
-                </h3>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "0.5rem",
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    <span style={{ color: "#6b7280" }}>
-                      Average Review Time:
-                    </span>
-                    <span style={{ fontWeight: "bold", color: "#3b82f6" }}>
-                      {statistics.averageReviewTime}
-                    </span>
-                  </div>
-                  <div
-                    style={{
-                      width: "100%",
-                      background: "#e5e7eb",
-                      borderRadius: "9999px",
-                      height: "0.625rem",
-                    }}
-                  >
-                    <div
-                      style={{
-                        background: "#3b82f6",
-                        height: "0.625rem",
-                        borderRadius: "9999px",
-                        width: "70%",
-                      }}
-                    ></div>
-                  </div>
-                  <p
-                    style={{
-                      fontSize: "0.75rem",
-                      color: "#6b7280",
-                      marginTop: "0.25rem",
-                    }}
-                  >
-                    70% faster than last cycle
-                  </p>
+
+              {/* Performance Metrics */}
+              <div className="card">
+                <div className="card-header">
+                  <h3 className="program-title">Performance Metrics</h3>
                 </div>
+                <div className="metric-row">
+                  <span className="metric-label">Average Review Time:</span>
+                  <span className="metric-value">
+                    {statistics.averageReviewTime || "N/A"}
+                  </span>
+                </div>
+                <div className="progress-bar">
+                  <div className="progress-fill"></div>
+                </div>
+                {statistics.performanceMetrics && (
+                  <>
+                    <div className="metric-row">
+                      <span className="metric-label">Faculty Average:</span>
+                      <span className="metric-value">
+                        {statistics.performanceMetrics.facultyAverage || "N/A"}
+                      </span>
+                    </div>
+                    <div className="metric-row">
+                      <span className="metric-label">Department Average:</span>
+                      <span className="metric-value">
+                        {statistics.performanceMetrics.departmentAverage ||
+                          "N/A"}
+                      </span>
+                    </div>
+                    <div className="metric-row">
+                      <span className="metric-label">University Average:</span>
+                      <span className="metric-value">
+                        {statistics.performanceMetrics.universityAverage ||
+                          "N/A"}
+                      </span>
+                    </div>
+                  </>
+                )}
               </div>
-              <div
-                style={{
-                  background: "#fff",
-                  padding: "1.5rem",
-                  borderRadius: "0.375rem",
-                  boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-                }}
-              >
-                <h3
-                  style={{
-                    fontWeight: "bold",
-                    color: "#1f2937",
-                    marginBottom: "0.75rem",
-                  }}
-                >
-                  Popular Courses
-                </h3>
-                <ul style={{ paddingLeft: 0, margin: 0, listStyle: "none" }}>
-                  {statistics.popularCourses.map((course, index) => (
-                    <li
-                      key={index}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        marginBottom: "0.5rem",
-                      }}
-                    >
-                      <span
-                        style={{
-                          width: "0.5rem",
-                          height: "0.5rem",
-                          background: "#3b82f6",
-                          borderRadius: "50%",
-                          marginRight: "0.5rem",
-                        }}
-                      ></span>
-                      <span style={{ color: "#4b5563" }}>{course}</span>
+
+              {/* Popular Courses */}
+              <div className="card">
+                <div className="card-header">
+                  <h3 className="program-title">Popular Courses</h3>
+                </div>
+                <ul className="list">
+                  {(statistics.popularCourses || []).map((course, index) => (
+                    <li key={index} className="list-item">
+                      <span className="list-bullet"></span>
+                      <span>
+                        {typeof course === "string" ? course : course.name}{" "}
+                        (Reports:{" "}
+                        {typeof course === "string"
+                          ? "N/A"
+                          : course.reports || 0}
+                        )
+                      </span>
                     </li>
                   ))}
                 </ul>
               </div>
-              <div
-                style={{
-                  background: "#fff",
-                  padding: "1.5rem",
-                  borderRadius: "0.375rem",
-                  boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-                }}
-              >
-                <h3
-                  style={{
-                    fontWeight: "bold",
-                    color: "#1f2937",
-                    marginBottom: "0.75rem",
-                  }}
-                >
-                  Top Rated Companies
-                </h3>
-                <ul style={{ paddingLeft: 0, margin: 0, listStyle: "none" }}>
-                  {statistics.topCompanies.map((company, index) => (
-                    <li
-                      key={index}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        marginBottom: "0.5rem",
-                      }}
-                    >
+
+              {/* Top Rated Companies */}
+              <div className="card">
+                <div className="card-header">
+                  <h3 className="program-title">Top Rated Companies</h3>
+                </div>
+                <ul className="list">
+                  {(statistics.topCompanies || []).map((company, index) => (
+                    <li key={index} className="list-item">
                       <span
+                        className="list-bullet"
                         style={{
-                          width: "0.5rem",
-                          height: "0.5rem",
-                          background:
-                            index === 0
-                              ? "#10b981"
-                              : index === 1
-                              ? "#3b82f6"
-                              : "#a855f7",
-                          borderRadius: "50%",
-                          marginRight: "0.5rem",
+                          background: index === 0 ? "#10b981" : "#2a9d8f",
                         }}
                       ></span>
-                      <span style={{ color: "#4b5563" }}>{company}</span>
+                      <span>
+                        {typeof company === "string"
+                          ? company
+                          : company.name || "N/A"}{" "}
+                        (Rating:{" "}
+                        {typeof company === "string"
+                          ? "N/A"
+                          : company.rating || 0}
+                        , Reports:{" "}
+                        {typeof company === "string"
+                          ? "N/A"
+                          : company.reports || 0}
+                        )
+                      </span>
                     </li>
                   ))}
                 </ul>
               </div>
-              <div
-                style={{
-                  background: "#fff",
-                  padding: "1.5rem",
-                  borderRadius: "0.375rem",
-                  boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-                }}
-              >
-                <h3
-                  style={{
-                    fontWeight: "bold",
-                    color: "#1f2937",
-                    marginBottom: "0.75rem",
-                  }}
-                >
-                  Internship Count by Company
-                </h3>
-                <div style={{ gap: "0.5rem" }}>
-                  {Object.entries(statistics.internshipCount).map(
+
+              {/* Internship Count by Company */}
+              <div className="card">
+                <div className="card-header">
+                  <h3 className="program-title">Internship Count by Company</h3>
+                </div>
+                {statistics.internshipCount &&
+                  Object.entries(statistics.internshipCount).map(
                     ([company, count], index) => (
-                      <div key={index}>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            marginBottom: "0.25rem",
-                          }}
-                        >
-                          <span style={{ color: "#4b5563" }}>{company}</span>
-                          <span
-                            style={{ color: "#4b5563", fontWeight: "bold" }}
-                          >
-                            {count}
-                          </span>
+                      <div key={index} className="company-row">
+                        <div className="company-info">
+                          <span className="company-name">{company}</span>
+                          <span className="company-count">{count}</span>
                         </div>
-                        <div
-                          style={{
-                            width: "100%",
-                            background: "#e5e7eb",
-                            borderRadius: "9999px",
-                            height: "0.5rem",
-                          }}
-                        >
+                        <div className="progress-bar">
                           <div
-                            style={{
-                              background: "#3b82f6",
-                              height: "0.5rem",
-                              borderRadius: "9999px",
-                              width: `${(count / 5) * 100}%`,
-                            }}
+                            className="progress-fill"
+                            style={{ width: `${(count / 6) * 100}%` }} // 6 is the max count in internshipCount
                           ></div>
                         </div>
                       </div>
                     )
                   )}
-                </div>
               </div>
-              <div
-                style={{
-                  background: "#fff",
-                  padding: "1.5rem",
-                  borderRadius: "0.375rem",
-                  boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-                }}
-              >
-                <h3
-                  style={{
-                    fontWeight: "bold",
-                    color: "#1f2937",
-                    marginBottom: "0.75rem",
-                  }}
-                >
-                  Student Distribution by Major
-                </h3>
-                <div style={{ gap: "0.5rem" }}>
-                  {Object.entries(statistics.studentStatsByMajor).map(
+
+              {/* Student Distribution by Major */}
+              <div className="card">
+                <div className="card-header">
+                  <h3 className="program-title">
+                    Student Distribution by Major
+                  </h3>
+                </div>
+                {statistics.studentStatsByMajor &&
+                  Object.entries(statistics.studentStatsByMajor).map(
                     ([major, count], index) => (
-                      <div key={index}>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            marginBottom: "0.25rem",
-                          }}
-                        >
-                          <span style={{ color: "#4b5563" }}>{major}</span>
-                          <span
-                            style={{ color: "#4b5563", fontWeight: "bold" }}
-                          >
-                            {count}
-                          </span>
+                      <div key={index} className="company-row">
+                        <div className="company-info">
+                          <span className="company-name">{major}</span>
+                          <span className="company-count">{count}</span>
                         </div>
-                        <div
-                          style={{
-                            width: "100%",
-                            background: "#e5e7eb",
-                            borderRadius: "9999px",
-                            height: "0.5rem",
-                          }}
-                        >
+                        <div className="progress-bar">
                           <div
+                            className="progress-fill"
                             style={{
+                              width: `${(count / 45) * 100}%`, // 45 is the max count in studentStatsByMajor
                               background:
                                 index % 4 === 0
                                   ? "#3b82f6"
@@ -2524,21 +1949,33 @@ export default function SCADStaffDashboard() {
                                   : index % 4 === 2
                                   ? "#a855f7"
                                   : "#f59e0b",
-                              height: "0.5rem",
-                              borderRadius: "9999px",
-                              width: `${(count / 45) * 100}%`,
                             }}
                           ></div>
                         </div>
                       </div>
                     )
                   )}
-                </div>
               </div>
+            </div>
+
+            {/* Generate Report Button */}
+            <div className="report-button-container">
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <button
+                  onClick={() => generateStatisticsReport(statistics)}
+                  className="actionButton"
+                >
+                  <Download size={18} style={{ marginRight: "0.5rem" }} />
+                  Generate Comprehensive Report
+                </button>
+              </div>
+
+              <p className="report-description">
+                This will generate a PDF with all current statistics.
+              </p>
             </div>
           </div>
         );
-
       case "video-calls":
         return (
           <div style={{ animation: "fadeIn 0.3s" }}>
@@ -2816,7 +2253,3 @@ const styles = `
     to { opacity: 1; }
   }
 `;
-
-const styleSheet = document.createElement("style");
-styleSheet.textContent = styles;
-document.head.appendChild(styleSheet);
