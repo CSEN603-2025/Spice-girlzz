@@ -4,6 +4,7 @@ import SideBarCompany from './Components/SideBarCompany';
 import { Mail, Home, LogOut, User, Menu } from 'lucide-react';
 import './CompanyStyles.css';
 import CompanyHeader from './CompanyHeader';
+import CompanyLogo from './technology-background.png'
 const ProfileCompany = () => {
   const location = useLocation();
   const companyEmail = location.state?.email || 'No email available';
@@ -34,7 +35,7 @@ const ProfileCompany = () => {
       industry: 'Software Development',
       website: 'https://techinnovators.com',
       location: 'San Francisco, CA',
-      logo: 'https://via.placeholder.com/150',
+      logo: CompanyLogo,
       founded: '2015',
       employees: '50-100'
     });

@@ -153,9 +153,9 @@ const CompanyEvaluations = () => {
         {evaluations.length === 0 ? (
           <p className="no-data">No evaluations found.</p>
         ) : (
-          <div className="evaluation-list">
+          <div className="evaluation-list-new">
             {evaluations.map(evaluation => (
-              <div key={evaluation.id} className="evaluation-card">
+              <div key={evaluation.id} className="evaluation-card-new">
                 <div className="evaluation-subtitle">{evaluation.internshipTitle}</div>
                 <div className="evaluation-header">
                   <h4 className="evaluation-title">

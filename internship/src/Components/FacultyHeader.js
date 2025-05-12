@@ -1,10 +1,11 @@
 import React from "react";
 import { Mail, Home, User, LogOut } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "../HomePage.css";
 
 const FacultyHeader = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [mails] = React.useState([
     {
       id: 3,
@@ -39,6 +40,9 @@ const FacultyHeader = () => {
     mail.type === 'application' && !mail.read
   ).length;
 
+  // Check if current route is the mail page
+  const isMailPage = location.pathname === '/faculty/mail';
+
   return (
     <header className="header">
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: '1 0 auto', maxWidth: '50%' }}>
@@ -51,7 +55,7 @@ const FacultyHeader = () => {
           onClick={() => navigate('/faculty/mail')}
         >
           <Mail size={20} />
-          {unreadApplicationCount > 0 && (
+          {!isMailPage && unreadApplicationCount > 0 && (
             <span className="notification-badge">{unreadApplicationCount}</span>
           )}
         </button>

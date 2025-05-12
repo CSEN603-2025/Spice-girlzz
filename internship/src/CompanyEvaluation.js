@@ -165,10 +165,10 @@ const EvaluationManager = () => {
         <div className={`content ${isSidebarHovered && window.innerWidth > 768 ? 'sidebar-expanded' : ''}`}>
           <div className="card">
             <h3 className="section-title">{isEditing ? 'Update Evaluation' : 'Create New Evaluation'}</h3>
-            <form onSubmit={handleSubmit} className="form">
+            <form onSubmit={handleSubmit} className="form"  >
               <div className="form-group">
                 <label className="form-label">Student</label>
-                <select
+                <select 
                   name="studentId"
                   value={formData.studentId}
                   onChange={handleInputChange}
@@ -341,10 +341,10 @@ const EvaluationManager = () => {
                       )}
                     </div>
                     <div className="evaluation-actions">
-                      <button onClick={() => handleEdit(evaluation)} className="btn btn-light">
+                      <button  style={{width:"100px"}} onClick={() => handleEdit(evaluation)} className="btn btn-light">
                         Edit
                       </button>
-                      <button onClick={() => handleDelete(evaluation.id)} className="btn btn-danger">
+                      <button style={{width:"100px"}} onClick={() => handleDelete(evaluation.id)} className="btn btn-danger">
                         Delete
                       </button>
                     </div>

@@ -1,12 +1,6 @@
 // import logo from './logo.svg';
 import "./App.css";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-  Link,
-} from "react-router-dom";
+
 import React, { useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
@@ -21,17 +15,17 @@ import {
 import Login from "./Login";
 import Register from "./Register";
 import StudentHomePage from "./StudentHomePage";
-import ProfileStudent from "./ProfileStudent";
 
 import SCADStaffDashboard from "./SCADStaffDashboard";
 import AppliedInternships from "./Applied internships";
 import ProfileStudent from "./ProfileStudent";
 import SuggestedInternships from "./SuggestedInternships";
-import FacultyMember from "./FacultyMember";
 
 import VideoCall from "./VideoCall";
 import ScheduleCall from "./ScheduleCall";
 import StartCall from "./StartCall";
+import report from './Report';
+
 
 import ProfileCompany from "./ProfileCompany";
 import CompanyMail from "./CompanyMail";
@@ -40,13 +34,14 @@ import CompanyPosts from "./CompanyPosts";
 import CompanyApplications from "./CompanyApplications";
 import CompanyInterns from "./CompanyInterns";
 import CompanyEvaluation from "./CompanyEvaluation";
+import FacultyHomePage from "./FacultyHomePage";
 
 import FacultyLayout from './FacultyLayout';
 import FacultyStatistics from './FacultyStatistics';
 import FacultyReport from './FacultyReport';
 import FacultyMail from "./FacultyMail";
 import FacultyCompEvaluations from "./FacultyCompEvaluations";
-
+import EvaluationStudent from './EvaluationStudent'
 import { IconName } from "lucide-react";
 import { PDFDocument } from "pdf-lib";
 import UpcomingWorkshops from "./UpcomingWorkshops";
@@ -146,6 +141,7 @@ function App() {
         <Route path="/staff" element={<SCADStaffDashboard />} />
 
       <Route path="/faculty" element={<FacultyLayout />}>
+        <Route index element={<FacultyHomePage />} />
         <Route path="reports" element={<FacultyReport />} />
         <Route path="statistics" element={<FacultyStatistics />} />
         <Route path="mail" element={<FacultyMail />} />

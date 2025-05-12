@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import FacultyHeader from "./Components/FacultyHeader";
-import FacultySideBar from "./Components/FacultySideBar";
+import SideBarFaculty from "./Components/FacultySideBar";
 
 export default function FacultyLayout() {
   const [sidebarExpanded, setSidebarExpanded] = useState(false);

@@ -34,7 +34,7 @@ const CompanyMail = () => {
       subject: 'Your application has been accepted!',
       body: 'Congratulations! We are pleased to inform you that your application has been accepted. Please log in to your dashboard for next steps.',
       date: '2023-06-15',
-      read: false,
+      read: true,
       type: 'system'
     }
   ]);

@@ -185,8 +185,8 @@ const JobPostManager = () => {
                     <p><strong>Description:</strong> {post.description}</p>
                     <p><strong>Applications:</strong> {getApplicationCount(post.id)}</p>
                     <div className="job-actions">
-                      <button onClick={() => handleEdit(post)} className="btn btn-light">Edit</button>
-                      <button onClick={() => handleDelete(post.id)} className="btn btn-danger">Delete</button>
+                      <button style={{width:"100px"}} onClick={() => handleEdit(post)} className="btn btn-light">Edit</button>
+                      <button style={{width:"100px"}} onClick={() => handleDelete(post.id)} className="btn btn-danger">Delete</button>
                     </div>
                   </div>
                 ))

@@ -353,9 +353,9 @@ const Applications = () => {
             )}
             <p><strong>Cover Letter:</strong> {isCoverLetterExpanded ? selectedApplicant.coverLetter : truncateCoverLetter(selectedApplicant.coverLetter)}</p>
             {selectedApplicant.coverLetter.length > 100 && (
-              <button
+              <button 
                 onClick={toggleCoverLetter}
-                className="btn btn-light"
+                className="btn btn-light" style={{width:"130px"}}
               >
                 {isCoverLetterExpanded ? 'Read Less' : 'Read More'}
               </button>
@@ -364,7 +364,7 @@ const Applications = () => {
             <p><strong>Status:</strong> {selectedApplicant.status.charAt(0).toUpperCase() + selectedApplicant.status.slice(1)}</p>
             <div className="form-group">
               <label className="form-label">Update Status</label>
-              <select
+              <select style={{width:"180px"}}
                 value={selectedApplicant.status}
                 onChange={(e) => updateStatus(selectedApplicant.id, e.target.value)}
                 className="form-select"
@@ -377,9 +377,9 @@ const Applications = () => {
                 <option value="internship complete">Internship Complete</option>
               </select>
             </div>
-            <button
+            <button style={{width:"90px"}}
               onClick={() => setSelectedApplicant(null)}
-              className="btn btn-danger"
+              className="btn btn-danger" 
             >
               Close
             </button>

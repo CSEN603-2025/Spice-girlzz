@@ -5,11 +5,8 @@ import { FaApple } from "react-icons/fa6";
 import { SiSiemens } from "react-icons/si";
 import { MdOutlinePlayCircle } from "react-icons/md";
 import "./StudentHomePage.css";
-import HeaderCompany from "./CompanyHeader";
-import SideBarCompany from "./Components/SideBarCompany";
-import './CompanyStyles.css';
 
-function CompanyHomePage() {
+function FacultyHomePage() {
   const [selectedInternship, setSelectedInternship] = useState(null);
   const [visibleCards, setVisibleCards] = useState(3);
   const [alertMessage, setAlertMessage] = useState("");
@@ -25,13 +22,6 @@ function CompanyHomePage() {
   const [showVideoModal, setShowVideoModal] = useState(false);
 
   const navigate = useNavigate();
-
-const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-const [isSidebarHovered, setIsSidebarHovered] = useState(false);
-
-const toggleSidebar = () => {
-  setIsSidebarOpen(!isSidebarOpen);
-};
 
   // Video mapping by major
   const videoByMajor = {
@@ -299,8 +289,6 @@ const toggleSidebar = () => {
 
   return (
     <div className="container">
-      <HeaderCompany />
-      <SideBarCompany onHoverChange={setIsSidebarHovered}  />
       <main
         style={{
           padding: "1.5rem",
@@ -310,7 +298,7 @@ const toggleSidebar = () => {
           backgroundColor: "#f9fafb",
           minHeight: "100vh",
         }}
-      className={`content ${isSidebarHovered || isSidebarOpen ? 'sidebar-expanded' : ''}`}>
+      >
         <div className="profileContent">
           <div style={{ animation: "fadeIn 0.3s" }}>
             <h2
@@ -635,4 +623,4 @@ const toggleSidebar = () => {
   );
 }
 
-export default CompanyHomePage;
+export default FacultyHomePage;
