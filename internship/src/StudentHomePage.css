@@ -1,19 +1,10 @@
-<<<<<<< HEAD
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");
 
 /* StudentHomePage.css */
 .container {
   font-family: "Inter", sans-serif;
   background-color: #f3f4f6;
-=======
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-
-/* StudentHomePage.css */
-.container {
-font-family: 'Inter', sans-serif;
-  background-color: #F3F4F6;
->>>>>>> 53056517270fae88ad0c98c46238f594da71f174
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -29,11 +20,7 @@ font-family: 'Inter', sans-serif;
 }
 
 .title {
-<<<<<<< HEAD
   font-family: "Inter", sans-serif;
-=======
-font-family: 'Inter', sans-serif;
->>>>>>> 53056517270fae88ad0c98c46238f594da71f174
   font-size: 1.25rem;
   font-weight: 600;
   color: #000;
@@ -85,15 +72,8 @@ font-family: 'Inter', sans-serif;
   transition: all 0.4s ease;
 }
 
-<<<<<<< HEAD
 .actionButton:hover {
   background-color: #30b3a3;
-=======
-
-
-.actionButton:hover{
- background-color: #30b3a3;
->>>>>>> 53056517270fae88ad0c98c46238f594da71f174
 
   /* Optional subtle scale & shadow */
   transform: scale(1.02);
@@ -125,7 +105,6 @@ font-family: 'Inter', sans-serif;
 }
 
 /* Brand colors */
-<<<<<<< HEAD
 .client-logo.google {
   color: #4285f4;
 }
@@ -144,16 +123,7 @@ font-family: 'Inter', sans-serif;
 
 .cardHolder {
   display: grid;
-=======
-.client-logo.google { color: #4285F4; }
-.client-logo.slack { color: #E01E5A; }
-.client-logo.netflix { color: #E50914; }
-.client-logo.visa { color: #1A1F71; }
-.client-logo.amazon { color: #FF9900; }
 
-.cardHolder{
-     display: grid;
->>>>>>> 53056517270fae88ad0c98c46238f594da71f174
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 20px;
   padding: 20px;
@@ -161,11 +131,7 @@ font-family: 'Inter', sans-serif;
   margin: 0 auto;
 }
 
-<<<<<<< HEAD
 .card {
-=======
-.card{
->>>>>>> 53056517270fae88ad0c98c46238f594da71f174
   background: white;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -186,18 +152,11 @@ font-family: 'Inter', sans-serif;
 }
 
 .program-title {
-<<<<<<< HEAD
-  font-size: 1.25rem;
-  font-weight: bold;
-  color: #1f2937;
-  margin: 0 0 0.5rem;
-=======
   font-size: 1.1rem;
   font-weight: 600;
   color: #2d3436;
   margin: 0 0 10px 0;
   line-height: 1.4;
->>>>>>> 53056517270fae88ad0c98c46238f594da71f174
 }
 
 .company-info {
@@ -207,102 +166,72 @@ font-family: 'Inter', sans-serif;
   color: #636e72;
 }
 
-<<<<<<< HEAD
 .company-info .company-name {
   font-size: 0.875rem;
   color: #2a9d8f;
-=======
-.company-name {
-  font-weight: 500;
-  color: #2a9d8f; 
->>>>>>> 53056517270fae88ad0c98c46238f594da71f174
-}
 
-.company-location {
-  color: #636e72;
-}
-
-<<<<<<< HEAD
-.status {
-  color: #e50914;
-=======
-.status{
-    color:#E50914;
->>>>>>> 53056517270fae88ad0c98c46238f594da71f174
-}
-
-/* Card Footer */
-.card-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.85rem;
-}
-
-.alumni-count {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-<<<<<<< HEAD
-  color: #636e72;
-=======
-  color:#bc0f17;
-}
-.live{
-      display: flex;
-  align-items: center;
-  gap: 5px;
-  color:#bc0f17;
->>>>>>> 53056517270fae88ad0c98c46238f594da71f174
-}
-
-.pin-icon {
-  font-size: 0.9rem;
-}
-
-.post-date {
-  color: #2a9d8f;
-  font-weight: 500;
-}
-
-<<<<<<< HEAD
-=======
-
-
->>>>>>> 53056517270fae88ad0c98c46238f594da71f174
-/* For responsive design */
-@media (max-width: 768px) {
-  .client-logos {
-    justify-content: center;
+  .company-location {
+    color: #636e72;
   }
-  .client-logo {
-    margin: 10px 15px;
-    height: 30px;
+
+  .status {
+    color: #e50914;
+  }
+  /* Card Footer */
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+  }
+
+  .alumni-count {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #bc0f17;
+  }
+  .live {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #bc0f17;
+  }
+
+  .pin-icon {
+    font-size: 0.9rem;
+  }
+
+  .post-date {
+    color: #2a9d8f;
+    font-weight: 500;
+  }
+
+  /* For responsive design */
+  @media (max-width: 768px) {
+    .client-logos {
+      justify-content: center;
+    }
+    .client-logo {
+      margin: 10px 15px;
+      height: 30px;
+    }
+  }
+
+  /* Animation keyframes */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* Media queries */
+  @media (max-width: 768px) {
+    main {
+      margin-left: 0 !important;
+    }
   }
 }
-
-/* Animation keyframes */
-@keyframes fadeIn {
-<<<<<<< HEAD
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-=======
-  from { opacity: 0; }
-  to { opacity: 1; }
->>>>>>> 53056517270fae88ad0c98c46238f594da71f174
-}
-
-/* Media queries */
-@media (max-width: 768px) {
-  main {
-    margin-left: 0 !important;
-  }
-<<<<<<< HEAD
-}
-=======
-}
->>>>>>> 53056517270fae88ad0c98c46238f594da71f174

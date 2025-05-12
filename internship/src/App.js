@@ -15,11 +15,10 @@ import StudentHomePage from "./StudentHomePage";
 import ProfileStudent from "./ProfileStudent";
 
 import SCADStaffDashboard from "./SCADStaffDashboard";
-import AppliedInternships from './Applied internships';
+import AppliedInternships from "./Applied internships";
 import AvailableInternships from "./AvailableInternships";
 import FacultyMember from "./FacultyMember";
 
-<<<<<<< HEAD
 import VideoCall from "./VideoCall";
 import ScheduleCall from "./ScheduleCall";
 import StartCall from "./StartCall";
@@ -31,26 +30,13 @@ import CompanyPosts from "./CompanyPosts";
 import CompanyApplications from "./CompanyApplications";
 import CompanyInterns from "./CompanyInterns";
 import CompanyEvaluation from "./CompanyEvaluation";
-=======
-import VideoCall from './VideoCall';
-import ScheduleCall from './ScheduleCall';
-import StartCall from './StartCall';
 
-import ProfileCompany from './ProfileCompany';
-import CompanyMail from './CompanyMail';
-import CompanyHomePage from './CompanyHomePage';
-import CompanyPosts from './CompanyPosts';
-import CompanyApplications from './CompanyApplications';
-import CompanyInterns from './CompanyInterns';
-import CompanyEvaluation from './CompanyEvaluation';
->>>>>>> 53056517270fae88ad0c98c46238f594da71f174
-
-import FacultyLayout from './FacultyLayout';
-import FacultyStatistics from './FacultyStatistics';
-import FacultyReport from './FacultyReport';
+import FacultyLayout from "./FacultyLayout";
+import FacultyStatistics from "./FacultyStatistics";
+import FacultyReport from "./FacultyReport";
 import { IconName } from "lucide-react";
 import { PDFDocument } from "pdf-lib";
-import UpcomingWorkshops from './UpcomingWorkshops';
+import UpcomingWorkshops from "./UpcomingWorkshops";
 
 function App() {
   const [appliedInternships, setAppliedInternships] = useState(() => {
@@ -93,10 +79,6 @@ function App() {
             />
           }
         />
-<<<<<<< HEAD
-
-=======
->>>>>>> 53056517270fae88ad0c98c46238f594da71f174
         <Route
           path="/student/scheduleCall"
           element={
@@ -115,13 +97,7 @@ function App() {
             />
           }
         />
-<<<<<<< HEAD
-
         <Route path="/startCall" element={<StartCall />} />
-
-=======
-        <Route path="/startCall" element={<StartCall />} />
->>>>>>> 53056517270fae88ad0c98c46238f594da71f174
         <Route path="/company" element={<CompanyHomePage />} />
         <Route path="/company/mail" element={<CompanyMail />} />
         <Route path="/company/profile" element={<ProfileCompany />} />
@@ -129,18 +105,14 @@ function App() {
         <Route path="/company/interns" element={<CompanyInterns />} />
         <Route path="/company/posts" element={<CompanyPosts />} />
         <Route path="/company/applicants" element={<CompanyApplications />} />
-<<<<<<< HEAD
-
-=======
->>>>>>> 53056517270fae88ad0c98c46238f594da71f174
         <Route path="/student/profile" element={<ProfileStudent />} />
         <Route path="/student/available" element={<AvailableInternships />} />
-        <Route path="/student/workshops" element={<UpcomingWorkshops />} /> {/* Added Route */}
+        <Route path="/student/workshops" element={<UpcomingWorkshops />} />{" "}
+        {/* Added Route */}
         <Route path="/staff" element={<SCADStaffDashboard />} />
         <Route path="/faculty" element={<FacultyLayout />}>
           <Route path="reports" element={<FacultyReport />} />
           <Route path="statistics" element={<FacultyStatistics />} />
-
         </Route>
       </Routes>
     </Router>
