@@ -1,30 +1,45 @@
 // import logo from './logo.svg';
-import './App.css';
-import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
+import "./App.css";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  Link,
+} from "react-router-dom";
 import React, { useState, useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  Link,
+} from "react-router-dom";
 
-import Login from './Login';
-import Register from './Register';
-import StudentHomePage from './StudentHomePage';
-import ProfileStudent from './ProfileStudent';
+
+
+import Login from "./Login";
+import Register from "./Register";
+import StudentHomePage from "./StudentHomePage";
+import ProfileStudent from "./ProfileStudent";
 
 import SCADStaffDashboard from "./SCADStaffDashboard";
 import AppliedInternships from "./Applied internships";
-import AvailableInternships from "./AvailableInternships";
+import ProfileStudent from "./ProfileStudent";
+import SuggestedInternships from "./SuggestedInternships";
 import FacultyMember from "./FacultyMember";
 
-import VideoCall from './VideoCall'
-import ScheduleCall from './ScheduleCall';
-import StartCall from './StartCall';
+import VideoCall from "./VideoCall";
+import ScheduleCall from "./ScheduleCall";
+import StartCall from "./StartCall";
 
-
-import ProfileCompany from './ProfileCompany';
-import CompanyMail from './CompanyMail';
-import CompanyHomePage from './CompanyHomePage';
-import CompanyPosts from './CompanyPosts';
-import CompanyApplications from './CompanyApplications';
-import CompanyInterns from './CompanyInterns';
-import CompanyEvaluation from './CompanyEvaluation';
+import ProfileCompany from "./ProfileCompany";
+import CompanyMail from "./CompanyMail";
+import CompanyHomePage from "./CompanyHomePage";
+import CompanyPosts from "./CompanyPosts";
+import CompanyApplications from "./CompanyApplications";
+import CompanyInterns from "./CompanyInterns";
+import CompanyEvaluation from "./CompanyEvaluation";
 
 import FacultyLayout from './FacultyLayout';
 import FacultyStatistics from './FacultyStatistics';
@@ -32,7 +47,9 @@ import FacultyReport from './FacultyReport';
 import FacultyMail from "./FacultyMail";
 import FacultyCompEvaluations from "./FacultyCompEvaluations";
 
-
+import { IconName } from "lucide-react";
+import { PDFDocument } from "pdf-lib";
+import UpcomingWorkshops from "./UpcomingWorkshops";
 
 
 function App() {
@@ -45,6 +62,7 @@ function App() {
       return [];
     }
   });
+  
 
   useEffect(() => {
     sessionStorage.setItem(
@@ -67,6 +85,17 @@ function App() {
             />
           }
         />
+         <Route path="/startCall" element={<StartCall />} /> 
+
+        <Route path="/company" element={<CompanyHomePage />} /> 
+                <Route path="/student/evaluation" element={<EvaluationStudent />} /> 
+
+        <Route path="/company/mail" element={<CompanyMail />} /> 
+        <Route path="/company/profile" element={<ProfileCompany />} /> 
+        <Route path="/company/evaluate" element={<CompanyEvaluation />} /> 
+        <Route path="/company/interns" element={<CompanyInterns />} /> 
+        <Route path="/company/posts" element={<CompanyPosts />} /> 
+        <Route path="/company/applicants" element={<CompanyApplications />} /> 
         <Route
           path="/student/applied"
           element={
@@ -76,26 +105,44 @@ function App() {
             />
           }
         />
-
-
-        <Route path="/student/scheduleCall" element={<ScheduleCall  appliedInternships={appliedInternships}
-              setAppliedInternships={setAppliedInternships}/>} /> 
-        <Route path="/student/videoCallDashboard" element={<VideoCall  appliedInternships={appliedInternships}
-              setAppliedInternships={setAppliedInternships}/>} /> 
-
-        <Route path="/startCall" element={<StartCall />} /> 
-
-        <Route path="/company" element={<CompanyHomePage />} /> 
-        <Route path="/company/mail" element={<CompanyMail />} /> 
-        <Route path="/company/profile" element={<ProfileCompany />} /> 
-        <Route path="/company/evaluate" element={<CompanyEvaluation />} /> 
-        <Route path="/company/interns" element={<CompanyInterns />} /> 
-        <Route path="/company/posts" element={<CompanyPosts />} /> 
-        <Route path="/company/applicants" element={<CompanyApplications />} /> 
-
-        
+        <Route
+          path="/student/applied"
+          element={
+            <AppliedInternships
+              appliedInternships={appliedInternships}
+              setAppliedInternships={setAppliedInternships}
+            />
+          }
+        />
+        <Route
+          path="/student/scheduleCall"
+          element={
+            <ScheduleCall
+              appliedInternships={appliedInternships}
+              setAppliedInternships={setAppliedInternships}
+            />
+          }
+        />
+        <Route
+          path="/student/videoCallDashboard"
+          element={
+            <VideoCall
+              appliedInternships={appliedInternships}
+              setAppliedInternships={setAppliedInternships}
+            />
+          }
+        />
+        <Route path="/startCall" element={<StartCall />} />
+        <Route path="/company" element={<CompanyHomePage />} />
+        <Route path="/company/mail" element={<CompanyMail />} />
+        <Route path="/company/profile" element={<ProfileCompany />} />
+        <Route path="/company/evaluate" element={<CompanyEvaluation />} />
+        <Route path="/company/interns" element={<CompanyInterns />} />
+        <Route path="/company/posts" element={<CompanyPosts />} />
+        <Route path="/company/applicants" element={<CompanyApplications />} />
         <Route path="/student/profile" element={<ProfileStudent />} />
-        <Route path="/student/available" element={<AvailableInternships />} />
+       <Route path="/student/suggested" element={<SuggestedInternships />} />
+        <Route path="/student/workshops" element={<UpcomingWorkshops />} /> {/* Added Route */}
         <Route path="/staff" element={<SCADStaffDashboard />} />
 
       <Route path="/faculty" element={<FacultyLayout />}>

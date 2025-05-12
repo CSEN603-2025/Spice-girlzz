@@ -134,18 +134,39 @@ function LoginPage() {
       return;
     }
 
-    if (email.endsWith("@student.guc.edu.eg")) {
-      navigate("/student", { state: { email } });
-    } else if (email.endsWith("@mervat")) {
+    // Initialize student profile in sessionStorage
+    const initialProfile = {
+      name: "...",
+      isFirstLogin: true,
+      hasProfile: false,
+      email: email,
+      phone: "",
+      gender: "",
+      Address: "",
+      nationality: "",
+      language: "",
+      jobInterests: [],
+      previousInternships: [],
+      partTimeJobs: [],
+      collegeActivities: [],
+      education: [],
+    };
+    sessionStorage.setItem("studentProfile", JSON.stringify(initialProfile));
+
+   if (email.endsWith('@student.guc.edu.eg')) {
+      navigate('/student', { state: { email } });
+    } else if (email.endsWith("mervat")){
       navigate("/faculty");
-    } else if (email.endsWith("@acceptedCorp.com")) {
-      navigate("/company", { state: { email } });
-    } else if (email.endsWith("@guc.edu.eg")) {
-      navigate("/staff");
-    } else {
-      alert("Only student login supported for now");
+    } else if(email.endsWith('@acceptedCorp.com')){
+      navigate('/company', { state: { email } });
     }
-  };
+    else if (email.endsWith("@guc.edu.eg")) {
+     navigate("/staff");
+   }
+  }
+
+
+
 
   return (
     <div className="login-container">

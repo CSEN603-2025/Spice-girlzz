@@ -115,7 +115,13 @@ const initialReports = [
 
 const initialStatistics = {
   reportsPerCycle: { accepted: 12, rejected: 4, flagged: 3, pending: 5 },
+  reportsPerCycle: { accepted: 12, rejected: 4, flagged: 3, pending: 5 },
   averageReviewTime: "3 days",
+  popularCourses: [
+    { name: "CS101", reports: 15 },
+    { name: "ENG202", reports: 12 },
+    { name: "DS100", reports: 8 }
+  ],
   popularCourses: [
     { name: "CS101", reports: 15 },
     { name: "ENG202", reports: 12 },
@@ -1161,7 +1167,7 @@ export default function FacultyMember() {
 
   return (
     <div style={{ display: "flex", height: "100vh", background: "#f3f4f6" }}>
-      <SideBar
+      <FacultySideBar
         setActivePage={setActivePage}
         activePage={activePage}
         onWidthChange={handleWidthChange} // Add this prop

@@ -1,6 +1,6 @@
 // Header.jsx
 import React from "react";
-import { Menu, Mail, User, LogOut } from "lucide-react"; // adjust import as needed
+import { Menu, Mail, User, LogOut,Home } from "lucide-react"; // adjust import as needed
 import { useNavigate } from "react-router-dom";
 
 const Header = ({ toggleSidebar }) => {
@@ -38,15 +38,15 @@ const Header = ({ toggleSidebar }) => {
         <h2
           style={{
             fontFamily: "'Inter', sans-serif",
-            fontSize: "1.25rem",
+            fontSize: "1.5rem",
             fontWeight: "600",
             color: "#000",
             margin: 0,
             letterSpacing: "-0.015em",
-            textShadow: "0 1px 2px rgba(0, 0, 0, 0.1)",
+         //   textShadow: "0 1px 2px rgba(0, 0, 0, 0.1)",
           }}
         >
-          GUC Internship System
+          InternHub
         </h2>
       </div>
 
@@ -75,6 +75,25 @@ const Header = ({ toggleSidebar }) => {
           onClick={() => navigate("/student/messages")}
         >
           <Mail size={20} />
+        </button>
+
+         <button
+          style={{
+            padding: "0.5rem",
+            color: "#000",
+            background: "transparent",
+            border: "none",
+            borderRadius: "6px",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+          }}
+          title="Home"
+          onClick={() => navigate("/student")}
+        >
+          <Home size={20} />
         </button>
         <button
           style={{
