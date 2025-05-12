@@ -19,7 +19,37 @@ const EvaluationManager = () => {
   });
   const [isEditing, setIsEditing] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarHovered, setIsSidebarHovered] = useState(false);
   const [clickedButtons, setClickedButtons] = useState({});
+  const [mails, setMails] = useState([
+    {
+      id: 3,
+      from: 'InternHub',
+      subject: 'New Application Received - Software Engineering Intern',
+      body: 'You have received a new application for your Software Engineering Intern position from John Doe. Click here to view the application details.',
+      date: new Date().toISOString().split('T')[0],
+      read: false,
+      type: 'application'
+    },
+    {
+      id: 2,
+      from: 'InternHub',
+      subject: 'Welcome to InternHub Platform',
+      body: 'Thank you for registering your company with us. We look forward to working with you.',
+      date: '2023-06-10',
+      read: true,
+      type: 'system'
+    },
+    {
+      id: 1,
+      from: 'scadoffice@guc.edu.eg',
+      subject: 'Your application has been accepted!',
+      body: 'Congratulations! We are pleased to inform you that your application has been accepted.',
+      date: '2023-06-15',
+      read: false,
+      type: 'system'
+    }
+  ]);
 
   useEffect(() => {
     const fetchedStudents = [
@@ -106,6 +136,10 @@ const EvaluationManager = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  const unreadApplicationCount = mails.filter(mail => 
+    mail.type === 'application' && !mail.read
+  ).length;
+
   return (
     <div className="container">
       <header className="header">
@@ -125,6 +159,9 @@ const EvaluationManager = () => {
             }}
           >
             <Mail size={20} />
+            {unreadApplicationCount > 0 && (
+              <span className="notification-badge">{unreadApplicationCount}</span>
+            )}
           </button>
           <button
             className={`header-btn ${clickedButtons['headerProfile'] ? 'clicked' : ''}`}
@@ -160,10 +197,8 @@ const EvaluationManager = () => {
       </header>
 
       <div className="layout">
-        <div className="sidebar">
-          <SideBarCompany setActivePage={(page) => navigate(`/company/${page}`)} />
-        </div>
-        <div className={`content ${isSidebarOpen && window.innerWidth > 768 ? 'sidebar-open' : 'sidebar-closed'}`}>
+        <SideBarCompany onHoverChange={setIsSidebarHovered} />
+        <div className={`content ${isSidebarHovered && window.innerWidth > 768 ? 'sidebar-expanded' : ''}`}>
           <div className="card">
             <h3 className="section-title">{isEditing ? 'Update Evaluation' : 'Create New Evaluation'}</h3>
             <form onSubmit={handleSubmit} className="form">

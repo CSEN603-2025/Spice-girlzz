@@ -37,7 +37,13 @@ function SideBar({ setActivePage }) {
       page: "available",
       icon: <Search size={20} />,
       path: "/student/videoCallDashboard",
-    }
+    },
+        {
+      title: "Online Workshops",
+      page: "workshops",
+      icon: <Briefcase size={20} />,
+      path: "/student/workshops",
+    },
   ];
 
   const getButtonStyle = (itemPath) => {

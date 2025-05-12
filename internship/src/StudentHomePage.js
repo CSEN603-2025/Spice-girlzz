@@ -4,6 +4,7 @@ import SideBar from "./Components/SideBar";
 import Header from "./Components/Header";
 import { Mail, User, LogOut, Menu } from "lucide-react";
 import AppliedInternships from "./Applied internships";
+import UpcomingWorkshops from "./UpcomingWorkshops";
 
 function StudentHomePage({ appliedInternships, setAppliedInternships }) {
   const [activePage, setActivePage] = useState("home");

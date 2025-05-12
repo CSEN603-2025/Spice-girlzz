@@ -8,6 +8,7 @@ const CompanyHome = () => {
   const navigate = useNavigate();
   const companyName = "Tech Innovators Ltd.";
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarHovered, setIsSidebarHovered] = useState(false);
   const [clickedButtons, setClickedButtons] = useState({});
 
   const handleButtonClick = (buttonId) => {
@@ -76,10 +77,8 @@ const CompanyHome = () => {
       </header>
 
       <div className="layout">
-        <div className="sidebar">
-          <SideBarCompany setActivePage={(page) => navigate(`/company/${page}`)} />
-        </div>
-        <div className={`content ${isSidebarOpen && window.innerWidth > 768 ? 'sidebar-open' : 'sidebar-closed'}`}>
+        <SideBarCompany onHoverChange={setIsSidebarHovered} />
+        <div className={`content ${isSidebarHovered && window.innerWidth > 768 ? 'sidebar-expanded' : ''}`}>
           <div className="card">
             <h3 className="section-title">Welcome back, {companyName}!</h3>
             <p>Here's what's happening with your company today.</p>
