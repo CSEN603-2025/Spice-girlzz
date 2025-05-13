@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Mail, User, LogOut, Home } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import SideBar from "./Components/SideBar";
+import { useNavigate, useLocation } from "react-router-dom";
 import Header from "./Components/Header";
 import "./StudentHomePage.css";
+import SideBar from "./Components/SideBar";
 
 function AppliedInternships() {
   const navigate = useNavigate();
+  const location = useLocation();
+
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
   const [filterDate, setFilterDate] = useState("");
@@ -17,6 +19,9 @@ function AppliedInternships() {
     const saved = sessionStorage.getItem('appliedInternships');
     return saved ? JSON.parse(saved) : [];
   });
+
+  const storedProfile = JSON.parse(sessionStorage.getItem("studentProfile") || "{}");
+  const email = (location.state?.email || storedProfile.email || "").toLowerCase();
 
   const mockCurrentCompletedInternships = [
     {
@@ -161,6 +166,32 @@ function AppliedInternships() {
   // Filtering logic for Current/Completed Internships (from mock data)
   const currentCompletedInternships = filterInternships(mockCurrentCompletedInternships);
 
+  // Check if an evaluation exists for a given internship
+  const hasEvaluation = (internshipId) => {
+    const storedEvaluations = sessionStorage.getItem("studentEvaluations");
+    if (storedEvaluations) {
+      const evaluations = JSON.parse(storedEvaluations);
+      return evaluations.some((e) => e.internshipId === internshipId);
+    }
+    return false;
+  };
+
+  // Handle navigation to report page
+  const handleCreateReport = (internship) => {
+    navigate("/student/report", {
+      state: { email, internshipId: internship.id },
+    });
+    setSelectedInternship(null);
+  };
+
+  // Handle navigation to evaluation page
+  const handleCreateEvaluation = (internship) => {
+    navigate("/student/evaluation", {
+      state: { email, internshipId: internship.id, internshipTitle: internship.title },
+    });
+    setSelectedInternship(null);
+  };
+
   return (
     <>
     <div style={styles.container}>
@@ -168,7 +199,9 @@ function AppliedInternships() {
       <div style={{ ...styles.layout, marginTop: "4rem", minHeight: "calc(100vh - 4rem)" }}>
         <div style={styles.sidebar}>
           <SideBar
-            setActivePage={(page) => navigate(`/student${page === "home" ? "" : "/" + page}`)}
+            setActivePage={(page) =>
+              navigate(`/student${page === "home" ? "" : "/" + page}`, { state: { email } })
+            }
             isOpen={isSidebarOpen}
             setSidebarWidth={setSidebarWidth}
           />
@@ -345,7 +378,7 @@ function AppliedInternships() {
                             ? `${new Date(internship.startDate).toLocaleString("default", {
                                 month: "short",
                                 year: "numeric",
-                              })} - ${internship.status === "current" ? "Present" : new Date(internship.endDate).toLocaleString("default", {
+                              })} - ${internship.status === "current" ? "Present" : new Date(internship.startDate).toLocaleString("default", {
                                 month: "short",
                                 year: "numeric",
                               })}`
@@ -400,6 +433,25 @@ function AppliedInternships() {
                 selectedInternship.status.slice(1)}
             </p>
             <div className="modal-footer">
+              {selectedInternship.status === "completed" && (
+                <>
+                  <button
+                    className="actionButton"
+                    onClick={() => handleCreateReport(selectedInternship)}
+            
+                  >
+                    Create Report
+                  </button>
+                  <button
+                    className="actionButton"
+                    onClick={() => handleCreateEvaluation(selectedInternship)}
+                    disabled={hasEvaluation(selectedInternship.id)}
+            
+                  >
+                    {hasEvaluation(selectedInternship.id) ? "Evaluation Created" : "Create Evaluation"}
+                  </button>
+                </>
+              )}
               <button
                 className="modal-close-button"
                 onClick={() => setSelectedInternship(null)}

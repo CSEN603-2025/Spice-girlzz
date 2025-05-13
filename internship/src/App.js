@@ -1,12 +1,6 @@
 // import logo from './logo.svg';
 import "./App.css";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-  Link,
-} from "react-router-dom";
+
 import React, { useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
@@ -20,17 +14,14 @@ import Login from "./Login";
 import Register from "./Register";
 import StudentHomePage from "./StudentHomePage";
 import ProfileStudent from "./ProfileStudent";
-
+import EvaluationStudent from "./EvaluationStudent"; 
+import Report from "./Report";
 import SCADStaffDashboard from "./SCADStaffDashboard";
 import AppliedInternships from "./Applied internships";
-import ProfileStudent from "./ProfileStudent";
-import SuggestedInternships from "./SuggestedInternships";
 import FacultyMember from "./FacultyMember";
-
 import VideoCall from "./VideoCall";
 import ScheduleCall from "./ScheduleCall";
 import StartCall from "./StartCall";
-
 import ProfileCompany from "./ProfileCompany";
 import CompanyMail from "./CompanyMail";
 import CompanyHomePage from "./CompanyHomePage";
@@ -38,13 +29,15 @@ import CompanyPosts from "./CompanyPosts";
 import CompanyApplications from "./CompanyApplications";
 import CompanyInterns from "./CompanyInterns";
 import CompanyEvaluation from "./CompanyEvaluation";
-
 import FacultyLayout from "./FacultyLayout";
 import FacultyStatistics from "./FacultyStatistics";
 import FacultyReport from "./FacultyReport";
 import { IconName } from "lucide-react";
 import { PDFDocument } from "pdf-lib";
 import UpcomingWorkshops from "./UpcomingWorkshops";
+import NotificationSystem from "./Components/NotificationsStudent";
+import Assessment from "./Assessment";
+
 
 function App() {
   const [appliedInternships, setAppliedInternships] = useState(() => {
@@ -67,22 +60,17 @@ function App() {
 
   return (
     <Router>
+
+       <div>
+        <NotificationSystem />
+    </div>
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route
-          path="/student"
-          element={
-            <StudentHomePage
-              appliedInternships={appliedInternships}
-              setAppliedInternships={setAppliedInternships}
-            />
-          }
-        />
-         <Route path="/startCall" element={<StartCall />} /> 
+        <Route path="/student" element={<StudentHomePage />}/>
+         <Route path="/student/startCall" element={<StartCall />} /> 
 
         <Route path="/company" element={<CompanyHomePage />} /> 
-                <Route path="/student/evaluation" element={<EvaluationStudent />} /> 
 
         <Route path="/company/mail" element={<CompanyMail />} /> 
         <Route path="/company/profile" element={<ProfileCompany />} /> 
@@ -99,33 +87,13 @@ function App() {
             />
           }
         />
-        <Route
-          path="/student/applied"
-          element={
-            <AppliedInternships
-              appliedInternships={appliedInternships}
-              setAppliedInternships={setAppliedInternships}
-            />
-          }
-        />
-        <Route
+         <Route
           path="/student/scheduleCall"
           element={
-            <ScheduleCall
-              appliedInternships={appliedInternships}
-              setAppliedInternships={setAppliedInternships}
-            />
+            <ScheduleCall/>
           }
         />
-        <Route
-          path="/student/videoCallDashboard"
-          element={
-            <VideoCall
-              appliedInternships={appliedInternships}
-              setAppliedInternships={setAppliedInternships}
-            />
-          }
-        />
+        <Route path="/student/call" element={<VideoCall/>}/>
         <Route path="/startCall" element={<StartCall />} />
         <Route path="/company" element={<CompanyHomePage />} />
         <Route path="/company/mail" element={<CompanyMail />} />
@@ -135,7 +103,6 @@ function App() {
         <Route path="/company/posts" element={<CompanyPosts />} />
         <Route path="/company/applicants" element={<CompanyApplications />} />
         <Route path="/student/profile" element={<ProfileStudent />} />
-       <Route path="/student/suggested" element={<SuggestedInternships />} />
         <Route path="/student/workshops" element={<UpcomingWorkshops />} /> {/* Added Route */}
         <Route path="/staff" element={<SCADStaffDashboard />} />
         <Route path="/faculty" element={<FacultyLayout />}>
@@ -144,11 +111,19 @@ function App() {
         </Route>
         <Route path="/student/report" element={<Report />} />
         <Route path="/student/evaluation" element={<EvaluationStudent />} />
+        <Route path="/student/assessments" element={<Assessment />} /> 
+
+
+        
 
          
       </Routes>
     </Router>
+
+   
   );
+
+
 }
 
 export default App;
