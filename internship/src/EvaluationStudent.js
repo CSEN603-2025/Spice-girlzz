@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { jsPDF } from "jspdf"; // Import jsPDF
-import SideBar from "./Components/SideBar";
 import Header from "./Components/Header";
 import "./StudentHomePage.css";
+import SideBar from "./Components/SideBar";
 
 function EvaluationStudent() {
   const navigate = useNavigate();
@@ -28,6 +28,9 @@ function EvaluationStudent() {
   const [editingEvaluationId, setEditingEvaluationId] = useState(null);
   const [viewingEvaluation, setViewingEvaluation] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const storedProfile = JSON.parse(sessionStorage.getItem("studentProfile") || "{}");
+  const email = (location.state?.email || storedProfile.email || "").toLowerCase();
 
   const majorCourses = {
     "Computer Engineering": [
@@ -56,12 +59,75 @@ function EvaluationStudent() {
     ],
   };
 
+   // Mock internships for consistency with AppliedInternships.js
+  const mockCurrentCompletedInternships = [
+    {
+      id: 1,
+      title: "Software Engineer",
+      company: "SCAD Technologies",
+      status: "current",
+    },
+    {
+      id: 2,
+      title: "Web Developer",
+      company: "SCAD Systems",
+      status: "current",
+    },
+    {
+      id: 3,
+      title: "Data Analyst",
+      company: "SCAD Solutions",
+      status: "completed",
+    },
+    {
+      id: 4,
+      title: "PWC Summer Internship",
+      company: "PWC",
+      status: "current",
+    },
+    {
+      id: 5,
+      title: "Google UI/UX Winter Internship",
+      company: "Google",
+      status: "completed",
+    },
+    {
+      id: 6,
+      title: "Etisalat Hybrid Data Science Internship",
+      company: "Etisalat",
+      status: "completed",
+    },
+  ];
+
   useEffect(() => {
-    const storedInternships = sessionStorage.getItem("appliedInternships");
-    if (storedInternships) {
-      const parsedInternships = JSON.parse(storedInternships);
-      setInternships(parsedInternships);
+  const storedInternships = sessionStorage.getItem("appliedInternships");
+   let parsedInternships = [];
+    try {
+      const storedInternships = sessionStorage.getItem("appliedInternships");
+      if (storedInternships) {
+        parsedInternships = JSON.parse(storedInternships);
+        // Ensure parsedInternships is an array
+        if (!Array.isArray(parsedInternships)) {
+          console.error("Parsed internships is not an array:", parsedInternships);
+          parsedInternships = [];
+        }
+      }
+    } catch (e) {
+      console.error("Error parsing appliedInternships from sessionStorage:", e);
+      parsedInternships = [];
     }
+
+    // Merge mock data, prioritizing sessionStorage data for matching IDs
+    const mergedInternships = [
+      // Include mock internships not in sessionStorage
+      ...mockCurrentCompletedInternships.filter(
+        (mock) => !parsedInternships.some((stored) => Number(stored.id) === Number(mock.id))
+      ),
+      // Include all sessionStorage internships
+      ...parsedInternships,
+    ];
+    setInternships(mergedInternships);
+ 
 
     const idFromState = location.state?.internshipId;
     if (idFromState) {
@@ -446,8 +512,9 @@ function EvaluationStudent() {
       <div style={{ ...styles.layout, marginTop: "4rem", minHeight: "calc(100vh - 4rem)" }}>
         <div style={styles.sidebar}>
           <SideBar
-            setActivePage={(page) => navigate(`/student${page === "home" ? "" : "/" + page}`)}
-            isOpen={isSidebarOpen}
+   setActivePage={(page) =>
+            navigate(`/student${page === "home" ? "" : "/" + page}`, { state: { email } })
+          }                 isOpen={isSidebarOpen}
             setSidebarWidth={setSidebarWidth}
           />
         </div>
@@ -463,16 +530,7 @@ function EvaluationStudent() {
             backgroundColor: "#f9fafb",
           }}
         >
-          <h2
-            style={{
-              fontSize: "1.5rem",
-              fontWeight: "bold",
-              marginBottom: "1.5rem",
-              color: "#1f2937",
-            }}
-          >
-            Internship Evaluations
-          </h2>
+
 
           {evaluations.length > 0 && (
             <div style={{ marginBottom: "2rem" }}>

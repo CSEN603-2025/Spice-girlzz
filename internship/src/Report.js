@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import SideBar from "./Components/SideBar";
 import Header from "./Components/Header";
+import SideBar from "./Components/SideBar";
 import "./StudentHomePage.css";
+
 
 function Report() {
   const navigate = useNavigate();
@@ -13,18 +14,21 @@ function Report() {
     title: "",
     introduction: "",
     body: "",
-    courses: [], // Array to store multiple courses
+    courses: [],
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [internshipId, setInternshipId] = useState(null);
   const [internships, setInternships] = useState([]);
   const [selectedInternship, setSelectedInternship] = useState(null);
-  const [courses, setCourses] = useState([]); // State for all available courses
-  const [selectedCourseId, setSelectedCourseId] = useState(""); // Temporary state for dropdown selection
-  const [reports, setReports] = useState([]); // State for existing reports
-  const [editingReportId, setEditingReportId] = useState(null); // Track which report is being edited
-  const [viewingReport, setViewingReport] = useState(null); // State to hold the report being viewed
-  const [isModalOpen, setIsModalOpen] = useState(false); // State to toggle modal
+  const [courses, setCourses] = useState([]);
+  const [selectedCourseId, setSelectedCourseId] = useState("");
+  const [reports, setReports] = useState([]);
+  const [editingReportId, setEditingReportId] = useState(null);
+  const [viewingReport, setViewingReport] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const storedProfile = JSON.parse(sessionStorage.getItem("studentProfile") || "{}");
+  const email = (location.state?.email || storedProfile.email || "").toLowerCase();
 
   // Define major-to-courses mapping
   const majorCourses = {
@@ -54,16 +58,64 @@ function Report() {
     ],
   };
 
+  // Mock internships for consistency with AppliedInternships.js
+  const mockCurrentCompletedInternships = [
+    {
+      id: 1,
+      title: "Software Engineer",
+      company: "SCAD Technologies",
+      status: "current",
+    },
+    {
+      id: 2,
+      title: "Web Developer",
+      company: "SCAD Systems",
+      status: "current",
+    },
+    {
+      id: 3,
+      title: "Data Analyst",
+      company: "SCAD Solutions",
+      status: "completed",
+    },
+    {
+      id: 4,
+      title: "PWC Summer Internship",
+      company: "PWC",
+      status: "current",
+    },
+    {
+      id: 5,
+      title: "Google UI/UX Winter Internship",
+      company: "Google",
+      status: "completed",
+    },
+    {
+      id: 6,
+      title: "Etisalat Hybrid Data Science Internship",
+      company: "Etisalat",
+      status: "completed",
+    },
+  ];
+
   // Load internships, fetch major, set courses, and load reports
   useEffect(() => {
-    // Load internships from sessionStorage
+    // Load internships from sessionStorage and merge with mock data
     const storedInternships = sessionStorage.getItem("appliedInternships");
+    let parsedInternships = [];
     if (storedInternships) {
-      const parsedInternships = JSON.parse(storedInternships);
-      setInternships(parsedInternships);
+      parsedInternships = JSON.parse(storedInternships);
     }
+    // Merge mock data, prioritizing sessionStorage data for matching IDs
+    const mergedInternships = [
+      ...mockCurrentCompletedInternships.filter(
+        (mock) => !parsedInternships.some((stored) => stored.id === mock.id)
+      ),
+      ...parsedInternships,
+    ];
+    setInternships(mergedInternships);
 
-    // Extract internshipId from location state or URL
+    // Extract internshipId from location state
     const idFromState = location.state?.internshipId;
     if (idFromState) {
       setInternshipId(idFromState);
@@ -71,7 +123,7 @@ function Report() {
 
     // Fetch the student's major from sessionStorage
     const savedProfile = sessionStorage.getItem("studentProfile");
-    let studentMajor = "default"; // Fallback major
+    let studentMajor = "default";
     if (savedProfile) {
       try {
         const parsedProfile = JSON.parse(savedProfile);
@@ -166,7 +218,7 @@ function Report() {
     setIsSubmitting(true);
     setTimeout(() => {
       const newReport = {
-        id: Date.now(), // Unique ID based on timestamp
+        id: Date.now(),
         title: report.title,
         introduction: report.introduction,
         body: report.body,
@@ -336,13 +388,17 @@ ${reportToDownload.body}
     setViewingReport(null);
   };
 
+
+
   return (
     <div style={styles.container}>
-      {!isModalOpen && <Header />} {/* Render Header only when modal is closed */}
+      {!isModalOpen && <Header />}
       <div style={{ ...styles.layout, marginTop: "4rem", minHeight: "calc(100vh - 4rem)" }}>
         <div style={styles.sidebar}>
           <SideBar
-            setActivePage={(page) => navigate(`/student${page === "home" ? "" : "/" + page}`)}
+            setActivePage={(page) =>
+              navigate(`/student${page === "home" ? "" : "/" + page}`, { state: { email } })
+            }
             isOpen={isSidebarOpen}
             setSidebarWidth={setSidebarWidth}
           />
@@ -359,16 +415,7 @@ ${reportToDownload.body}
             backgroundColor: "#f9fafb",
           }}
         >
-          <h2
-            style={{
-              fontSize: "1.5rem",
-              fontWeight: "bold",
-              marginBottom: "1.5rem",
-              color: "#1f2937",
-            }}
-          >
-            Internship Reports
-          </h2>
+
 
           {/* Reports List */}
           {reports.length > 0 && (
@@ -460,7 +507,9 @@ ${reportToDownload.body}
             </div>
           )}
 
-           <h3 style={{ fontSize: "1.25rem", fontWeight: "600", marginBottom: "1rem", color: "#1f2937" }}>Add New Report</h3>
+          <h3 style={{ fontSize: "1.25rem", fontWeight: "600", marginBottom: "1rem", color: "#1f2937" }}>
+            Add New Report
+          </h3>
 
           {/* New Report Form */}
           <div
@@ -471,8 +520,6 @@ ${reportToDownload.body}
               boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
             }}
           >
-            
-            
             <div style={{ marginBottom: "1rem" }}>
               <label
                 htmlFor="internship"
@@ -530,13 +577,14 @@ ${reportToDownload.body}
                 type="text"
                 value={report.title}
                 onChange={handleInputChange}
-                placeholder="Enter report title"
+                placeholder="e.g., Quarterly Report – Summer 2023"
                 style={{
                   width: "100%",
                   padding: "0.5rem",
                   border: "1px solid #d1d5db",
                   borderRadius: "0.25rem",
                   fontSize: "0.875rem",
+                  alignContent:"left",
                 }}
                 onFocus={(e) => (e.target.style.boxShadow = "0 0 0 2px #2a9d8f")}
                 onBlur={(e) => (e.target.style.boxShadow = "none")}

@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import SideBar from "./Components/SideBar";
+import { useNavigate, useLocation } from "react-router-dom";
 import Header from "./Components/Header";
-import { Mail, User, LogOut, Menu } from "lucide-react";
 import "./StudentHomePage.css";
+import SideBar from "./Components/SideBar";
 import { SiVodafone } from "react-icons/si";
 import { SiMeta } from "react-icons/si";
 import { FaApple } from "react-icons/fa6";
 import { SiSiemens } from "react-icons/si";
 import { SiNetflix, SiVisa } from 'react-icons/si';
 import { MdOutlinePlayCircle } from "react-icons/md";
+
 function StudentHomePage() {
   const [activePage, setActivePage] = useState("home");
   const [selectedInternship, setSelectedInternship] = useState(null);
@@ -29,6 +29,9 @@ function StudentHomePage() {
   const [showVideoModal, setShowVideoModal] = useState(false);
 
   const navigate = useNavigate();
+const location = useLocation;
+  const storedProfile = JSON.parse(sessionStorage.getItem("studentProfile") || "{}");
+  const email = (location.state?.email || storedProfile.email || "").toLowerCase();
 
   // Video mapping by major, matching ProfileStudent.js options
   const videoByMajor = {
@@ -337,7 +340,10 @@ function StudentHomePage() {
       <Header toggleSidebar={toggleSidebar} />
       <div className="layout" style={{ marginTop: "4rem", minHeight: "calc(100vh - 4rem)" }}>
         <SideBar
-          setActivePage={setActivePage}
+           setActivePage={(page) =>
+            navigate(`/student${page === "home" ? "" : "/" + page}`, { state: { email } })
+          }
+
           isOpen={isSidebarOpen}
           setSidebarWidth={setSidebarWidth}
         />
@@ -372,7 +378,7 @@ function StudentHomePage() {
                       Browse Internships
                     </button>
                         <button onClick={() => navigate("/student/suggested")} className="actionButton">
-                      View Suggested Internships!
+                     Browse Companies
                     </button>
                     </div>
               <div
@@ -467,12 +473,12 @@ function StudentHomePage() {
           </div>
           <section className="clients-section">
             <div className="client-logos">
-              <SiNetflix style={{ color: "#E50914", fontSize: "2rem" }} />
-              <SiVisa style={{ color: "#1A1F71", fontSize: "2rem" }} />
-              <SiVodafone style={{ color: "#E60000", fontSize: "2rem" }} />
-              <SiMeta style={{ color: "#0668E1", fontSize: "2rem" }} />
-              <FaApple style={{ color: "#000000", fontSize: "2rem" }} />
-              <SiSiemens style={{ color: "#000000", fontSize: "4rem" }} />
+              <SiNetflix style={{ color: "#E50914", fontSize: "2.5rem" }} />
+              <SiVisa style={{ color: "#1A1F71", fontSize: "4rem" }} />
+              <SiVodafone style={{ color: "#E60000", fontSize: "2.5rem" }} />
+              <SiMeta style={{ color: "#0668E1", fontSize: "3rem" }} />
+              <FaApple style={{ color: "#000000", fontSize: "3rem" }} />
+              <SiSiemens style={{ color: "#000000", fontSize: "5.5rem" }} />
             </div>
           </section>
              <section id="available">
