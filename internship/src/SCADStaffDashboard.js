@@ -1,13 +1,19 @@
 import { useState, useEffect } from "react";
 import SideBar from "./Components/ScadSideBar";
-import Header from "./Components/Header";
+import Header from "./Components/SCADHeader";
 import ManageCompanies from "./SCADDahboardCompanies";
 import { useNavigate } from "react-router-dom";
 import { generateStatisticsReport } from "./pdfGenerator.js";
 import "./StudentHomePage.css";
 import "./SCADDashboardAlaa.css";
+import { FaPaperPlane } from "react-icons/fa"; // Import the icon (install react-icons if needed)
+import { FaEnvelope } from "react-icons/fa"; // Import the mail icon
+import { FiBriefcase } from "react-icons/fi";
+import { FaIndustry } from "react-icons/fa";
 
 import {
+  Settings,
+  Building,
   Bell,
   Mail,
   User,
@@ -84,6 +90,7 @@ const initialStudents = [
     email: "alaa.abdelnaser@student.guc.edu.eg",
     jobInterests: "Software Development",
     previousInternships: "TechCorp (2024)",
+    details: "Enrolled in 2022 · GPA 3.85 · Top 10%",
     appliedInternships: [
       { companyName: "TechCorp", jobTitle: "Software Intern" },
     ],
@@ -98,6 +105,7 @@ const initialStudents = [
     email: "mennatullah.elsabagh@student.guc.edu.eg",
     jobInterests: "Mechanical Design",
     previousInternships: "None",
+    details: "96 credits earned · DAAD Scholar",
     appliedInternships: [],
   },
   {
@@ -110,12 +118,26 @@ const initialStudents = [
     email: "esraa.ahmed@student.guc.edu.eg",
     jobInterests: "Web Development",
     previousInternships: "MediHealth (2024)",
+    details: "On Leave · Previously ranked 5th · AI Club",
     appliedInternships: [
       { companyName: "MediHealth", jobTitle: "Data Analyst Intern" },
     ],
   },
   {
     id: 4,
+    name: "John Ibraham",
+    internshipStatus: "Active",
+    major: "Data Engineer",
+    semester: "Semester 9",
+    avatar: "/imgs/John.png",
+    email: "john.ibraham@student.guc.edu.eg",
+    jobInterests: "Data Engineer",
+    previousInternships: "DataSync (2023)",
+    details: "Graduating 2025 · Languages: German",
+    appliedInternships: [],
+  },
+  {
+    id: 5,
     name: "Malak Hisham Sallam",
     internshipStatus: "Active",
     major: "Data Science",
@@ -124,47 +146,116 @@ const initialStudents = [
     email: "malak.hisham@student.guc.edu.eg",
     jobInterests: "Data Analysis",
     previousInternships: "DataSync (2023)",
+    details: "Active Student · Robotics Club · 2 internships",
     appliedInternships: [],
   },
   {
-    id: 5,
+    id: 6,
     name: "Mennatullah Shaaban",
     internshipStatus: "Pending",
-    major: "Engineering",
+    major: "Pharmacy",
     semester: "Semester 3",
     avatar: "/imgs/mennatullah-shaaban.jpg",
     email: "mennatullah.shaaban@student.guc.edu.eg",
-    jobInterests: "Civil Engineering",
+    jobInterests: "Pharmacy",
     previousInternships: "None",
-    appliedInternships: [
-      { companyName: "BuildCorp", jobTitle: "Civil Intern" },
-    ],
+    appliedInternships: [{ companyName: "Pharma", jobTitle: "Researcher" }],
+  },
+  {
+    id: 7,
+    name: "Ismail Mohamed",
+    internshipStatus: "Active",
+    major: "Data Science",
+    semester: "Semester 9",
+    avatar: "/imgs/ismail.png",
+    email: "ismail.mohamed@student.guc.edu.eg",
+    jobInterests: "Data Engineer",
+    previousInternships: "DataSync (2023)",
+    appliedInternships: [],
+  },
+  {
+    id: 8,
+    name: "Clara Davis",
+    major: "Computer Science",
+    internshipStatus: "Accepted",
+    details: "Final Report: Successfully deployed app.",
+    avatar: "/imgs/clara.png",
+    email: "Clara.Davis@student.guc.edu.eg",
+    jobInterests: "Applied Arts",
+    previousInternships: "None",
+    appliedInternships: [{ companyName: "BuildCorp", jobTitle: "DesignKSA" }],
+  },
+  {
+    id: 9,
+    name: "Ahmed Eissa",
+    major: "Engineering",
+    internshipStatus: "Flagged",
+    details: "Week 1 Report: Incomplete tasks.",
+    avatar: "/imgs/ahmed.png",
+    email: "Ahmed.eissa@student.guc.edu.eg",
+    jobInterests: "English Litreture",
+    previousInternships: "None",
+    appliedInternships: [{ companyName: "BuildCorp", jobTitle: "WritingVeny" }],
+  },
+  {
+    id: 10,
+    name: "Emma Brown",
+    major: "Engineering",
+    internshipStatus: "Rejected",
+    details: "Week 1 Report: Incomplete tasks.",
+    avatar: "/imgs/emma.png",
+    email: "Emma.Brown@student.guc.edu.eg",
+    jobInterests: "English Litreture",
+    previousInternships: "None",
+    appliedInternships: [{ companyName: "BuildCorp", jobTitle: "WritingVeny" }],
   },
 ];
 
 const initialReports = [
   {
     id: 1,
-    student: "Alice Johnson",
-    major: "Computer Science",
-    status: "Pending",
+    student: "Malak Hisham",
+    major: "BI",
+    status: "Accepted",
     details: "Week 1 Report: Developed API endpoints.",
-    company: "TechCorp",
+    company: "BusinessIL",
     supervisor: "John Doe",
-    startDate: "2025-01-01",
-    endDate: "2025-03-01",
+    startDate: "2025-04-19",
+    endDate: "2025-05-01",
+    internshipTitle: "API Developer Intern",
+    introduction: "Started API development phase for internal tools.",
+    body: "Worked on creating RESTful endpoints using Node.js and Express. Integrated with the company database using Sequelize ORM. Ensured endpoint security through JWT authentication and middleware validation. Collaborated with front-end developers to test endpoints using Postman and implemented error handling for edge cases.",
+    helpfulCourse: "Web Technologies",
+    strengths:
+      "Strong backend development skills, secure API integration, collaboration across teams, and good use of Express/Sequelize.",
+    improvementAreas:
+      "Could include more performance benchmarks and scalability planning.",
+    recommendation: "Yes, highly recommend",
+    additionalComments:
+      "Excellent foundation for a backend developer; shows strong potential for leadership in technical teams.",
   },
   {
     id: 2,
-    student: "Bob Smith",
-    major: "Engineering",
+    student: "Esraa Ahmed",
+    major: "Applied Arts",
     status: "Flagged",
     details: "Week 2 Report: Missing documentation.",
-    company: "GreenEnergy",
+    company: "ArtHouse",
     supervisor: "Jane Roe",
-    startDate: "2025-02-01",
-    endDate: "2025-04-01",
+    startDate: "2025-09-23",
+    endDate: "2025-10-01",
     comments: "Needs more detail on project scope.",
+    internshipTitle: "Design Intern",
+    introduction: "Continued design concept exploration for ad campaigns.",
+    body: "Worked on initial sketches and digital mockups using Illustrator and Photoshop. Focused on aligning visuals with client brand identity. Participated in creative meetings and reviewed feedback from senior designers. However, final documentation including design rationale, color palette justification, and asset specifications was not submitted.",
+    helpfulCourse: "Visual Communication",
+    strengths:
+      "Creative ideation, visual design alignment with brand identity, and initiative in concept development.",
+    improvementAreas:
+      "Final documentation was missing; needs better time and file management for professional delivery.",
+    recommendation: "Yes, with reservations",
+    additionalComments:
+      "Creative potential is high, but future success depends on attention to documentation and deadlines.",
   },
   {
     id: 3,
@@ -176,10 +267,21 @@ const initialReports = [
     supervisor: "Emily Stone",
     startDate: "2025-01-15",
     endDate: "2025-03-15",
+    internshipTitle: "Software Development Intern",
+    introduction: "Completed development and deployment of patient portal app.",
+    body: "Handled front-end in React and styled components using Material UI. Developed back-end APIs with Django REST Framework. Implemented secure login and password recovery. Deployed the app on AWS EC2 with S3 storage and Route 53 for DNS. Configured monitoring and logging with CloudWatch, and wrote user documentation for hospital staff.",
+    helpfulCourse: "Software Engineering",
+    strengths:
+      "Full-stack capability, AWS deployment skills, secure login system implementation, and excellent documentation.",
+    improvementAreas:
+      "Could explore unit testing and automation frameworks more deeply.",
+    recommendation: "Yes, highly recommend",
+    additionalComments:
+      "A well-rounded intern who delivered production-ready work with confidence and autonomy.",
   },
   {
     id: 4,
-    student: "David Wilson",
+    student: "Mennatullah El Sabagh",
     major: "Data Science",
     status: "Pending",
     details: "Week 3 Report: Completed data analysis phase.",
@@ -187,9 +289,44 @@ const initialReports = [
     supervisor: "Michael Chen",
     startDate: "2025-02-15",
     endDate: "2025-04-15",
+    internshipTitle: "Data Science Intern",
+    introduction:
+      "Initiated advanced data analytics for customer segmentation.",
+    body: "Used Python and Pandas to clean and preprocess over 50,000 transaction records. Engineered features such as spending frequency and average basket size. Applied k-means clustering to identify customer segments. Visualized data using Power BI dashboards and presented key insights to stakeholders including churn risk and upselling opportunities.",
+    helpfulCourse: "Data Mining",
+    strengths:
+      "Strong command of Python and data analysis techniques, impactful data storytelling using Power BI.",
+    improvementAreas:
+      "Should improve communication of model limitations and data assumptions.",
+    recommendation: "Yes, highly recommend",
+    additionalComments:
+      "Very capable in data analytics; would thrive in fast-paced environments needing quick insights.",
   },
   {
     id: 5,
+    student: "Mennatullah Shaaban",
+    major: "Pharmacy",
+    status: "Rejected",
+    details: "Week 1 Report: Incomplete tasks.",
+    company: "Pharma",
+    supervisor: "Sarah Johnson",
+    startDate: "2025-03-01",
+    endDate: "2025-05-01",
+    comments: "Report does not meet minimum requirements.",
+    internshipTitle: "Pharmacy Intern",
+    introduction: "Introduced to clinical pharmacy operations.",
+    body: "Shadowed senior pharmacists during patient consultations and prescription verifications. Participated in medication reconciliation and learned about drug interactions. However, the intern missed several mandatory training modules, including those on inventory system usage and reporting protocols. Tasks were left incomplete, affecting assessment.",
+    helpfulCourse: "Clinical Pharmacy",
+    strengths:
+      "Initial interest in pharmacy operations and willingness to shadow experienced staff.",
+    improvementAreas:
+      "Several tasks left incomplete; training modules missed; needs discipline and follow-through.",
+    recommendation: "No",
+    additionalComments:
+      "Encouraged to revisit commitment and engagement practices before taking on similar roles.",
+  },
+  {
+    id: 6,
     student: "Emma Brown",
     major: "Engineering",
     status: "Rejected",
@@ -199,6 +336,84 @@ const initialReports = [
     startDate: "2025-03-01",
     endDate: "2025-05-01",
     comments: "Report does not meet minimum requirements.",
+    internshipTitle: "Engineering Intern",
+    introduction: "Began orientation and software training.",
+    body: "Participated in software training sessions covering simulation tools and CAD software. Attended team briefings and observed ongoing projects in educational robotics. However, failed to complete the simulation setup assignment due to late submissions and lack of engagement. Feedback from mentor indicated minimal contribution to group discussions.",
+    helpfulCourse: "Introduction to Engineering Systems",
+    strengths:
+      "Engaged in orientation and software tools training, showed potential in technical discussions.",
+    improvementAreas:
+      "Missed deliverables, poor time management, low interaction during team activities.",
+    recommendation: "No",
+    additionalComments:
+      "Should build consistency and demonstrate stronger ownership of assigned tasks.",
+  },
+  {
+    id: 7,
+    student: "Alaa Abdelnaser",
+    major: "Computer Science",
+    status: "Pending",
+    details: "Week 1 Report: Developed API endpoints.",
+    company: "TechCorp",
+    supervisor: "John Doe",
+    startDate: "2025-01-01",
+    endDate: "2025-03-01",
+    internshipTitle: "Software Engineering Intern",
+    introduction: "Started working on backend development tasks.",
+    body: "Implemented secure login and session management APIs using Express and JWT. Added route protection and middleware for authentication. Participated in code reviews and resolved several bugs identified by QA team. Also contributed to CI/CD pipeline setup using GitHub Actions for automated deployment.",
+    helpfulCourse: "Advanced Programming",
+    strengths:
+      "Secure backend API development, CI/CD setup, proactive debugging, and team collaboration.",
+    improvementAreas:
+      "Could expand documentation for future maintainability and onboarding.",
+    recommendation: "Yes, highly recommend",
+    additionalComments:
+      "Strong backend engineer profile; excellent performance and adaptability.",
+  },
+  {
+    id: 8,
+    student: "Bob Smith",
+    major: "Engineering",
+    status: "Flagged",
+    details: "Week 2 Report: Missing documentation.",
+    company: "GreenEnergy",
+    supervisor: "Jane Roe",
+    startDate: "2025-02-01",
+    endDate: "2025-04-01",
+    comments: "Needs more detail on project scope.",
+    internshipTitle: "Engineering Intern",
+    introduction: "Continued research in renewable systems design.",
+    body: "Simulated turbine energy output under varying wind conditions using MATLAB. Compared simulation results with real-world data to validate models. Contributed to team discussions on optimizing blade angles. However, failed to document key assumptions, parameters, and justifications used in the simulation reports.",
+    helpfulCourse: "Energy Systems",
+    strengths:
+      "Simulation skills and participation in renewable energy system discussions.",
+    improvementAreas:
+      "Insufficient documentation of research methods and simulation assumptions.",
+    recommendation: "Yes, with reservations",
+    additionalComments:
+      "Technically capable but needs to better articulate and document technical processes.",
+  },
+  {
+    id: 9,
+    student: "David Wilson",
+    major: "Data Science",
+    status: "Pending",
+    details: "Week 3 Report: Completed data analysis phase.",
+    company: "FinTech Solutions",
+    supervisor: "Michael Chen",
+    startDate: "2025-02-15",
+    endDate: "2025-04-15",
+    internshipTitle: "Data Science Intern",
+    introduction: "Analyzed customer churn data for risk prediction.",
+    body: "Performed exploratory data analysis on churn dataset using Python. Applied logistic regression and decision trees to build prediction models. Conducted cross-validation and calculated metrics such as precision, recall, and F1-score. Created dashboards for executives using Power BI to illustrate churn trends and customer segments.",
+    helpfulCourse: "Machine Learning",
+    strengths:
+      "Machine learning modeling, clear metrics tracking, and intuitive dashboard development.",
+    improvementAreas:
+      "Could explore deeper model evaluation techniques and feature tuning.",
+    recommendation: "Yes, highly recommend",
+    additionalComments:
+      "Solid understanding of ML and analytics. Professional-level communication of findings.",
   },
 ];
 
@@ -457,8 +672,9 @@ export default function SCADStaffDashboard() {
                 gap: "0.5rem",
               }}
             >
-              <button
-                onClick={() => downloadPDF(selectedItem.name)}
+              <a
+                href="/pdfs/company-details.docx"
+                download
                 style={{
                   padding: "0.5rem 1rem",
                   background: "#3b82f6",
@@ -467,13 +683,14 @@ export default function SCADStaffDashboard() {
                   display: "flex",
                   alignItems: "center",
                   cursor: "pointer",
+                  textDecoration: "none",
                 }}
                 onMouseOver={(e) => (e.target.style.background = "#2563eb")}
                 onMouseOut={(e) => (e.target.style.background = "#3b82f6")}
               >
-                <Download size={16} style={{ marginRight: "0.5rem" }} />{" "}
+                <Download size={16} style={{ marginRight: "0.5rem" }} />
                 Download
-              </button>
+              </a>
             </div>
           </div>
         );
@@ -482,11 +699,13 @@ export default function SCADStaffDashboard() {
           <div
             style={{
               background: "#fff",
-              padding: "1.5rem",
+              padding: "2rem",
               borderRadius: "0.5rem",
               boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-              maxWidth: "20rem",
+              maxWidth: "50rem",
               width: "100%",
+              lineHeight: "1.6",
+              fontFamily: "Georgia, serif",
             }}
           >
             <div
@@ -494,18 +713,18 @@ export default function SCADStaffDashboard() {
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                marginBottom: "1rem",
+                marginBottom: "1.5rem",
               }}
             >
-              <h3
+              <h2
                 style={{
-                  fontSize: "1.25rem",
+                  fontSize: "1.5rem",
                   fontWeight: "bold",
                   color: "#1f2937",
                 }}
               >
-                Report from {selectedItem.student}
-              </h3>
+                Internship Report – {selectedItem.student}
+              </h2>
               <button
                 onClick={closeModal}
                 style={{ color: "#6b7280", cursor: "pointer" }}
@@ -513,41 +732,240 @@ export default function SCADStaffDashboard() {
                 <X size={24} />
               </button>
             </div>
-            <div style={{ marginBottom: "1rem" }}>
-              <p style={{ color: "#4b5563", marginBottom: "0.25rem" }}>
+
+            {/* Basic Info */}
+            <div style={{ marginBottom: "1.5rem", color: "#374151" }}>
+              <p>
                 <strong>Major:</strong> {selectedItem.major}
               </p>
-              <p style={{ color: "#4b5563", marginBottom: "0.25rem" }}>
+              <p>
+                <strong>Internship Title:</strong>{" "}
+                {selectedItem.internshipTitle}
+              </p>
+              <p>
                 <strong>Company:</strong> {selectedItem.company}
               </p>
-              <p style={{ color: "#4b5563", marginBottom: "0.25rem" }}>
+              <p>
                 <strong>Supervisor:</strong> {selectedItem.supervisor}
               </p>
-              <p style={{ color: "#4b5563", marginBottom: "0.25rem" }}>
-                <strong>Period:</strong> {selectedItem.startDate} to{" "}
+              <p>
+                <strong>Period:</strong> {selectedItem.startDate} –{" "}
                 {selectedItem.endDate}
               </p>
-              <p style={{ color: "#4b5563", marginBottom: "0.25rem" }}>
+              <p>
                 <strong>Status:</strong> {selectedItem.status}
               </p>
-              <p style={{ color: "#4b5563", marginBottom: "0.25rem" }}>
+              <p>
                 <strong>Details:</strong> {selectedItem.details}
               </p>
               {selectedItem.comments && (
-                <p style={{ color: "#4b5563", marginBottom: "0.25rem" }}>
+                <p>
                   <strong>Comments:</strong> {selectedItem.comments}
                 </p>
               )}
             </div>
+
+            {/* Report Content */}
+            <div style={{ color: "#1f2937" }}>
+              <h3
+                style={{
+                  fontSize: "1.2rem",
+                  fontWeight: "bold",
+                  marginBottom: "0.5rem",
+                }}
+              >
+                Introduction
+              </h3>
+              <p style={{ marginBottom: "1rem", textAlign: "justify" }}>
+                {selectedItem.introduction}
+              </p>
+
+              <h3
+                style={{
+                  fontSize: "1.2rem",
+                  fontWeight: "bold",
+                  marginBottom: "0.5rem",
+                }}
+              >
+                Body
+              </h3>
+              <p style={{ marginBottom: "1rem", textAlign: "justify" }}>
+                {selectedItem.body}
+              </p>
+
+              <h3
+                style={{
+                  fontSize: "1.2rem",
+                  fontWeight: "bold",
+                  marginBottom: "0.5rem",
+                }}
+              >
+                Helpful Course
+              </h3>
+              <p style={{ marginBottom: "1rem" }}>
+                {selectedItem.helpfulCourse}
+              </p>
+            </div>
+          </div>
+        );
+
+      case "evaluation":
+        return (
+          <div
+            style={{
+              background: "#fff",
+              padding: "2rem",
+              borderRadius: "0.5rem",
+              boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+              maxWidth: "50rem",
+              width: "100%",
+              lineHeight: "1.6",
+              fontFamily: "Georgia, serif",
+              maxHeight: "80vh", // Limits the height of the modal
+              overflowY: "auto", // Enables scrolling if content overflows
+            }}
+          >
             <div
               style={{
                 display: "flex",
-                justifyContent: "flex-end",
-                gap: "0.5rem",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "1.5rem",
               }}
-            ></div>
+            >
+              <h2
+                style={{
+                  fontSize: "1.5rem",
+                  fontWeight: "bold",
+                  color: "#1f2937",
+                  marginBottom: "0",
+                }}
+              >
+                Internship Report – {selectedItem.student}
+              </h2>
+              <button
+                onClick={closeModal}
+                style={{
+                  color: "#6b7280",
+                  cursor: "pointer",
+                  background: "none",
+                  border: "none",
+                  fontSize: "1.5rem", // Bigger icon for easier access
+                }}
+              >
+                <X size={24} />
+              </button>
+            </div>
+
+            {/* Basic Info */}
+            <div style={{ marginBottom: "1.5rem", color: "#374151" }}>
+              <p>
+                <strong>Major:</strong> {selectedItem.major || "N/A"}
+              </p>
+              <p>
+                <strong>Internship Title:</strong>{" "}
+                {selectedItem.internshipTitle || "N/A"}
+              </p>
+              <p>
+                <strong>Company:</strong> {selectedItem.company || "N/A"}
+              </p>
+              <p>
+                <strong>Supervisor:</strong> {selectedItem.supervisor || "N/A"}
+              </p>
+              <p>
+                <strong>Period:</strong> {selectedItem.startDate} –{" "}
+                {selectedItem.endDate}
+              </p>
+              <p>
+                <strong>Status:</strong> {selectedItem.status || "N/A"}
+              </p>
+              <p>
+                <strong>Details:</strong> {selectedItem.details || "N/A"}
+              </p>
+              {selectedItem.comments && (
+                <p>
+                  <strong>Comments:</strong> {selectedItem.comments}
+                </p>
+              )}
+            </div>
+
+            {/* Report Content */}
+            <div style={{ color: "#1f2937" }}>
+              {/* Strengths and Other Evaluation Fields */}
+              <h3
+                style={{
+                  fontSize: "1.2rem",
+                  fontWeight: "bold",
+                  marginBottom: "0.5rem",
+                  marginTop: "1.5rem",
+                }}
+              >
+                Strengths
+              </h3>
+              <p style={{ marginBottom: "1rem", textAlign: "justify" }}>
+                {selectedItem.strengths || "N/A"}
+              </p>
+
+              <h3
+                style={{
+                  fontSize: "1.2rem",
+                  fontWeight: "bold",
+                  marginBottom: "0.5rem",
+                }}
+              >
+                Areas for Improvement
+              </h3>
+              <p style={{ marginBottom: "1rem", textAlign: "justify" }}>
+                {selectedItem.improvementAreas || "N/A"}
+              </p>
+
+              <h3
+                style={{
+                  fontSize: "1.2rem",
+                  fontWeight: "bold",
+                  marginBottom: "0.5rem",
+                  marginTop: "1.5rem",
+                }}
+              >
+                Recommendation
+              </h3>
+              <p style={{ marginBottom: "1rem" }}>
+                <span
+                  style={{
+                    display: "inline-block",
+                    padding: "0.25rem 0.75rem",
+                    backgroundColor:
+                      selectedItem.recommendation === "No"
+                        ? "#fecaca"
+                        : selectedItem.recommendation &&
+                          selectedItem.recommendation.includes("highly")
+                        ? "#bbf7d0"
+                        : "#fde68a",
+                    color: "#1f2937",
+                    borderRadius: "0.375rem",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {selectedItem.recommendation || "N/A"}
+                </span>
+              </p>
+
+              <h3
+                style={{
+                  fontSize: "1.2rem",
+                  fontWeight: "bold",
+                  marginBottom: "0.5rem",
+                }}
+              >
+                Additional Comments
+              </h3>
+              <p style={{ marginBottom: "1rem", textAlign: "justify" }}>
+                {selectedItem.additionalComments || "N/A"}
+              </p>
+            </div>
           </div>
         );
+
       case "profile":
         return (
           <div
@@ -669,146 +1087,9 @@ export default function SCADStaffDashboard() {
 
   const renderContent = () => {
     switch (activePage) {
-      case "cycle":
-        return (
-          <div style={{ animation: "fadeIn 0.3s" }}>
-            <h2
-              style={{
-                fontSize: "1.5rem",
-                fontWeight: "bold",
-                marginBottom: "1.5rem",
-                color: "#1f2937",
-              }}
-            >
-              Set Your Internship Cycle
-            </h2>
-            <div
-              style={{
-                background: "#fff",
-                padding: "2rem",
-                borderRadius: "0.5rem",
-                boxShadow: "0 6px 12px rgba(0, 0, 0, 0.1)",
-                width: "70%",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  gap: "2rem",
-                  marginBottom: "1.5rem",
-                  justifyContent: "space-between",
-                }}
-              >
-                <div style={{ flex: "0 0 auto" }}>
-                  <label
-                    style={{
-                      display: "block",
-                      fontSize: "1rem",
-                      fontWeight: "600",
-                      color: "#2a9d8f",
-                      marginBottom: "0.5rem",
-                    }}
-                  >
-                    Select Cycle Start Date
-                  </label>
-                  <input
-                    type="date"
-                    value={startDateFilter}
-                    onChange={(e) => {
-                      setStartDateFilter(e.target.value);
-                      addNotification(
-                        `Internship cycle start date set to ${e.target.value}`,
-                        "cycle"
-                      );
-                    }}
-                    style={{
-                      padding: "0.5rem",
-                      border: "1px solid #d1d5db",
-                      borderRadius: "0.375rem",
-                      outline: "none",
-                      minWidth: "12rem",
-                      width: "12rem",
-                      fontSize: "0.9rem",
-                    }}
-                    onFocus={(e) =>
-                      (e.target.style.boxShadow = "0 0 0 2px #2a9d8f")
-                    }
-                    onBlur={(e) => (e.target.style.boxShadow = "none")}
-                  />
-                </div>
-                <div style={{ flex: "0 0 auto" }}>
-                  <label
-                    style={{
-                      display: "block",
-                      fontSize: "1rem",
-                      fontWeight: "600",
-                      color: "#2a9d8f",
-                      marginBottom: "0.5rem",
-                    }}
-                  >
-                    Select Cycle End Date
-                  </label>
-                  <input
-                    type="date"
-                    value={endDateFilter}
-                    onChange={(e) => {
-                      setEndDateFilter(e.target.value);
-                      addNotification(
-                        `Internship cycle end date set to ${e.target.value}`,
-                        "cycle"
-                      );
-                    }}
-                    style={{
-                      padding: "0.5rem",
-                      border: "1px solid #d1d5db",
-                      borderRadius: "0.375rem",
-                      outline: "none",
-                      minWidth: "12rem",
-                      width: "12rem",
-                      fontSize: "0.9rem",
-                    }}
-                    onFocus={(e) =>
-                      (e.target.style.boxShadow = "0 0 0 2px #2a9d8f")
-                    }
-                    onBlur={(e) => (e.target.style.boxShadow = "none")}
-                  />
-                </div>
-              </div>
-              {(startDateFilter || endDateFilter) && (
-                <div
-                  style={{
-                    marginTop: "1rem",
-                    padding: "1rem",
-                    background: "#e0f7f4",
-                    borderRadius: "0.5rem",
-                    borderLeft: "5px solid #2a9d8f",
-                  }}
-                >
-                  <h3
-                    style={{
-                      fontSize: "1.1rem",
-                      fontWeight: "bold",
-                      color: "#1f2937",
-                      marginBottom: "0.5rem",
-                    }}
-                  >
-                    📌 Your Current Internship Cycle
-                  </h3>
-                  <p style={{ color: "#4b5563", fontSize: "0.95rem" }}>
-                    <strong>Start:</strong> {startDateFilter || "Not set"}
-                  </p>
-                  <p style={{ color: "#4b5563", fontSize: "0.95rem" }}>
-                    <strong>End:</strong> {endDateFilter || "Not set"}
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-        );
-
       case "companies":
         const handleCompanyAction = (id, action) => {
+          // Update status based on action
           setCompanies((prevCompanies) =>
             prevCompanies.map((company) =>
               company.id === id
@@ -828,25 +1109,41 @@ export default function SCADStaffDashboard() {
           );
         };
 
+        const handleToggleStatus = (id, currentStatus) => {
+          const newStatus =
+            currentStatus === "Accepted" ? "Rejected" : "Accepted";
+          setCompanies((prevCompanies) =>
+            prevCompanies.map((company) =>
+              company.id === id ? { ...company, status: newStatus } : company
+            )
+          );
+          const company = companies.find((c) => c.id === id);
+          addNotification(
+            `Company ${company.name} status changed to ${newStatus}`,
+            "company"
+          );
+        };
+
         return (
           <div style={{ animation: "fadeIn 0.3s" }}>
             <h2
               style={{
-                fontSize: "1.5rem",
-                fontWeight: "bold",
-                marginBottom: "1.5rem",
+                fontSize: "1.75rem",
+                fontWeight: "700",
+                marginBottom: "2rem",
                 color: "#1f2937",
+                letterSpacing: "-0.025em",
               }}
             >
               Manage Companies
             </h2>
             <div
               style={{
-                marginBottom: "1.5rem",
+                marginBottom: "2rem",
                 display: "flex",
                 flexWrap: "wrap",
-                gap: "0.75rem",
-                alignItems: "flex-start",
+                gap: "1rem",
+                alignItems: "center",
               }}
             >
               <div
@@ -859,13 +1156,13 @@ export default function SCADStaffDashboard() {
                 <Search
                   style={{
                     position: "absolute",
-                    left: "0.5rem",
+                    left: "0.75rem",
                     top: "50%",
                     transform: "translateY(-50%)",
                     color: "#9ca3af",
-                    pointerEvents: "none", // Prevent Search icon from interfering
+                    pointerEvents: "none",
                   }}
-                  size={16}
+                  size={18}
                 />
                 <input
                   type="text"
@@ -873,34 +1170,57 @@ export default function SCADStaffDashboard() {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   style={{
-                    padding: "0.4rem 0.4rem 0.4rem 2rem",
+                    padding: "0.75rem 0.75rem 0.75rem 2.5rem",
                     width: "100%",
                     border: "1px solid #d1d5db",
-                    borderRadius: "0.375rem",
+                    borderRadius: "0.5rem",
                     outline: "none",
                     boxSizing: "border-box",
                     fontSize: "0.875rem",
-                    transition: "border-color 0.3s ease",
+                    transition: "all 0.3s ease",
+                    backgroundColor: "#fff",
+                    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
                   }}
-                  onFocus={(e) => (e.target.style.borderColor = "#3b82f6")}
-                  onBlur={(e) => (e.target.style.borderColor = "#d1d5db")}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = "#3b82f6";
+                    e.target.style.boxShadow =
+                      "0 0 0 3px rgba(59, 130, 246, 0.1)";
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = "#d1d5db";
+                    e.target.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.05)";
+                  }}
                 />
               </div>
               <select
                 value={industryFilter}
                 onChange={(e) => setIndustryFilter(e.target.value)}
                 style={{
-                  padding: "0.4rem",
+                  padding: "0.75rem",
                   border: "1px solid #d1d5db",
-                  borderRadius: "0.375rem",
+                  borderRadius: "0.5rem",
                   outline: "none",
                   minWidth: "12rem",
                   width: "12rem",
                   fontSize: "0.875rem",
-                  transition: "border-color 0.3s ease",
+                  transition: "all 0.3s ease",
+                  backgroundColor: "#fff",
+                  boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
+                  appearance: "none",
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E")`,
+                  backgroundRepeat: "no-repeat",
+                  backgroundPosition: "right 0.75rem center",
+                  backgroundSize: "1rem",
                 }}
-                onFocus={(e) => (e.target.style.borderColor = "#3b82f6")}
-                onBlur={(e) => (e.target.style.borderColor = "#d1d5db")}
+                onFocus={(e) => {
+                  e.target.style.borderColor = "#3b82f6";
+                  e.target.style.boxShadow =
+                    "0 0 0 3px rgba(59, 130, 246, 0.1)";
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = "#d1d5db";
+                  e.target.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.05)";
+                }}
               >
                 <option value="">All Industries</option>
                 <option value="Technology">Technology</option>
@@ -911,64 +1231,91 @@ export default function SCADStaffDashboard() {
               </select>
             </div>
             {companies.length === 0 ? (
-              <div style={{ textAlign: "center", padding: "3rem" }}>
-                <p style={{ color: "#6b7280" }}>No companies found.</p>
+              <div
+                style={{
+                  textAlign: "center",
+                  padding: "3rem",
+                  background: "#fff",
+                  borderRadius: "0.5rem",
+                  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+                }}
+              >
+                <p style={{ color: "#6b7280", fontSize: "1rem" }}>
+                  No companies found.
+                </p>
               </div>
             ) : (
               <div
                 style={{
                   background: "#fff",
-                  borderRadius: "0.375rem",
-                  boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                  borderRadius: "0.75rem",
+                  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
                   overflow: "hidden",
+                  border: "1px solid #e5e7eb",
                 }}
               >
                 <div style={{ overflowX: "auto", maxWidth: "100%" }}>
                   <table
                     style={{
                       width: "100%",
-                      borderCollapse: "collapse",
-                      tableLayout: "fixed",
+                      borderCollapse: "separate",
+                      borderSpacing: 0,
+                      fontSize: "0.875rem",
                     }}
                   >
                     <thead>
-                      <tr style={{ background: "#f3f4f6" }}>
+                      <tr
+                        style={{
+                          background:
+                            "linear-gradient(90deg, #f9fafb 0%, #f3f4f6 100%)",
+                          textTransform: "uppercase",
+                          letterSpacing: "0.05em",
+                        }}
+                      >
                         <th
                           style={{
-                            padding: "1rem",
+                            padding: "1rem 1.5rem",
                             textAlign: "left",
                             color: "#1f2937",
+                            fontWeight: "600",
                             width: "25%",
+                            borderBottom: "1px solid #e5e7eb",
                           }}
                         >
-                          Name
+                          Company Name
                         </th>
                         <th
                           style={{
-                            padding: "1rem",
+                            padding: "1rem 1.5rem",
                             textAlign: "left",
                             color: "#1f2937",
+                            fontWeight: "600",
                             width: "25%",
+                            borderBottom: "1px solid #e5e7eb",
                           }}
                         >
                           Industry
                         </th>
                         <th
                           style={{
-                            padding: "1rem",
+                            padding: "1rem 1.5rem",
                             textAlign: "left",
                             color: "#1f2937",
+                            fontWeight: "600",
                             width: "20%",
+                            borderBottom: "1px solid #e5e7eb",
                           }}
                         >
                           Status
                         </th>
                         <th
                           style={{
-                            padding: "1rem",
+                            padding: "1rem 1.5rem",
                             textAlign: "left",
                             color: "#1f2937",
+                            fontWeight: "600",
                             width: "30%",
+                            borderBottom: "1px solid #e5e7eb",
                           }}
                         >
                           Actions
@@ -986,45 +1333,73 @@ export default function SCADStaffDashboard() {
                               ? company.industry === industryFilter
                               : true)
                         )
-                        .map((company) => (
+                        .map((company, index) => (
                           <tr
                             key={company.id}
                             style={{
-                              background: "none",
+                              background: index % 2 === 0 ? "#fff" : "#fafafa",
                               transition: "background-color 0.3s ease",
                             }}
                             onMouseEnter={(e) =>
-                              (e.currentTarget.style.background = "#f9fafb")
+                              (e.currentTarget.style.background = "#f1f5f9")
                             }
                             onMouseLeave={(e) =>
-                              (e.currentTarget.style.background = "transparent")
+                              (e.currentTarget.style.background =
+                                index % 2 === 0 ? "#fff" : "#fafafa")
                             }
                           >
+                            {/* Company Name with Icon */}
                             <td
                               style={{
-                                padding: "1rem",
+                                padding: "1.25rem 1.5rem",
                                 borderBottom: "1px solid #e5e7eb",
+                                color: "#374151",
+                                fontWeight: "500",
                                 overflow: "hidden",
                                 textOverflow: "ellipsis",
                                 whiteSpace: "nowrap",
                               }}
                             >
-                              {company.name}
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "0.5rem",
+                                }}
+                              >
+                                <Building size={20} />
+                                {company.name}
+                              </div>
                             </td>
+
+                            {/* Industry with Icon */}
                             <td
                               style={{
-                                padding: "1rem",
+                                padding: "1.25rem 1.5rem",
                                 borderBottom: "1px solid #e5e7eb",
+                                color: "#374151",
+                                fontWeight: "500",
                                 overflow: "hidden",
                                 textOverflow: "ellipsis",
                                 whiteSpace: "nowrap",
                               }}
                             >
-                              {company.industry}
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "0.5rem",
+                                }}
+                              >
+                                <FaIndustry size={20} />
+                                {company.industry}
+                              </div>
                             </td>
+
+                            {/* Status Badge */}
                             <td
                               style={{
-                                padding: "1rem",
+                                padding: "1.25rem 1.5rem",
                                 borderBottom: "1px solid #e5e7eb",
                                 overflow: "hidden",
                                 textOverflow: "ellipsis",
@@ -1033,9 +1408,10 @@ export default function SCADStaffDashboard() {
                             >
                               <span
                                 style={{
-                                  padding: "0.25rem 0.5rem",
+                                  padding: "0.375rem 0.75rem",
                                   borderRadius: "9999px",
                                   fontSize: "0.75rem",
+                                  fontWeight: "500",
                                   ...(company.status === "Accepted"
                                     ? {
                                         background: "#d1fae5",
@@ -1055,75 +1431,159 @@ export default function SCADStaffDashboard() {
                                 {company.status}
                               </span>
                             </td>
+
+                            {/* Action Buttons */}
                             <td
                               style={{
-                                padding: "1rem",
+                                padding: "1.25rem 1.5rem",
                                 borderBottom: "1px solid #e5e7eb",
                                 display: "flex",
-                                gap: "0.5rem",
+                                gap: "0.75rem",
                                 alignItems: "center",
                                 minWidth: "0",
                               }}
                             >
                               <button
-                                className="actionButton"
                                 onClick={() => openModal("companies", company)}
+                                style={{
+                                  width: "120px",
+                                  backgroundColor: "#2a9d8f",
+                                  color: "#fff",
+                                  padding: "0.5rem 1rem",
+                                  border: "none",
+                                  borderRadius: "0.375rem",
+                                  cursor: "pointer",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  fontSize: "0.875rem",
+                                  transition: "all 0.4s ease",
+                                }}
+                                onMouseOver={(e) =>
+                                  Object.assign(e.currentTarget.style, {
+                                    backgroundColor: "#30b3a3",
+                                    transform: "scale(1.02)",
+                                    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+                                  })
+                                }
+                                onMouseOut={(e) =>
+                                  Object.assign(e.currentTarget.style, {
+                                    backgroundColor: "#2a9d8f",
+                                    transform: "scale(1)",
+                                    boxShadow: "none",
+                                  })
+                                }
                               >
                                 View Details
                               </button>
-                              {company.status === "Pending" && (
+
+                              {company.status === "Pending" ? (
                                 <>
                                   <button
-                                    onClick={() =>
-                                      handleCompanyAction(company.id, "accept")
-                                    }
                                     style={{
-                                      padding: "0.5rem 0.75rem",
-                                      background: "#10b981",
+                                      width: "80px",
+                                      backgroundColor: "rgb(74, 194, 154)",
                                       color: "#fff",
+                                      padding: "0.5rem",
                                       border: "none",
                                       borderRadius: "0.375rem",
                                       cursor: "pointer",
-                                      transition: "background-color 0.3s ease",
-                                      whiteSpace: "nowrap",
-                                      minWidth: "5rem",
-                                      textAlign: "center",
+                                      fontSize: "0.875rem",
+                                      transition: "all 0.3s ease",
                                     }}
-                                    onMouseOver={(e) =>
-                                      (e.target.style.background = "#059669")
+                                    onClick={() =>
+                                      handleCompanyAction(company.id, "accept")
                                     }
-                                    onMouseOut={(e) =>
-                                      (e.target.style.background = "#10b981")
-                                    }
+                                    onMouseOver={(e) => {
+                                      e.currentTarget.style.backgroundColor =
+                                        "rgba(74, 194, 154, 0.71)";
+                                      e.currentTarget.style.transform =
+                                        "scale(1.05)";
+                                      e.currentTarget.style.boxShadow =
+                                        "0 2px 8px rgba(0, 0, 0, 0.15)";
+                                    }}
+                                    onMouseOut={(e) => {
+                                      e.currentTarget.style.backgroundColor =
+                                        "rgb(74, 194, 154)";
+                                      e.currentTarget.style.transform =
+                                        "scale(1)";
+                                      e.currentTarget.style.boxShadow = "none";
+                                    }}
                                   >
                                     Accept
                                   </button>
                                   <button
-                                    onClick={() =>
-                                      handleCompanyAction(company.id, "reject")
-                                    }
                                     style={{
-                                      padding: "0.5rem 0.75rem",
-                                      background: "#ef4444",
+                                      width: "80px",
+                                      backgroundColor: "rgb(220, 98, 98)",
                                       color: "#fff",
+                                      padding: "0.5rem",
                                       border: "none",
                                       borderRadius: "0.375rem",
                                       cursor: "pointer",
-                                      transition: "background-color 0.3s ease",
-                                      whiteSpace: "nowrap",
-                                      minWidth: "5rem",
-                                      textAlign: "center",
+                                      fontSize: "0.875rem",
+                                      transition: "all 0.3s ease",
                                     }}
-                                    onMouseOver={(e) =>
-                                      (e.target.style.background = "#dc2626")
+                                    onClick={() =>
+                                      handleCompanyAction(company.id, "reject")
                                     }
-                                    onMouseOut={(e) =>
-                                      (e.target.style.background = "#ef4444")
-                                    }
+                                    onMouseOver={(e) => {
+                                      e.currentTarget.style.backgroundColor =
+                                        "rgba(188, 90, 90, 0.76)";
+                                      e.currentTarget.style.transform =
+                                        "scale(1.05)";
+                                      e.currentTarget.style.boxShadow =
+                                        "0 2px 8px rgba(0, 0, 0, 0.15)";
+                                    }}
+                                    onMouseOut={(e) => {
+                                      e.currentTarget.style.backgroundColor =
+                                        "rgb(220, 98, 98)";
+                                      e.currentTarget.style.transform =
+                                        "scale(1)";
+                                      e.currentTarget.style.boxShadow = "none";
+                                    }}
                                   >
                                     Reject
                                   </button>
                                 </>
+                              ) : (
+                                <button
+                                  style={{
+                                    width: "80px",
+                                    backgroundColor:
+                                      company.status === "Accepted"
+                                        ? "rgb(220, 98, 98)"
+                                        : "rgb(74, 194, 154)",
+                                    color: "#fff",
+                                    padding: "0.5rem",
+                                    border: "none",
+                                    borderRadius: "0.375rem",
+                                    cursor: "pointer",
+                                    fontSize: "0.875rem",
+                                    transition: "all 0.3s ease",
+                                  }}
+                                  onClick={() =>
+                                    handleToggleStatus(
+                                      company.id,
+                                      company.status
+                                    )
+                                  }
+                                  onMouseOver={(e) => {
+                                    e.currentTarget.style.transform =
+                                      "scale(1.05)";
+                                    e.currentTarget.style.boxShadow =
+                                      "0 2px 8px rgba(0, 0, 0, 0.15)";
+                                  }}
+                                  onMouseOut={(e) => {
+                                    e.currentTarget.style.transform =
+                                      "scale(1)";
+                                    e.currentTarget.style.boxShadow = "none";
+                                  }}
+                                >
+                                  {company.status === "Accepted"
+                                    ? "Reject"
+                                    : "Accept"}
+                                </button>
                               )}
                             </td>
                           </tr>
@@ -1135,19 +1595,47 @@ export default function SCADStaffDashboard() {
             )}
           </div>
         );
+
       case "students":
         return (
-          <div className="container" style={{ animation: "fadeIn 0.3s" }}>
+          <div
+            style={{
+              animation: "fadeIn 0.3s",
+              fontFamily: "Inter, sans-serif",
+            }}
+          >
             <h2
               style={{
-                fontSize: "1.5rem",
-                fontWeight: "bold",
-                marginBottom: "1.5rem",
+                fontSize: "1.75rem",
+                fontWeight: "700",
+                marginBottom: "2rem",
                 color: "#1f2937",
+                letterSpacing: "-0.025em",
+                // No fontFamily specified here to exclude Inter for the title
               }}
             >
               Manage Students
             </h2>
+            <div
+              style={{
+                marginBottom: "1rem",
+                padding: "0.5rem",
+                background: "#f3f4f6",
+                borderRadius: "0.375rem",
+                fontFamily: "Inter, sans-serif",
+              }}
+            >
+              <p
+                style={{
+                  fontSize: "0.875rem",
+                  color: "#4b5563",
+                  fontFamily: "Inter, sans-serif",
+                }}
+              >
+                System Status: Running normally | Date: May 13, 2025 | Total
+                Students: 10
+              </p>
+            </div>
             <div
               style={{
                 marginBottom: "1.5rem",
@@ -1155,6 +1643,7 @@ export default function SCADStaffDashboard() {
                 flexWrap: "wrap",
                 gap: "0.75rem",
                 alignItems: "flex-start",
+                fontFamily: "Inter, sans-serif",
               }}
             >
               <div
@@ -1167,51 +1656,73 @@ export default function SCADStaffDashboard() {
                 <Search
                   style={{
                     position: "absolute",
-                    left: "0.5rem",
+                    left: "0.75rem",
                     top: "50%",
                     transform: "translateY(-50%)",
                     color: "#9ca3af",
+                    pointerEvents: "none",
                   }}
-                  size={16}
+                  size={18}
                 />
                 <input
                   type="text"
                   placeholder="Search by student name..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="headerBtn"
                   style={{
-                    padding: "0.4rem 0.4rem 0.4rem 2rem",
+                    padding: "0.75rem 0.75rem 0.75rem 2.5rem",
                     width: "100%",
                     border: "1px solid #d1d5db",
-                    borderRadius: "0.375rem",
+                    borderRadius: "0.5rem",
                     outline: "none",
                     boxSizing: "border-box",
                     fontSize: "0.875rem",
+                    transition: "all 0.3s ease",
+                    backgroundColor: "#fff",
+                    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
+                    fontFamily: "Inter, sans-serif",
                   }}
-                  onFocus={(e) =>
-                    (e.target.style.boxShadow = "0 0 0 2px #3b82f6")
-                  }
-                  onBlur={(e) => (e.target.style.boxShadow = "none")}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = "#3b82f6";
+                    e.target.style.boxShadow =
+                      "0 0 0 3px rgba(59, 130, 246, 0.1)";
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = "#d1d5db";
+                    e.target.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.05)";
+                  }}
                 />
               </div>
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="headerBtn"
                 style={{
-                  padding: "0.4rem",
+                  padding: "0.75rem",
                   border: "1px solid #d1d5db",
-                  borderRadius: "0.375rem",
+                  borderRadius: "0.5rem",
                   outline: "none",
                   minWidth: "12rem",
                   width: "12rem",
                   fontSize: "0.875rem",
+                  transition: "all 0.3s ease",
+                  backgroundColor: "#fff",
+                  boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
+                  appearance: "none",
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E")`,
+                  backgroundRepeat: "no-repeat",
+                  backgroundPosition: "right 0.75rem center",
+                  backgroundSize: "1rem",
+                  fontFamily: "Inter, sans-serif",
                 }}
-                onFocus={(e) =>
-                  (e.target.style.boxShadow = "0 0 0 2px #3b82f6")
-                }
-                onBlur={(e) => (e.target.style.boxShadow = "none")}
+                onFocus={(e) => {
+                  e.target.style.borderColor = "#3b82f6";
+                  e.target.style.boxShadow =
+                    "0 0 0 3px rgba(59, 130, 246, 0.1)";
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = "#d1d5db";
+                  e.target.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.05)";
+                }}
               >
                 <option value="">All Statuses</option>
                 <option value="Active">Active</option>
@@ -1221,30 +1732,54 @@ export default function SCADStaffDashboard() {
               <select
                 value={majorFilter}
                 onChange={(e) => setMajorFilter(e.target.value)}
-                className="headerBtn"
                 style={{
-                  padding: "0.4rem",
+                  padding: "0.75rem",
                   border: "1px solid #d1d5db",
-                  borderRadius: "0.375rem",
+                  borderRadius: "0.5rem",
                   outline: "none",
                   minWidth: "12rem",
                   width: "12rem",
                   fontSize: "0.875rem",
+                  transition: "all 0.3s ease",
+                  backgroundColor: "#fff",
+                  boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
+                  appearance: "none",
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E")`,
+                  backgroundRepeat: "no-repeat",
+                  backgroundPosition: "right 0.75rem center",
+                  backgroundSize: "1rem",
+                  fontFamily: "Inter, sans-serif",
                 }}
-                onFocus={(e) =>
-                  (e.target.style.boxShadow = "0 0 0 2px #3b82f6")
-                }
-                onBlur={(e) => (e.target.style.boxShadow = "none")}
+                onFocus={(e) => {
+                  e.target.style.borderColor = "#3b82f6";
+                  e.target.style.boxShadow =
+                    "0 0 0 3px rgba(59, 130, 246, 0.1)";
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = "#d1d5db";
+                  e.target.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.05)";
+                }}
               >
                 <option value="">All Majors</option>
                 <option value="Computer Science">Computer Science</option>
                 <option value="Engineering">Engineering</option>
                 <option value="Data Science">Data Science</option>
+                <option value="Data Engineer">Data Engineer</option>
+                <option value="Pharmacy">Pharmacy</option>
+                <option value="Applied Arts">Applied Arts</option>
               </select>
             </div>
             {filteredStudents.length === 0 ? (
-              <div style={{ textAlign: "center", padding: "3rem" }}>
-                <p style={{ color: "#6b7280" }}>
+              <div
+                style={{
+                  textAlign: "center",
+                  padding: "3rem",
+                  fontFamily: "Inter, sans-serif",
+                }}
+              >
+                <p
+                  style={{ color: "#6b7280", fontFamily: "Inter, sans-serif" }}
+                >
                   No students match your search criteria.
                 </p>
               </div>
@@ -1252,23 +1787,25 @@ export default function SCADStaffDashboard() {
               <div
                 style={{
                   display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", // Two cards per row
+                  gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
                   gap: "20px",
                   padding: "10px",
                   maxWidth: "1600px",
                   margin: "0 auto",
+                  fontFamily: "Inter, sans-serif",
                 }}
               >
                 {filteredStudents.map((student) => (
                   <div
                     key={student.id}
                     style={{
-                      maxWidth: "320px", // Wider card
+                      maxWidth: "320px",
                       background: "white",
                       borderRadius: "10px",
                       boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
                       padding: "20px",
                       transition: "transform 0.3s ease",
+                      fontFamily: "Inter, sans-serif",
                     }}
                     onMouseOver={(e) =>
                       Object.assign(e.currentTarget.style, {
@@ -1289,13 +1826,14 @@ export default function SCADStaffDashboard() {
                           display: "flex",
                           alignItems: "center",
                           marginBottom: "0.75rem",
+                          fontFamily: "Inter, sans-serif",
                         }}
                       >
                         <img
                           src={student.avatar}
                           alt={student.name}
                           style={{
-                            width: "4rem", // Slightly larger for wider card
+                            width: "4rem",
                             height: "4rem",
                             borderRadius: "9999px",
                             marginRight: "1rem",
@@ -1304,25 +1842,38 @@ export default function SCADStaffDashboard() {
                         <div>
                           <h3
                             className="program-title"
-                            style={{ fontSize: "1.1rem" }}
+                            style={{
+                              fontSize: "1.1rem",
+                              fontFamily: "Inter, sans-serif",
+                            }}
                           >
                             {student.name}
                           </h3>
                           <p
                             className="company-info"
-                            style={{ color: "#636e72", fontSize: "0.85rem" }}
+                            style={{
+                              color: "#636e72",
+                              fontSize: "0.85rem",
+                              fontFamily: "Inter, sans-serif",
+                            }}
                           >
                             {student.major}
                           </p>
                         </div>
                       </div>
-                      <div style={{ marginBottom: "0.75rem" }}>
+                      <div
+                        style={{
+                          marginBottom: "0.75rem",
+                          fontFamily: "Inter, sans-serif",
+                        }}
+                      >
                         <span
                           className="status"
                           style={{
                             padding: "0.25rem 0.5rem",
                             borderRadius: "9999px",
                             fontSize: "0.7rem",
+                            fontFamily: "Inter, sans-serif",
                             ...(student.internshipStatus === "Active"
                               ? { background: "#d1fae5", color: "#065f46" }
                               : student.internshipStatus === "Completed"
@@ -1336,43 +1887,97 @@ export default function SCADStaffDashboard() {
                     </div>
                     <p
                       className="company-info"
-                      style={{ color: "#4b5563", fontSize: "0.8rem" }}
+                      style={{
+                        color: "#4b5563",
+                        fontSize: "0.8rem",
+                        fontFamily: "Inter, sans-serif",
+                      }}
                     >
                       {student.details || "No additional details provided"}
                     </p>
-                    <button
-                      onClick={() => openModal("profile", student)}
+                    <div
                       style={{
-                        marginTop: "0.75rem",
-                        width: "40%",
-                        backgroundColor: "#2a9d8f",
-                        color: "#fff",
-                        padding: "0.5rem 1rem",
-                        border: "none",
-                        borderRadius: "0.375rem",
-                        cursor: "pointer",
                         display: "flex",
-                        alignItems: "center",
-                        fontSize: "0.875rem",
-                        transition: "all 0.4s ease",
+                        gap: "0.75rem",
+                        marginTop: "0.75rem",
+                        fontFamily: "Inter, sans-serif",
                       }}
-                      onMouseOver={(e) =>
-                        Object.assign(e.currentTarget.style, {
-                          backgroundColor: "#30b3a3",
-                          transform: "scale(1.02)",
-                          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-                        })
-                      }
-                      onMouseOut={(e) =>
-                        Object.assign(e.currentTarget.style, {
-                          backgroundColor: "#2a9d8f",
-                          transform: "scale(1)",
-                          boxShadow: "none",
-                        })
-                      }
                     >
-                      View Profile
-                    </button>
+                      <button
+                        onClick={() => openModal("profile", student)}
+                        style={{
+                          width: "70%",
+                          backgroundColor: "#2a9d8f",
+                          color: "#fff",
+                          padding: "0.5rem 1rem",
+                          border: "none",
+                          borderRadius: "0.375rem",
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: "0.875rem",
+                          transition: "all 0.4s ease",
+                          fontFamily: "Inter, sans-serif",
+                        }}
+                        onMouseOver={(e) =>
+                          Object.assign(e.currentTarget.style, {
+                            backgroundColor: "#30b3a3",
+                            transform: "scale(1.02)",
+                            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+                          })
+                        }
+                        onMouseOut={(e) =>
+                          Object.assign(e.currentTarget.style, {
+                            backgroundColor: "#2a9d8f",
+                            transform: "scale(1)",
+                            boxShadow: "none",
+                          })
+                        }
+                      >
+                        View Profile
+                      </button>
+                      <button
+                        onClick={() =>
+                          (window.location.href = `mailto:${student.email}?subject=Message from Admin&body=Hello ${student.name},%0D%0AI wanted to get in touch regarding...`)
+                        }
+                        style={{
+                          width: "30%",
+                          backgroundColor: "#4a90e2",
+                          color: "#fff",
+                          padding: "0.5rem 1rem",
+                          border: "none",
+                          borderRadius: "0.375rem",
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: "0.875rem",
+                          transition: "all 0.4s ease",
+                          marginLeft: "20px",
+                          fontFamily: "Inter, sans-serif",
+                        }}
+                        onMouseOver={(e) =>
+                          Object.assign(e.currentTarget.style, {
+                            backgroundColor: "#5a9ff3",
+                            transform: "scale(1.02)",
+                            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+                          })
+                        }
+                        onMouseOut={(e) =>
+                          Object.assign(e.currentTarget.style, {
+                            backgroundColor: "#4a90e2",
+                            transform: "scale(1)",
+                            boxShadow: "none",
+                          })
+                        }
+                      >
+                        <FaEnvelope
+                          size={16}
+                          style={{ marginRight: "0.5rem" }}
+                        />
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -1385,7 +1990,13 @@ export default function SCADStaffDashboard() {
           selectedItem;
 
         return (
-          <div style={{ animation: "fadeIn 0.3s", padding: "1.5rem" }}>
+          <div
+            style={{
+              animation: "fadeIn 0.3s",
+              padding: "1.5rem",
+              fontFamily: "Inter, sans-serif",
+            }}
+          >
             <div
               style={{
                 background: "#fff",
@@ -1395,9 +2006,16 @@ export default function SCADStaffDashboard() {
                 maxWidth: "40rem",
                 width: "100%",
                 margin: "0 auto",
+                fontFamily: "Inter, sans-serif",
               }}
             >
-              <div style={{ marginBottom: "1.5rem", textAlign: "center" }}>
+              <div
+                style={{
+                  marginBottom: "1.5rem",
+                  textAlign: "center",
+                  fontFamily: "Inter, sans-serif",
+                }}
+              >
                 <img
                   src={currentStudent.avatar}
                   alt={currentStudent.name}
@@ -1408,17 +2026,23 @@ export default function SCADStaffDashboard() {
                     marginBottom: "1rem",
                   }}
                 />
-
                 <h3
                   style={{
                     fontWeight: "bold",
                     color: "#1f2937",
                     marginBottom: "0.5rem",
+                    fontFamily: "Inter, sans-serif",
                   }}
                 >
                   {currentStudent.name}
                 </h3>
-                <div style={{ color: "#6b7280", fontSize: "0.875rem" }}>
+                <div
+                  style={{
+                    color: "#6b7280",
+                    fontSize: "0.875rem",
+                    fontFamily: "Inter, sans-serif",
+                  }}
+                >
                   <ProfileItem
                     label="Semester"
                     value={currentStudent.semester}
@@ -1427,7 +2051,13 @@ export default function SCADStaffDashboard() {
                 </div>
               </div>
 
-              <div style={{ display: "grid", gap: "1rem" }}>
+              <div
+                style={{
+                  display: "grid",
+                  gap: "1rem",
+                  fontFamily: "Inter, sans-serif",
+                }}
+              >
                 <ProfileItem label="Email" value={currentStudent.email} />
                 <ProfileItem
                   label="Job Interests"
@@ -1442,17 +2072,35 @@ export default function SCADStaffDashboard() {
                     fontWeight: "bold",
                     color: "#1f2937",
                     marginTop: "1rem",
+                    fontFamily: "Inter, sans-serif",
                   }}
                 >
                   Applied Internships
                 </h3>
-                <div style={{ marginTop: "0.5rem" }}>
+                <div
+                  style={{
+                    marginTop: "0.5rem",
+                    fontFamily: "Inter, sans-serif",
+                  }}
+                >
                   {currentStudent.appliedInternships &&
                   currentStudent.appliedInternships.length > 0 ? (
                     currentStudent.appliedInternships.map(
                       (internship, index) => (
-                        <div key={index} style={{ marginBottom: "0.75rem" }}>
-                          <p style={{ color: "#4b5563", fontSize: "0.875rem" }}>
+                        <div
+                          key={index}
+                          style={{
+                            marginBottom: "0.75rem",
+                            fontFamily: "Inter, sans-serif",
+                          }}
+                        >
+                          <p
+                            style={{
+                              color: "#4b5563",
+                              fontSize: "0.875rem",
+                              fontFamily: "Inter, sans-serif",
+                            }}
+                          >
                             <strong>Company:</strong> {internship.companyName} -{" "}
                             <strong>Job Title:</strong> {internship.jobTitle}
                           </p>
@@ -1460,19 +2108,25 @@ export default function SCADStaffDashboard() {
                       )
                     )
                   ) : (
-                    <p style={{ color: "#6b7280", fontSize: "0.875rem" }}>
+                    <p
+                      style={{
+                        color: "#6b7280",
+                        fontSize: "0.875rem",
+                        fontFamily: "Inter, sans-serif",
+                      }}
+                    >
                       No applied internships yet.
                     </p>
                   )}
                 </div>
               </div>
 
-              {/* Close Button Container */}
               <div
                 style={{
                   display: "flex",
                   justifyContent: "flex-end",
                   marginTop: "2rem",
+                  fontFamily: "Inter, sans-serif",
                 }}
               >
                 <button
@@ -1487,6 +2141,7 @@ export default function SCADStaffDashboard() {
                     fontWeight: "500",
                     cursor: "pointer",
                     transition: "background 0.3s ease",
+                    fontFamily: "Inter, sans-serif",
                   }}
                   onMouseOver={(e) => (e.target.style.background = "#111827")}
                   onMouseOut={(e) => (e.target.style.background = "#1f2937")}
@@ -1497,27 +2152,78 @@ export default function SCADStaffDashboard() {
             </div>
           </div>
         );
-
       case "reports":
+        const handleReportAction = (id, status, comment = "") => {
+          const newStatus = status.charAt(0).toUpperCase() + status.slice(1);
+          if (newStatus === "Rejected" || newStatus === "Flagged") {
+            setReports((prevReports) =>
+              prevReports.map((report) =>
+                report.id === id
+                  ? { ...report, status: newStatus, comment }
+                  : report
+              )
+            );
+            const report = reports.find((r) => r.id === id);
+            addNotification(
+              `Report from ${
+                report.student
+              } has been marked as ${newStatus.toLowerCase()}${
+                comment ? ` with comment: "${comment}"` : ""
+              }`,
+              "report"
+            );
+          } else {
+            setReports((prevReports) =>
+              prevReports.map((report) =>
+                report.id === id ? { ...report, status: newStatus } : report
+              )
+            );
+            const report = reports.find((r) => r.id === id);
+            addNotification(
+              `Report from ${
+                report.student
+              } has been marked as ${newStatus.toLowerCase()}`,
+              "report"
+            );
+          }
+        };
+
+        const handleAddComment = (id, comment) => {
+          setReports((prevReports) =>
+            prevReports.map((report) =>
+              report.id === id &&
+              (report.status === "Rejected" || report.status === "Flagged")
+                ? { ...report, comment }
+                : report
+            )
+          );
+          const report = reports.find((r) => r.id === id);
+          addNotification(
+            `Comment added to ${report.student}'s report: "${comment}"`,
+            "report"
+          );
+        };
+
         return (
           <div style={{ animation: "fadeIn 0.3s" }}>
             <h2
               style={{
-                fontSize: "1.5rem",
-                fontWeight: "bold",
-                marginBottom: "1.5rem",
+                fontSize: "1.75rem",
+                fontWeight: "700",
+                marginBottom: "2rem",
                 color: "#1f2937",
+                letterSpacing: "-0.025em",
               }}
             >
               Manage Reports
             </h2>
             <div
               style={{
-                marginBottom: "1.5rem",
+                marginBottom: "2rem",
                 display: "flex",
                 flexWrap: "wrap",
-                gap: "0.75rem",
-                alignItems: "flex-start",
+                gap: "1rem",
+                alignItems: "center",
               }}
             >
               <div
@@ -1530,12 +2236,13 @@ export default function SCADStaffDashboard() {
                 <Search
                   style={{
                     position: "absolute",
-                    left: "0.5rem",
+                    left: "0.75rem",
                     top: "50%",
                     transform: "translateY(-50%)",
                     color: "#9ca3af",
+                    pointerEvents: "none",
                   }}
-                  size={16}
+                  size={18}
                 />
                 <input
                   type="text"
@@ -1543,18 +2250,26 @@ export default function SCADStaffDashboard() {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   style={{
-                    padding: "0.4rem 0.4rem 0.4rem 2rem",
+                    padding: "0.75rem 0.75rem 0.75rem 2.5rem",
                     width: "100%",
                     border: "1px solid #d1d5db",
-                    borderRadius: "0.375rem",
+                    borderRadius: "0.5rem",
                     outline: "none",
                     boxSizing: "border-box",
                     fontSize: "0.875rem",
+                    transition: "all 0.3s ease",
+                    backgroundColor: "#fff",
+                    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
                   }}
-                  onFocus={(e) =>
-                    (e.target.style.boxShadow = "0 0 0 2px #3b82f6")
-                  }
-                  onBlur={(e) => (e.target.style.boxShadow = "none")}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = "#3b82f6";
+                    e.target.style.boxShadow =
+                      "0 0 0 3px rgba(59, 130, 246, 0.1)";
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = "#d1d5db";
+                    e.target.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.05)";
+                  }}
                 />
               </div>
               <div style={{ flex: "0 0 auto" }}>
@@ -1562,19 +2277,31 @@ export default function SCADStaffDashboard() {
                   value={majorFilter}
                   onChange={(e) => setMajorFilter(e.target.value)}
                   style={{
-                    padding: "0.4rem",
+                    padding: "0.75rem",
                     border: "1px solid #d1d5db",
-                    borderRadius: "0.375rem",
+                    borderRadius: "0.5rem",
                     outline: "none",
                     minWidth: "12rem",
                     width: "12rem",
-                    maxWidth: "12rem",
                     fontSize: "0.875rem",
+                    transition: "all 0.3s ease",
+                    backgroundColor: "#fff",
+                    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
+                    appearance: "none",
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E")`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "right 0.75rem center",
+                    backgroundSize: "1rem",
                   }}
-                  onFocus={(e) =>
-                    (e.target.style.boxShadow = "0 0 0 2px #3b82f6")
-                  }
-                  onBlur={(e) => (e.target.style.boxShadow = "none")}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = "#3b82f6";
+                    e.target.style.boxShadow =
+                      "0 0 0 3px rgba(59, 130, 246, 0.1)";
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = "#d1d5db";
+                    e.target.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.05)";
+                  }}
                 >
                   <option value="">All Majors</option>
                   <option value="Computer Science">Computer Science</option>
@@ -1587,19 +2314,31 @@ export default function SCADStaffDashboard() {
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
                   style={{
-                    padding: "0.4rem",
+                    padding: "0.75rem",
                     border: "1px solid #d1d5db",
-                    borderRadius: "0.375rem",
+                    borderRadius: "0.5rem",
                     outline: "none",
                     minWidth: "12rem",
                     width: "12rem",
-                    maxWidth: "12rem",
                     fontSize: "0.875rem",
+                    transition: "all 0.3s ease",
+                    backgroundColor: "#fff",
+                    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
+                    appearance: "none",
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E")`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "right 0.75rem center",
+                    backgroundSize: "1rem",
                   }}
-                  onFocus={(e) =>
-                    (e.target.style.boxShadow = "0 0 0 2px #3b82f6")
-                  }
-                  onBlur={(e) => (e.target.style.boxShadow = "none")}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = "#3b82f6";
+                    e.target.style.boxShadow =
+                      "0 0 0 3px rgba(59, 130, 246, 0.1)";
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = "#d1d5db";
+                    e.target.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.05)";
+                  }}
                 >
                   <option value="">All Statuses</option>
                   <option value="Pending">Pending</option>
@@ -1610,8 +2349,16 @@ export default function SCADStaffDashboard() {
               </div>
             </div>
             {filteredReports.length === 0 ? (
-              <div style={{ textAlign: "center", padding: "3rem" }}>
-                <p style={{ color: "#6b7280" }}>
+              <div
+                style={{
+                  textAlign: "center",
+                  padding: "3rem",
+                  background: "#fff",
+                  borderRadius: "0.5rem",
+                  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+                }}
+              >
+                <p style={{ color: "#6b7280", fontSize: "1rem" }}>
                   No reports match your search criteria.
                 </p>
               </div>
@@ -1619,56 +2366,81 @@ export default function SCADStaffDashboard() {
               <div
                 style={{
                   background: "#fff",
-                  borderRadius: "0.375rem",
-                  boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                  borderRadius: "0.75rem",
+                  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
                   overflow: "hidden",
+                  border: "1px solid #e5e7eb",
                 }}
               >
-                <div style={{ overflowX: "auto" }}>
-                  <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                <div style={{ overflowX: "auto", maxWidth: "100%" }}>
+                  <table
+                    style={{
+                      width: "100%",
+                      borderCollapse: "separate",
+                      borderSpacing: 0,
+                      fontSize: "0.875rem",
+                    }}
+                  >
                     <thead>
-                      <tr style={{ background: "#f3f4f6" }}>
+                      <tr
+                        style={{
+                          background:
+                            "linear-gradient(90deg, #f9fafb 0%, #f3f4f6 100%)",
+                          textTransform: "uppercase",
+                          letterSpacing: "0.05em",
+                        }}
+                      >
                         <th
                           style={{
-                            padding: "1rem",
+                            padding: "1rem 1.5rem",
                             textAlign: "left",
                             color: "#1f2937",
+                            fontWeight: "600",
+                            borderBottom: "1px solid #e5e7eb",
                           }}
                         >
                           Student
                         </th>
                         <th
                           style={{
-                            padding: "1rem",
+                            padding: "1rem 1.5rem",
                             textAlign: "left",
                             color: "#1f2937",
+                            fontWeight: "600",
+                            borderBottom: "1px solid #e5e7eb",
                           }}
                         >
                           Company
                         </th>
                         <th
                           style={{
-                            padding: "1rem",
+                            padding: "1rem 1.5rem",
                             textAlign: "left",
                             color: "#1f2937",
+                            fontWeight: "600",
+                            borderBottom: "1px solid #e5e7eb",
                           }}
                         >
-                          Major
+                          Internship Title
                         </th>
                         <th
                           style={{
-                            padding: "1rem",
+                            padding: "1rem 1.5rem",
                             textAlign: "left",
                             color: "#1f2937",
+                            fontWeight: "600",
+                            borderBottom: "1px solid #e5e7eb",
                           }}
                         >
                           Status
                         </th>
                         <th
                           style={{
-                            padding: "1rem",
+                            padding: "1rem 1.5rem",
                             textAlign: "left",
                             color: "#1f2937",
+                            fontWeight: "600",
+                            borderBottom: "1px solid #e5e7eb",
                           }}
                         >
                           Actions
@@ -1676,49 +2448,106 @@ export default function SCADStaffDashboard() {
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredReports.map((report) => (
+                      {filteredReports.map((report, index) => (
                         <tr
                           key={report.id}
                           style={{
-                            background: "none",
-                            transition: "background-color 0.3s",
+                            background: index % 2 === 0 ? "#fff" : "#fafafa",
+                            transition: "background-color 0.3s ease",
                           }}
+                          onMouseEnter={(e) =>
+                            (e.currentTarget.style.background = "#f1f5f9")
+                          }
+                          onMouseLeave={(e) =>
+                            (e.currentTarget.style.background =
+                              index % 2 === 0 ? "#fff" : "#fafafa")
+                          }
                         >
                           <td
                             style={{
-                              padding: "1rem",
+                              padding: "1.25rem 1.5rem",
                               borderBottom: "1px solid #e5e7eb",
+                              color: "#374151",
+                              fontWeight: "500",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                              minWidth: "0",
                             }}
                           >
-                            {report.student}
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "0.5rem",
+                              }}
+                            >
+                              <User size={20} />
+                              <span>{report.student}</span>
+                            </div>
                           </td>
                           <td
                             style={{
-                              padding: "1rem",
+                              padding: "1.25rem 1.5rem",
                               borderBottom: "1px solid #e5e7eb",
+                              color: "#374151",
+                              fontWeight: "500",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                              minWidth: "0",
                             }}
                           >
-                            {report.company}
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "0.5rem",
+                              }}
+                            >
+                              <Building size={20} />
+                              <span>{report.company}</span>
+                            </div>
                           </td>
                           <td
                             style={{
-                              padding: "1rem",
+                              padding: "1.25rem 1.5rem",
                               borderBottom: "1px solid #e5e7eb",
+                              color: "#374151",
+                              fontWeight: "500",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                              minWidth: "0",
                             }}
                           >
-                            {report.major}
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "0.5rem",
+                              }}
+                            >
+                              <FiBriefcase size={20} />
+                              <span>{report.internshipTitle}</span>
+                            </div>
                           </td>
                           <td
                             style={{
-                              padding: "1rem",
+                              padding: "1.25rem 1.5rem",
                               borderBottom: "1px solid #e5e7eb",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                              minWidth: "0",
                             }}
                           >
                             <span
                               style={{
-                                padding: "0.25rem 0.5rem",
+                                padding: "0.375rem 0.75rem",
                                 borderRadius: "9999px",
                                 fontSize: "0.75rem",
+                                fontWeight: "500",
                                 ...(report.status === "Accepted"
                                   ? { background: "#d1fae5", color: "#065f46" }
                                   : report.status === "Rejected"
@@ -1733,21 +2562,171 @@ export default function SCADStaffDashboard() {
                             >
                               {report.status}
                             </span>
+                            {(report.status === "Rejected" ||
+                              report.status === "Flagged") &&
+                              report.comment && (
+                                <div
+                                  style={{
+                                    marginTop: "0.25rem",
+                                    fontSize: "0.75rem",
+                                    color: "#6b7280",
+                                    maxWidth: "100%",
+                                    overflow: "hidden",
+                                    textOverflow: "ellipsis",
+                                    whiteSpace: "nowrap",
+                                  }}
+                                >
+                                  Comment: {report.comment}
+                                </div>
+                              )}
                           </td>
                           <td
                             style={{
-                              padding: "1rem",
+                              padding: "1.25rem 1.5rem",
                               borderBottom: "1px solid #e5e7eb",
+                              display: "flex",
+                              gap: "0.75rem",
+                              alignItems: "center",
+                              minWidth: "0",
                             }}
                           >
-                            <div style={{ display: "flex", gap: "0.5rem" }}>
-                              <button
-                                className="actionButton"
-                                onClick={() => openModal("report", report)}
+                            <button
+                              className="uniform-action-button"
+                              style={{
+                                background: "#2a9d8f",
+                                color: "#fff",
+                                border: "none",
+                                borderRadius: "0.375rem",
+                                cursor: "pointer",
+                                transition: "all 0.3s ease",
+                                fontWeight: "500",
+                                padding: "0.5rem 1rem",
+                              }}
+                              onClick={() => openModal("report", report)}
+                              onMouseOver={(e) => {
+                                e.target.style.background = "#30b3a3";
+                                e.target.style.transform = "scale(1.05)";
+                                e.target.style.boxShadow =
+                                  "0 2px 8px rgba(0, 0, 0, 0.15)";
+                              }}
+                              onMouseOut={(e) => {
+                                e.target.style.background = "#2a9d8f";
+                                e.target.style.transform = "scale(1)";
+                                e.target.style.boxShadow = "none";
+                              }}
+                            >
+                              View Report
+                            </button>
+                            <button
+                              className="uniform-action-button"
+                              style={{
+                                background: "#4a90e2",
+                                color: "#fff",
+                                border: "none",
+                                borderRadius: "0.375rem",
+                                cursor: "pointer",
+                                transition: "all 0.3s ease",
+                                fontWeight: "500",
+                                padding: "0.5rem 1rem",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                              onClick={() => openModal("evaluation", report)}
+                              onMouseOver={(e) => {
+                                e.target.style.background = "#5a9ff3";
+                                e.target.style.transform = "scale(1.05)";
+                                e.target.style.boxShadow =
+                                  "0 2px 8px rgba(0, 0, 0, 0.15)";
+                              }}
+                              onMouseOut={(e) => {
+                                e.target.style.background = "#4a90e2";
+                                e.target.style.transform = "scale(1)";
+                                e.target.style.boxShadow = "none";
+                              }}
+                            >
+                              View Evaluation
+                            </button>
+                            {(report.status === "Rejected" ||
+                              report.status === "Flagged") && (
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "0.5rem",
+                                  minWidth: "0",
+                                }}
                               >
-                                View Details
-                              </button>
-                            </div>
+                                <input
+                                  type="text"
+                                  placeholder="Add a comment..."
+                                  style={{
+                                    marginLeft: "50px",
+                                    padding: "0.5rem",
+                                    border: "1px solid #d1d5db",
+                                    borderRadius: "0.375rem",
+                                    fontSize: "0.875rem",
+                                    width: "150px",
+                                    boxSizing: "border-box",
+                                    flexShrink: 0,
+                                  }}
+                                  onKeyPress={(e) => {
+                                    if (
+                                      e.key === "Enter" &&
+                                      e.target.value.trim()
+                                    ) {
+                                      handleAddComment(
+                                        report.id,
+                                        e.target.value.trim()
+                                      );
+                                      e.target.value = "";
+                                    }
+                                  }}
+                                />
+                                <button
+                                  className="uniform-action-button"
+                                  style={{
+                                    background: "#2a9d8f",
+                                    color: "#fff",
+                                    border: "none",
+                                    borderRadius: "0.375rem",
+                                    cursor: "pointer",
+                                    transition: "all 0.3s ease",
+                                    fontWeight: "500",
+                                    padding: "0.5rem",
+                                    width: "40px",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                  }}
+                                  onClick={() => {
+                                    const input = document.querySelector(
+                                      `input[placeholder="Add a comment..."]`
+                                    );
+                                    if (input && input.value.trim()) {
+                                      handleAddComment(
+                                        report.id,
+                                        input.value.trim()
+                                      );
+                                      input.value = "";
+                                    }
+                                  }}
+                                  onMouseOver={(e) => {
+                                    e.target.style.background = "#30b3a3";
+                                    e.target.style.transform = "scale(1.05)";
+                                    e.target.style.boxShadow =
+                                      "0 2px 8px rgba(0, 0, 0, 0.15)";
+                                  }}
+                                  onMouseOut={(e) => {
+                                    e.target.style.background = "#2a9d8f";
+                                    e.target.style.transform = "scale(1)";
+                                    e.target.style.boxShadow = "none";
+                                  }}
+                                >
+                                  <FaPaperPlane size={16} />
+                                </button>
+                              </div>
+                            )}
                           </td>
                         </tr>
                       ))}
@@ -1758,82 +2737,237 @@ export default function SCADStaffDashboard() {
             )}
           </div>
         );
-
       case "statistics":
         return (
           <div
-            style={{ maxWidth: "100%", animation: "fadeIn 0.3s" }}
-            className={`container faculty-page ${
-              sidebarWidth === "16rem" ? "sidebar-open" : ""
-            }`}
+            style={{
+              maxWidth: "100%",
+              animation: "fadeIn 0.3s",
+              paddingLeft: sidebarWidth === "16rem" ? "8rem" : "2rem", // Reduced padding to prevent excessive shift
+              transition: "padding-left 0.3s ease", // Smooth transition for sidebar toggle
+              boxSizing: "border-box",
+              width: "100%",
+              margin: "0 auto",
+              padding: "1.5rem",
+            }}
           >
-            <h2 className="title">Real-Time Statistics</h2>
-            <div className="cardHolder">
+            <h2
+              style={{
+                fontSize: "1.75rem",
+                fontWeight: "700",
+                marginBottom: "2rem",
+                color: "#1f2937",
+                letterSpacing: "-0.025em",
+              }}
+            >
+              Real-Time Statistics
+            </h2>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+                gap: "1.5rem",
+                padding: "0",
+              }}
+            >
               {/* Reports This Cycle */}
-              <div className="card">
-                <div className="card-header">
-                  <h3 className="program-title">Reports This Cycle</h3>
+              <div
+                style={{
+                  background: "#fff",
+                  borderRadius: "0.5rem",
+                  boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                  padding: "1.5rem",
+                }}
+              >
+                <div
+                  style={{
+                    marginBottom: "1rem",
+                    fontSize: "1.25rem",
+                    fontWeight: "600",
+                    color: "#1f2937",
+                  }}
+                >
+                  Reports This Cycle
                 </div>
-                <div className="reports-grid">
-                  <div className="report-box accepted">
-                    <p className="report-count">
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+                    gap: "1rem",
+                  }}
+                >
+                  <div
+                    style={{
+                      background: "#d1fae5",
+                      padding: "1rem",
+                      borderRadius: "0.375rem",
+                      textAlign: "center",
+                      color: "#065f46",
+                    }}
+                  >
+                    <p
+                      style={{
+                        fontSize: "1.5rem",
+                        fontWeight: "700",
+                        margin: 0,
+                      }}
+                    >
                       {statistics.reportsPerCycle?.accepted || 0}
                     </p>
-                    <p className="report-label">Accepted</p>
+                    <p style={{ fontSize: "0.875rem", margin: 0 }}>Accepted</p>
                   </div>
-                  <div className="report-box rejected">
-                    <p className="report-count">
+                  <div
+                    style={{
+                      background: "#fee2e2",
+                      padding: "1rem",
+                      borderRadius: "0.375rem",
+                      textAlign: "center",
+                      color: "#dc2626",
+                    }}
+                  >
+                    <p
+                      style={{
+                        fontSize: "1.5rem",
+                        fontWeight: "700",
+                        margin: 0,
+                      }}
+                    >
                       {statistics.reportsPerCycle?.rejected || 0}
                     </p>
-                    <p className="report-label">Rejected</p>
+                    <p style={{ fontSize: "0.875rem", margin: 0 }}>Rejected</p>
                   </div>
-                  <div className="report-box flagged">
-                    <p className="report-count">
+                  <div
+                    style={{
+                      background: "#fefcbf",
+                      padding: "1rem",
+                      borderRadius: "0.375rem",
+                      textAlign: "center",
+                      color: "#975a16",
+                    }}
+                  >
+                    <p
+                      style={{
+                        fontSize: "1.5rem",
+                        fontWeight: "700",
+                        margin: 0,
+                      }}
+                    >
                       {statistics.reportsPerCycle?.flagged || 0}
                     </p>
-                    <p className="report-label">Flagged</p>
+                    <p style={{ fontSize: "0.875rem", margin: 0 }}>Flagged</p>
                   </div>
-                  <div className="report-box pending">
-                    <p className="report-count">
+                  <div
+                    style={{
+                      background: "#dbeafe",
+                      padding: "1rem",
+                      borderRadius: "0.375rem",
+                      textAlign: "center",
+                      color: "#1e40af",
+                    }}
+                  >
+                    <p
+                      style={{
+                        fontSize: "1.5rem",
+                        fontWeight: "700",
+                        margin: 0,
+                      }}
+                    >
                       {statistics.reportsPerCycle?.pending || 0}
                     </p>
-                    <p className="report-label">Pending</p>
+                    <p style={{ fontSize: "0.875rem", margin: 0 }}>Pending</p>
                   </div>
                 </div>
               </div>
 
               {/* Performance Metrics */}
-              <div className="card">
-                <div className="card-header">
-                  <h3 className="program-title">Performance Metrics</h3>
+              <div
+                style={{
+                  background: "#fff",
+                  borderRadius: "0.5rem",
+                  boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                  padding: "1.5rem",
+                }}
+              >
+                <div
+                  style={{
+                    marginBottom: "1rem",
+                    fontSize: "1.25rem",
+                    fontWeight: "600",
+                    color: "#1f2937",
+                  }}
+                >
+                  Performance Metrics
                 </div>
-                <div className="metric-row">
-                  <span className="metric-label">Average Review Time:</span>
-                  <span className="metric-value">
-                    {statistics.averageReviewTime || "N/A"}
-                  </span>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    marginBottom: "0.5rem",
+                    fontSize: "0.875rem",
+                    color: "#4b5563",
+                  }}
+                >
+                  <span>Average Review Time:</span>
+                  <span>{statistics.averageReviewTime || "N/A"}</span>
                 </div>
-                <div className="progress-bar">
-                  <div className="progress-fill"></div>
+                <div
+                  style={{
+                    height: "0.5rem",
+                    background: "#e5e7eb",
+                    borderRadius: "9999px",
+                    overflow: "hidden",
+                  }}
+                >
+                  <div
+                    style={{
+                      height: "100%",
+                      background: "#3b82f6",
+                      width: "50%", // Example width, adjust dynamically if needed
+                    }}
+                  ></div>
                 </div>
                 {statistics.performanceMetrics && (
                   <>
-                    <div className="metric-row">
-                      <span className="metric-label">Faculty Average:</span>
-                      <span className="metric-value">
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        marginTop: "1rem",
+                        fontSize: "0.875rem",
+                        color: "#4b5563",
+                      }}
+                    >
+                      <span>Faculty Average:</span>
+                      <span>
                         {statistics.performanceMetrics.facultyAverage || "N/A"}
                       </span>
                     </div>
-                    <div className="metric-row">
-                      <span className="metric-label">Department Average:</span>
-                      <span className="metric-value">
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        marginTop: "0.5rem",
+                        fontSize: "0.875rem",
+                        color: "#4b5563",
+                      }}
+                    >
+                      <span>Department Average:</span>
+                      <span>
                         {statistics.performanceMetrics.departmentAverage ||
                           "N/A"}
                       </span>
                     </div>
-                    <div className="metric-row">
-                      <span className="metric-label">University Average:</span>
-                      <span className="metric-value">
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        marginTop: "0.5rem",
+                        fontSize: "0.875rem",
+                        color: "#4b5563",
+                      }}
+                    >
+                      <span>University Average:</span>
+                      <span>
                         {statistics.performanceMetrics.universityAverage ||
                           "N/A"}
                       </span>
@@ -1843,14 +2977,51 @@ export default function SCADStaffDashboard() {
               </div>
 
               {/* Popular Courses */}
-              <div className="card">
-                <div className="card-header">
-                  <h3 className="program-title">Popular Courses</h3>
+              <div
+                style={{
+                  background: "#fff",
+                  borderRadius: "0.5rem",
+                  boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                  padding: "1.5rem",
+                }}
+              >
+                <div
+                  style={{
+                    marginBottom: "1rem",
+                    fontSize: "1.25rem",
+                    fontWeight: "600",
+                    color: "#1f2937",
+                  }}
+                >
+                  Popular Courses
                 </div>
-                <ul className="list">
+                <ul
+                  style={{
+                    listStyle: "none",
+                    padding: 0,
+                    margin: 0,
+                  }}
+                >
                   {(statistics.popularCourses || []).map((course, index) => (
-                    <li key={index} className="list-item">
-                      <span className="list-bullet"></span>
+                    <li
+                      key={index}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        marginBottom: "0.5rem",
+                        fontSize: "0.875rem",
+                        color: "#4b5563",
+                      }}
+                    >
+                      <span
+                        style={{
+                          width: "0.5rem",
+                          height: "0.5rem",
+                          background: "#9ca3af",
+                          borderRadius: "50%",
+                          marginRight: "0.75rem",
+                        }}
+                      ></span>
                       <span>
                         {typeof course === "string" ? course : course.name}{" "}
                         (Reports:{" "}
@@ -1865,17 +3036,49 @@ export default function SCADStaffDashboard() {
               </div>
 
               {/* Top Rated Companies */}
-              <div className="card">
-                <div className="card-header">
-                  <h3 className="program-title">Top Rated Companies</h3>
+              <div
+                style={{
+                  background: "#fff",
+                  borderRadius: "0.5rem",
+                  boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                  padding: "1.5rem",
+                }}
+              >
+                <div
+                  style={{
+                    marginBottom: "1rem",
+                    fontSize: "1.25rem",
+                    fontWeight: "600",
+                    color: "#1f2937",
+                  }}
+                >
+                  Top Rated Companies
                 </div>
-                <ul className="list">
+                <ul
+                  style={{
+                    listStyle: "none",
+                    padding: 0,
+                    margin: 0,
+                  }}
+                >
                   {(statistics.topCompanies || []).map((company, index) => (
-                    <li key={index} className="list-item">
+                    <li
+                      key={index}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        marginBottom: "0.5rem",
+                        fontSize: "0.875rem",
+                        color: "#4b5563",
+                      }}
+                    >
                       <span
-                        className="list-bullet"
                         style={{
+                          width: "0.5rem",
+                          height: "0.5rem",
                           background: index === 0 ? "#10b981" : "#2a9d8f",
+                          borderRadius: "50%",
+                          marginRight: "0.75rem",
                         }}
                       ></span>
                       <span>
@@ -1898,22 +3101,57 @@ export default function SCADStaffDashboard() {
               </div>
 
               {/* Internship Count by Company */}
-              <div className="card">
-                <div className="card-header">
-                  <h3 className="program-title">Internship Count by Company</h3>
+              <div
+                style={{
+                  background: "#fff",
+                  borderRadius: "0.5rem",
+                  boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                  padding: "1.5rem",
+                }}
+              >
+                <div
+                  style={{
+                    marginBottom: "1rem",
+                    fontSize: "1.25rem",
+                    fontWeight: "600",
+                    color: "#1f2937",
+                  }}
+                >
+                  Internship Count by Company
                 </div>
                 {statistics.internshipCount &&
                   Object.entries(statistics.internshipCount).map(
                     ([company, count], index) => (
-                      <div key={index} className="company-row">
-                        <div className="company-info">
-                          <span className="company-name">{company}</span>
-                          <span className="company-count">{count}</span>
+                      <div
+                        key={index}
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          marginBottom: "1rem",
+                          fontSize: "0.875rem",
+                          color: "#4b5563",
+                        }}
+                      >
+                        <div>
+                          <span>{company}</span>
+                          <span style={{ marginLeft: "1rem" }}>{count}</span>
                         </div>
-                        <div className="progress-bar">
+                        <div
+                          style={{
+                            width: "60%",
+                            height: "0.5rem",
+                            background: "#e5e7eb",
+                            borderRadius: "9999px",
+                            overflow: "hidden",
+                          }}
+                        >
                           <div
-                            className="progress-fill"
-                            style={{ width: `${(count / 6) * 100}%` }} // 6 is the max count in internshipCount
+                            style={{
+                              height: "100%",
+                              background: "#3b82f6",
+                              width: `${(count / 6) * 100}%`, // 6 is the max count in internshipCount
+                            }}
                           ></div>
                         </div>
                       </div>
@@ -1922,25 +3160,54 @@ export default function SCADStaffDashboard() {
               </div>
 
               {/* Student Distribution by Major */}
-              <div className="card">
-                <div className="card-header">
-                  <h3 className="program-title">
-                    Student Distribution by Major
-                  </h3>
+              <div
+                style={{
+                  background: "#fff",
+                  borderRadius: "0.5rem",
+                  boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                  padding: "1.5rem",
+                }}
+              >
+                <div
+                  style={{
+                    marginBottom: "1rem",
+                    fontSize: "1.25rem",
+                    fontWeight: "600",
+                    color: "#1f2937",
+                  }}
+                >
+                  Student Distribution by Major
                 </div>
                 {statistics.studentStatsByMajor &&
                   Object.entries(statistics.studentStatsByMajor).map(
                     ([major, count], index) => (
-                      <div key={index} className="company-row">
-                        <div className="company-info">
-                          <span className="company-name">{major}</span>
-                          <span className="company-count">{count}</span>
+                      <div
+                        key={index}
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          marginBottom: "1rem",
+                          fontSize: "0.875rem",
+                          color: "#4b5563",
+                        }}
+                      >
+                        <div>
+                          <span>{major}</span>
+                          <span style={{ marginLeft: "1rem" }}>{count}</span>
                         </div>
-                        <div className="progress-bar">
+                        <div
+                          style={{
+                            width: "60%",
+                            height: "0.5rem",
+                            background: "#e5e7eb",
+                            borderRadius: "9999px",
+                            overflow: "hidden",
+                          }}
+                        >
                           <div
-                            className="progress-fill"
                             style={{
-                              width: `${(count / 45) * 100}%`, // 45 is the max count in studentStatsByMajor
+                              height: "100%",
                               background:
                                 index % 4 === 0
                                   ? "#3b82f6"
@@ -1949,6 +3216,7 @@ export default function SCADStaffDashboard() {
                                   : index % 4 === 2
                                   ? "#a855f7"
                                   : "#f59e0b",
+                              width: `${(count / 45) * 100}%`, // 45 is the max count in studentStatsByMajor
                             }}
                           ></div>
                         </div>
@@ -1959,18 +3227,46 @@ export default function SCADStaffDashboard() {
             </div>
 
             {/* Generate Report Button */}
-            <div className="report-button-container">
-              <div style={{ display: "flex", justifyContent: "center" }}>
-                <button
-                  onClick={() => generateStatisticsReport(statistics)}
-                  className="actionButton"
-                >
-                  <Download size={18} style={{ marginRight: "0.5rem" }} />
-                  Generate Comprehensive Report
-                </button>
-              </div>
-
-              <p className="report-description">
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                marginTop: "2rem",
+                marginBottom: "2rem",
+                width: "100%",
+              }}
+            >
+              <button
+                onClick={() => generateStatisticsReport(statistics)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  padding: "0.75rem 1.5rem",
+                  fontSize: "1rem",
+                  backgroundColor: "#2a9d8f",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "0.375rem",
+                  cursor: "pointer",
+                  transition: "background-color 0.3s ease",
+                }}
+                onMouseOver={(e) =>
+                  (e.target.style.backgroundColor = "#30b3a3")
+                }
+                onMouseOut={(e) => (e.target.style.backgroundColor = "#2a9d8f")}
+              >
+                <Download size={18} style={{ marginRight: "0.5rem" }} />
+                Generate Comprehensive Report
+              </button>
+              <p
+                style={{
+                  marginTop: "0.5rem",
+                  textAlign: "center",
+                  color: "#6b7280",
+                  fontSize: "0.875rem",
+                }}
+              >
                 This will generate a PDF with all current statistics.
               </p>
             </div>
