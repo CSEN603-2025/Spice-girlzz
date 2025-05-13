@@ -1,6 +1,36 @@
 /* From FacultyStatistics CSS */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");
 
+/* Uniform Action Button Styling */
+.uniform-action-button {
+  padding: 0.5rem 1rem;
+  width: 120px; /* Fixed width for uniformity */
+  font-size: 0.875rem;
+  text-align: center;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+}
+
+/* Enhance table row hover effect */
+tbody tr:hover {
+  transition: background-color 0.3s ease;
+}
+
+/* Add subtle border radius to table cells */
+tbody td {
+  transition: all 0.3s ease;
+}
+
+/* Improve select dropdown arrow alignment */
+select {
+  background-position: right 0.75rem center !important;
+}
+
+/* Add a subtle focus effect for inputs */
+input:focus,
+select:focus {
+  transition: all 0.3s ease;
+}
 .faculty-page {
   padding: 1.5rem;
 }
@@ -133,17 +163,6 @@
   font-weight: bold;
 }
 
-.report-button-container {
-  text-align: center;
-  margin-top: 2rem;
-}
-
-.report-description {
-  color: #6b7280;
-  font-size: 0.875rem;
-  margin-top: 0.5rem;
-}
-
 /* Ensure existing .card styles are compatible */
 .card {
   background: white;
@@ -180,6 +199,15 @@
   flex-direction: column;
 }
 
+.report-button-container {
+  text-align: center; /* Fallback for centering */
+}
+
+.report-description {
+  margin-top: 0.5rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
 /* Ensure .actionButton is compatible */
 .actionButton {
   background-color: #2a9d8f;

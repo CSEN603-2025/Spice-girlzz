@@ -167,42 +167,11 @@
   justify-content: space-around;
   align-items: center;
   flex-wrap: wrap;
-  padding: 2rem 0;
+  padding: 0 0;
   max-width: 1200px;
   margin: 0 auto;
-}
 
-.client-logo {
-  height: 40px; /* Adjust based on your needs */
-  width: auto;
-  margin: 0 15px;
-  filter: grayscale(100%) contrast(50%);
-  transition: all 0.3s ease;
-  opacity: 0.5;
 }
-
-.client-logo:hover {
-  transform: scale(1.1);
-  opacity: 0.9;
-}
-
-/* Brand colors */
-.client-logo.google {
-  color: #4285f4;
-}
-.client-logo.slack {
-  color: #e01e5a;
-}
-.client-logo.netflix {
-  color: #e50914;
-}
-.client-logo.visa {
-  color: #1a1f71;
-}
-.client-logo.amazon {
-  color: #ff9900;
-}
-
 .homeBtns{
 
   padding: 20px;

@@ -13,9 +13,7 @@ import {
 import Login from "./Login";
 import Register from "./Register";
 import StudentHomePage from "./StudentHomePage";
-import ProfileStudent from "./ProfileStudent";
-import EvaluationStudent from "./EvaluationStudent"; 
-import Report from "./Report";
+
 import SCADStaffDashboard from "./SCADStaffDashboard";
 import AppliedInternships from "./Applied internships";
 import FacultyMember from "./FacultyMember";
@@ -29,6 +27,9 @@ import CompanyPosts from "./CompanyPosts";
 import CompanyApplications from "./CompanyApplications";
 import CompanyInterns from "./CompanyInterns";
 import CompanyEvaluation from "./CompanyEvaluation";
+
+import Report from "./Report";
+import EvaluationStudent from "./EvaluationStudent";
 import FacultyLayout from "./FacultyLayout";
 import FacultyStatistics from "./FacultyStatistics";
 import FacultyReport from "./FacultyReport";
@@ -37,7 +38,10 @@ import { PDFDocument } from "pdf-lib";
 import UpcomingWorkshops from "./UpcomingWorkshops";
 import NotificationSystem from "./Components/NotificationsStudent";
 import Assessment from "./Assessment";
+import ProfileStudent from "./ProfileStudent" ; 
 
+
+import SCADHome from "./SCADHome";
 
 function App() {
   const [appliedInternships, setAppliedInternships] = useState(() => {
@@ -49,7 +53,6 @@ function App() {
       return [];
     }
   });
-  
 
   useEffect(() => {
     sessionStorage.setItem(
@@ -105,6 +108,7 @@ function App() {
         <Route path="/student/profile" element={<ProfileStudent />} />
         <Route path="/student/workshops" element={<UpcomingWorkshops />} /> {/* Added Route */}
         <Route path="/staff" element={<SCADStaffDashboard />} />
+        <Route path="/staff/SCADHome" element={<SCADHome />} />
         <Route path="/faculty" element={<FacultyLayout />}>
           <Route path="reports" element={<FacultyReport />} />
           <Route path="statistics" element={<FacultyStatistics />} />
