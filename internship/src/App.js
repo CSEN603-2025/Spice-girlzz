@@ -141,9 +141,9 @@ function App() {
         <Route path="/staff" element={<SCADStaffDashboard />} />
 
       <Route path="/faculty" element={<FacultyLayout />}>
-        <Route index element={<FacultyHomePage />} />
+        <Route index element={<FacultyStatistics />} />
         <Route path="reports" element={<FacultyReport />} />
-        <Route path="statistics" element={<FacultyStatistics />} />
+        <Route path="internships" element={<FacultyHomePage />} />
         <Route path="mail" element={<FacultyMail />} />
         <Route path="eval" element={<FacultyCompEvaluations />} />
 

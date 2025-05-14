@@ -400,14 +400,14 @@ function FacultyHomePage() {
           </div>
         </div>
         <section className="clients-section">
-          <div className="client-logos">
-            <SiNetflix style={{ color: "#E50914", fontSize: "2rem" }} />
-            <SiVisa style={{ color: "#1A1F71", fontSize: "2rem" }} />
-            <SiVodafone style={{ color: "#E60000", fontSize: "2rem" }} />
-            <SiMeta style={{ color: "#0668E1", fontSize: "2rem" }} />
-            <FaApple style={{ color: "#000000", fontSize: "2rem" }} />
-            <SiSiemens style={{ color: "#000000", fontSize: "4rem" }} />
-          </div>
+ <div className="client-logos">
+              <SiNetflix style={{ color: "#E50914", fontSize: "2.5rem" }} />
+              <SiVisa style={{ color: "#1A1F71", fontSize: "4rem" }} />
+              <SiVodafone style={{ color: "#E60000", fontSize: "2.5rem" }} />
+              <SiMeta style={{ color: "#0668E1", fontSize: "3rem" }} />
+              <FaApple style={{ color: "#000000", fontSize: "3rem" }} />
+              <SiSiemens style={{ color: "#000000", fontSize: "5.5rem" }} />
+            </div>
         </section>
         <div className="profileContent">
           <h2

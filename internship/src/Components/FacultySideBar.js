@@ -302,10 +302,10 @@ function SideBarFaculty({ onHoverChange }) {
       path: "/faculty/eval",
     },
     {
-      title: "Statistics",
-      page: "FacultyStatistics",
-      icon: <BarChart2 size={20} />,
-      path: "/faculty/statistics",
+      title: "Explore Internships",
+      page: "FacultyHomePage",
+      icon: <Users size={20} />,
+      path: "/faculty/internships",
     },
  
   ];
