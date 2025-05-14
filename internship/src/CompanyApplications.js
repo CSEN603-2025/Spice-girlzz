@@ -1,9 +1,89 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SideBarCompany from './Components/SideBarCompany';
-import { Mail, Home, LogOut, User, Menu } from 'lucide-react';
+import { Mail, Home, LogOut, User, Menu, Download } from 'lucide-react';
 import './CompanyStyles.css';
 import CompanyHeader from './CompanyHeader';
+import { generateStatisticsReport } from "./pdfGeneratorCV";
+
+const initialCV = {
+  personalInfo: {
+    name: "John Ramzy",
+    email: "john.ramzy@student.guc.edu.eg",
+    phone: "+1-555-123-4567",
+    linkedin: "https://linkedin.com/in/janedoe",
+    location: "Cairo, Egypt"
+  },
+  education: [
+    {
+      degree: "Bachelor of Science in Computer Science",
+      institution: "University of Example",
+      startDate: "2021-09-01",
+      endDate: "2025-05-31",
+      gpa: 3.8
+    }
+  ],
+  skills: [
+    "JavaScript",
+    "React",
+    "Python",
+    "SQL",
+    "Data Analysis",
+    "Team Collaboration"
+  ],
+  workExperience: [
+    {
+      title: "Software Engineering Intern",
+      company: "TechCorp",
+      location: "Remote",
+      startDate: "2024-06-01",
+      endDate: "2024-08-31",
+      responsibilities: [
+        "Developed web applications using React and Node.js",
+        "Collaborated with a team of 5 to implement new features",
+        "Optimized API endpoints for better performance"
+      ]
+    },
+    {
+      title: "Data Science Intern",
+      company: "MediHealth",
+      location: "San Francisco, CA",
+      startDate: "2023-06-01",
+      endDate: "2023-08-31",
+      responsibilities: [
+        "Analyzed patient data using Python and Pandas",
+        "Created data visualizations for stakeholder presentations",
+        "Assisted in building predictive models"
+      ]
+    }
+  ],
+  projects: [
+    {
+      name: "Personal Portfolio Website",
+      description: "Built a responsive portfolio website using React and Tailwind CSS.",
+      technologies: ["React", "Tailwind CSS", "JavaScript"],
+      link: "https://janedoe-portfolio.example.com"
+    },
+    {
+      name: "Machine Learning Classifier",
+      description: "Developed a model to classify customer feedback using Python and scikit-learn.",
+      technologies: ["Python", "scikit-learn", "Pandas"],
+      link: ""
+    }
+  ],
+  certifications: [
+    {
+      name: "AWS Certified Solutions Architect",
+      issuer: "Amazon Web Services",
+      date: "2024-03-15"
+    },
+    {
+      name: "Python for Data Science",
+      issuer: "Coursera",
+      date: "2023-12-10"
+    }
+  ]
+};
 
 const Applications = () => {
   const navigate = useNavigate();
@@ -17,6 +97,8 @@ const Applications = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarHovered, setIsSidebarHovered] = useState(false);
   const [clickedButtons, setClickedButtons] = useState({});
+    const [CV_content] = useState(initialCV);
+  
 
   useEffect(() => {
     const fetchedInternships = [
@@ -316,9 +398,22 @@ const Applications = () => {
             <h3 className="section-title">Applicant Details</h3>
             <p><strong>Name:</strong> {selectedApplicant.applicantName}</p>
             <p><strong>Email:</strong> {selectedApplicant.email}</p>
-            <p><strong>Resume:</strong> 
-              <button onClick={toggleResume} className="btn btn-light">
-                {isResumeVisible ? 'Hide Resume' : 'View Resume'}
+                       <p style={{ color: '#4b5563', marginBottom: '0.25rem', fontSize: '0.875rem' }}>
+              <strong>CV:</strong>
+              <button
+                onClick={() => generateStatisticsReport(CV_content)}
+                className="actionButton"
+                style={{
+                  padding: '0.3rem 0.8rem',
+                  fontSize: '0.75rem',
+                  marginLeft: '0.5rem',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  verticalAlign: 'middle',
+                }}
+              >
+                <Download size={14} style={{ marginRight: '0.3rem' }} />
+                Download CV
               </button>
             </p>
             {isResumeVisible && (
