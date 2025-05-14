@@ -1,9 +1,10 @@
 // import { useState, useEffect } from "react";
-// import FacultySideBar from "./Components/FacultySideBar";
-// import Header from "./Components/Header";
+// import SideBar from "./Components/FacultySideBar";
+// import FacultyHeader from "./Components/FacultyHeader";
 // import { useNavigate } from "react-router-dom";
 // import { Bell, Flag, Check, X, Download, Search } from "lucide-react";
 // import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
+// import FacultySideBar from "./Components/FacultySideBar";
 
 // const generateDummyPDF = async (report) => {
 //   try {
@@ -54,74 +55,68 @@
 //   </p>
 // );
 
-// const initialReports = [
-//   {
-//     id: 1,
-//     student: "Alice Johnson",
-//     major: "Computer Science",
-//     status: "Pending",
-//     details: "Week 1 Report: Developed API endpoints.",
-//     company: "TechCorp",
-//     supervisor: "John Doe",
-//     startDate: "2025-01-01",
-//     endDate: "2025-03-01",
-//   },
-//   {
-//     id: 2,
-//     student: "Bob Smith",
-//     major: "Engineering",
-//     status: "Flagged",
-//     details: "Week 2 Report: Missing documentation.",
-//     company: "GreenEnergy",
-//     supervisor: "Jane Roe",
-//     startDate: "2025-02-01",
-//     endDate: "2025-04-01",
-//     comments: "Needs more detail on project scope.",
-//   },
-//   {
-//     id: 3,
-//     student: "Clara Davis",
-//     major: "Computer Science",
-//     status: "Accepted",
-//     details: "Final Report: Successfully deployed app.",
-//     company: "MediHealth",
-//     supervisor: "Emily Stone",
-//     startDate: "2025-01-15",
-//     endDate: "2025-03-15",
-//   },
-//   {
-//     id: 4,
-//     student: "David Wilson",
-//     major: "Data Science",
-//     status: "Rejected",
-//     details: "Week 3 Report: Incomplete analysis.",
-//     company: "FinTech Solutions",
-//     supervisor: "Michael Chen",
-//     startDate: "2025-02-15",
-//     endDate: "2025-04-15",
-//   },
-//   {
-//     id: 5,
-//     student: "Emma Brown",
-//     major: "Engineering",
-//     status: "Pending",
-//     details: "Week 1 Report: Initial design phase.",
-//     company: "EduLearn",
-//     supervisor: "Sarah Johnson",
-//     startDate: "2025-03-01",
-//     endDate: "2025-05-01",
-//   },
-// ];
+// // const initialReports = [
+// //   {
+// //     id: 1,
+// //     student: "Alice Johnson",
+// //     major: "Computer Science",
+// //     status: "Pending",
+// //     details: "Week 1 Report: Developed API endpoints.",
+// //     company: "TechCorp",
+// //     supervisor: "John Doe",
+// //     startDate: "2025-01-01",
+// //     endDate: "2025-03-01",
+// //   },
+// //   {
+// //     id: 2,
+// //     student: "Bob Smith",
+// //     major: "Engineering",
+// //     status: "Flagged",
+// //     details: "Week 2 Report: Missing documentation.",
+// //     company: "GreenEnergy",
+// //     supervisor: "Jane Roe",
+// //     startDate: "2025-02-01",
+// //     endDate: "2025-04-01",
+// //     comments: "Needs more detail on project scope.",
+// //   },
+// //   {
+// //     id: 3,
+// //     student: "Clara Davis",
+// //     major: "Computer Science",
+// //     status: "Accepted",
+// //     details: "Final Report: Successfully deployed app.",
+// //     company: "MediHealth",
+// //     supervisor: "Emily Stone",
+// //     startDate: "2025-01-15",
+// //     endDate: "2025-03-15",
+// //   },
+// //   {
+// //     id: 4,
+// //     student: "David Wilson",
+// //     major: "Data Science",
+// //     status: "Rejected",
+// //     details: "Week 3 Report: Incomplete analysis.",
+// //     company: "FinTech Solutions",
+// //     supervisor: "Michael Chen",
+// //     startDate: "2025-02-15",
+// //     endDate: "2025-04-15",
+// //   },
+// //   {
+// //     id: 5,
+// //     student: "Emma Brown",
+// //     major: "Engineering",
+// //     status: "Pending",
+// //     details: "Week 1 Report: Initial design phase.",
+// //     company: "EduLearn",
+// //     supervisor: "Sarah Johnson",
+// //     startDate: "2025-03-01",
+// //     endDate: "2025-05-01",
+// //   },
+// // ];
 
 // const initialStatistics = {
 //   reportsPerCycle: { accepted: 12, rejected: 4, flagged: 3, pending: 5 },
-//   reportsPerCycle: { accepted: 12, rejected: 4, flagged: 3, pending: 5 },
 //   averageReviewTime: "3 days",
-//   popularCourses: [
-//     { name: "CS101", reports: 15 },
-//     { name: "ENG202", reports: 12 },
-//     { name: "DS100", reports: 8 }
-//   ],
 //   popularCourses: [
 //     { name: "CS101", reports: 15 },
 //     { name: "ENG202", reports: 12 },
@@ -144,7 +139,7 @@
 //     universityAverage: 2.5
 //   }
 // };
-// const generateStatisticsReport = async (stats) => {
+// const generateStatisticsReport = async (stats, evaluations = []) => {
 //   try {
 //     const now = new Date();
 //     const reportDate = now.toLocaleDateString();
@@ -288,6 +283,67 @@
 //       color: rgb(0, 0, 0),
 //     });
 //     yPosition -= 40;
+
+//     // Section 5: Company Evaluations (only if evaluations exist)
+//     if (evaluations.length > 0) {
+//       page.drawText('5. Company Evaluations', {
+//         x: 50,
+//         y: yPosition,
+//         size: 14,
+//         font: boldFont,
+//         color: rgb(0, 0, 0),
+//       });
+//       yPosition -= 25;
+
+//       // Calculate evaluation stats
+//       const totalEvaluations = evaluations.length;
+//       const avgRating = (evaluations.reduce((sum, evaluate) => sum + eval.rating, 0)) / totalEvaluations;
+//       const ratingDistribution = [0, 0, 0, 0, 0]; // 1-5 stars
+//       evaluations.forEach(evaluate => ratingDistribution[eval.rating - 1]++);
+
+//       const evalText = `
+//         Total Evaluations: ${totalEvaluations}
+//         Average Rating: ${avgRating.toFixed(1)}/5
+//         Rating Distribution:
+//         ★★★★★: ${ratingDistribution[4]} (${Math.round((ratingDistribution[4]/totalEvaluations)*100)}%)
+//         ★★★★: ${ratingDistribution[3]} (${Math.round((ratingDistribution[3]/totalEvaluations)*100)}%)
+//         ★★★: ${ratingDistribution[2]} (${Math.round((ratingDistribution[2]/totalEvaluations)*100)}%)
+//         ★★: ${ratingDistribution[1]} (${Math.round((ratingDistribution[1]/totalEvaluations)*100)}%)
+//         ★: ${ratingDistribution[0]} (${Math.round((ratingDistribution[0]/totalEvaluations)*100)}%)
+//       `;
+
+//       page.drawText(evalText, {
+//         x: 60,
+//         y: yPosition,
+//         size: 12,
+//         font,
+//         color: rgb(0, 0, 0),
+//         lineHeight: 15,
+//       });
+//       yPosition -= 150;
+
+//       // Sample of recent comments
+//       page.drawText('Recent Comments:', {
+//         x: 50,
+//         y: yPosition,
+//         size: 12,
+//         font: boldFont,
+//         color: rgb(0, 0, 0),
+//       });
+//       yPosition -= 20;
+
+//       evaluations.slice(0, 3).forEach(evaluate => {
+//         const commentText = `"${eval.comments.substring(0, 60)}${eval.comments.length > 60 ? '...' : ''}" - ${eval.studentName}`;
+//         page.drawText(commentText, {
+//           x: 60,
+//           y: yPosition,
+//           size: 10,
+//           font,
+//           color: rgb(0, 0, 0),
+//         });
+//         yPosition -= 15;
+//       });
+//     }
     
 //     // Footer
 //     page.drawText('Generated by Faculty Dashboard System', {
@@ -332,85 +388,85 @@
 //   // Add state for sidebar width
 //   const [sidebarWidth, setSidebarWidth] = useState("4rem");
 
-//   // Define the onWidthChange handler
-//   const handleWidthChange = (newWidth) => {
-//     setSidebarWidth(newWidth);
-//   };
+// //   // Define the onWidthChange handler
+// //   const handleWidthChange = (newWidth) => {
+// //     setSidebarWidth(newWidth);
+// //   };
 
-//   const filteredReports = reports.filter(
-//     (report) =>
-//       report.student.toLowerCase().includes(searchTerm.toLowerCase()) &&
-//       (majorFilter ? report.major === majorFilter : true) &&
-//       (statusFilter ? report.status === statusFilter : true)
-//   );
+// //   const filteredReports = reports.filter(
+// //     (report) =>
+// //       report.student.toLowerCase().includes(searchTerm.toLowerCase()) &&
+// //       (majorFilter ? report.major === majorFilter : true) &&
+// //       (statusFilter ? report.status === statusFilter : true)
+// //   );
 
-//   useEffect(() => {
-//     const newNotifications = [
-//       {
-//         id: 1,
-//         message: "New report submitted by Alice Johnson",
-//         time: "10 min ago",
-//       },
-//       { id: 2, message: "Report from Bob Smith flagged", time: "1 hour ago" },
-//     ];
-//     setNotifications(newNotifications);
-//   }, []);
+// //   useEffect(() => {
+// //     const newNotifications = [
+// //       {
+// //         id: 1,
+// //         message: "New report submitted by Alice Johnson",
+// //         time: "10 min ago",
+// //       },
+// //       { id: 2, message: "Report from Bob Smith flagged", time: "1 hour ago" },
+// //     ];
+// //     setNotifications(newNotifications);
+// //   }, []);
 
-//   const handleReportStatusChange = (id, status) => {
-//     setReports((prevReports) =>
-//       prevReports.map((report) =>
-//         report.id === id
-//           ? {
-//               ...report,
-//               status: status.charAt(0).toUpperCase() + status.slice(1),
-//             }
-//           : report
-//       )
-//     );
-//     const report = reports.find((r) => r.id === id);
-//     setNotifications([
-//       {
-//         id: Date.now(),
-//         message: `Report from ${report.student} marked as ${status}`,
-//         time: "Just now",
-//       },
-//       ...notifications,
-//     ]);
-//   };
+// //   const handleReportStatusChange = (id, status) => {
+// //     setReports((prevReports) =>
+// //       prevReports.map((report) =>
+// //         report.id === id
+// //           ? {
+// //               ...report,
+// //               status: status.charAt(0).toUpperCase() + status.slice(1),
+// //             }
+// //           : report
+// //       )
+// //     );
+// //     const report = reports.find((r) => r.id === id);
+// //     setNotifications([
+// //       {
+// //         id: Date.now(),
+// //         message: `Report from ${report.student} marked as ${status}`,
+// //         time: "Just now",
+// //       },
+// //       ...notifications,
+// //     ]);
+// //   };
 
-//   const submitClarification = (id) => {
-//     const report = reports.find((r) => r.id === id);
-//     setReports((prevReports) =>
-//       prevReports.map((r) =>
-//         r.id === id ? { ...r, comments: clarification } : r
-//       )
-//     );
-//     setNotifications([
-//       {
-//         id: Date.now(),
-//         message: `Clarification submitted for ${report.student}'s report`,
-//         time: "Just now",
-//       },
-//       ...notifications,
-//     ]);
-//     setClarification("");
-//     setShowModal(false);
-//   };
+// //   const submitClarification = (id) => {
+// //     const report = reports.find((r) => r.id === id);
+// //     setReports((prevReports) =>
+// //       prevReports.map((r) =>
+// //         r.id === id ? { ...r, comments: clarification } : r
+// //       )
+// //     );
+// //     setNotifications([
+// //       {
+// //         id: Date.now(),
+// //         message: `Clarification submitted for ${report.student}'s report`,
+// //         time: "Just now",
+// //       },
+// //       ...notifications,
+// //     ]);
+// //     setClarification("");
+// //     setShowModal(false);
+// //   };
 
-//   const openModal = (type, item) => {
-//     setSelectedItem(item);
-//     setModalType(type);
-//     setShowModal(true);
-//   };
+// //   const openModal = (type, item) => {
+// //     setSelectedItem(item);
+// //     setModalType(type);
+// //     setShowModal(true);
+// //   };
 
-//   const closeModal = () => {
-//     setShowModal(false);
-//     setSelectedItem(null);
-//     setClarification("");
-//   };
+// //   const closeModal = () => {
+// //     setShowModal(false);
+// //     setSelectedItem(null);
+// //     setClarification("");
+// //   };
 
-//   const renderModalContent = () => {
-//     if (!selectedItem) return null;
+// //   const renderModalContent = () => {
+// //     if (!selectedItem) return null;
 
 //     switch (modalType) {
 //       case "report":
@@ -1173,7 +1229,7 @@
 //         onWidthChange={handleWidthChange} // Add this prop
 //       />
 //       <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-//         <Header />
+//         <FacultyHeader />
 //         {showNotifications && (
 //           <div
 //             style={{
@@ -1268,13 +1324,13 @@
 //   );
 // }
 
-// const styles = `
-//   @keyframes fadeIn {
-//     from { opacity: 0; }
-//     to { opacity: 1; }
-//   }
-// `;
+// // const styles = `
+// //   @keyframes fadeIn {
+// //     from { opacity: 0; }
+// //     to { opacity: 1; }
+// //   }
+// // `;
 
-// const styleSheet = document.createElement("style");
-// styleSheet.textContent = styles;
-// document.head.appendChild(styleSheet);
+// // const styleSheet = document.createElement("style");
+// // styleSheet.textContent = styles;
+// // document.head.appendChild(styleSheet);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Briefcase, FileText, BarChart2, Search } from "lucide-react";
+import { Briefcase, FileText, BarChart2, Search, Play, Video, BookOpenCheck, Star } from "lucide-react";
 
 function SideBar({ setActivePage, isOpen, setSidebarWidth }) {
   const navigate = useNavigate();
@@ -13,6 +13,9 @@ function SideBar({ setActivePage, isOpen, setSidebarWidth }) {
     setSidebarWidth(width);
   }, [isSidebarHovered, isOpen, setSidebarWidth]);
 
+  const email = location.state?.email || "";
+
+  // Select navigation items based on specific email
   const navItems = [
     {
       title: "My Internships",
@@ -32,14 +35,54 @@ function SideBar({ setActivePage, isOpen, setSidebarWidth }) {
       icon: <BarChart2 size={20} />,
       path: "/student/evaluation",
     },
-    {
-      title: "Suggested Internships",
-      page: "suggested",
-      icon: <Search size={20} />,
-      path: "/student/suggested",
-    },
 
   ];
+
+  const navItemsPro = [
+    {
+      title: "My Internships",
+      page: "applied",
+      icon: <Briefcase size={20} />,
+      path: "/student/applied",
+    },
+    {
+      title: "Report",
+      page: "report",
+      icon: <FileText size={20} />,
+      path: "/student/report",
+    },
+    {
+      title: "Evaluation",
+      page: "evaluation",
+      icon: <BarChart2 size={20} />,
+      path: "/student/evaluation",
+    },
+
+    {
+      title: "Workshops",
+      page: "workshops",
+      icon: <Play size={20} />,
+      path: "/student/workshops",
+      isPro: true  // Mark as premium feature
+    },
+    {
+      title: "Video Call",
+      page: "call",
+      icon: <Video size={20} />,
+      path: "/student/call",
+      isPro: true  // Mark as premium feature
+    },
+    {
+      title: "Assessments",
+      page: "assessments",
+      icon: <BookOpenCheck size={20} />,
+      path: "/student/assessments",
+      isPro: true  // Mark as premium feature
+    },
+  ];
+
+  // Determine which navItems to use based on email
+  const selectedNavItems = email === "malak@student.guc.edu.eg" ? navItemsPro : navItems;
 
   const getButtonStyle = (itemPath) => {
     const isActive = location.pathname === itemPath;
@@ -59,12 +102,14 @@ function SideBar({ setActivePage, isOpen, setSidebarWidth }) {
       transition: "background 0.2s, color 0.2s",
       border: "none",
       justifyContent: isSidebarHovered ? "flex-start" : "center",
+      position: "relative" // Added for star positioning
+
     };
   };
 
   const handleNavigation = (page, path) => {
     setActivePage(page);
-    navigate(path);
+    navigate(path, { state: { email } }); // Preserve email in state
   };
 
   return (
@@ -91,7 +136,7 @@ function SideBar({ setActivePage, isOpen, setSidebarWidth }) {
       }}
     >
       <ul style={{ listStyle: "none", padding: "0.5rem", margin: 0 }}>
-        {navItems.map((item, index) => (
+        {selectedNavItems.map((item, index) => (
           <li key={index} style={{ margin: "0.25rem 0" }}>
             <button
               style={getButtonStyle(item.path)}
@@ -108,10 +153,30 @@ function SideBar({ setActivePage, isOpen, setSidebarWidth }) {
                     : "#999",
               })}
               {isSidebarHovered && (
-                <span style={{ whiteSpace: "nowrap", overflow: "hidden" }}>
-                  {item.title}
-                </span>
+           <>
+                  <span style={{ 
+                    whiteSpace: "nowrap", 
+                    overflow: "hidden",
+                    flex: 1,
+                    textAlign: "left"
+                  }}>
+                    {item.title}
+                  </span>
+                  {item.isPro && (
+                    <Star 
+                      size={16} 
+                      color="#FFD700" 
+                      fill="#FFD700" 
+                      style={{ 
+                        marginLeft: "auto",
+                        flexShrink: 0
+                      }} 
+                    />
+                  )}
+                </>
+
               )}
+
             </button>
           </li>
         ))}

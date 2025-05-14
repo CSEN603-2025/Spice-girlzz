@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   User,
   BarChart2,
@@ -11,13 +11,9 @@ import {
 
 function ScadSideBar({ setActivePage, activePage, onWidthChange }) {
   const [isSidebarHovered, setIsSidebarHovered] = useState(false);
+  const [hoveredButton, setHoveredButton] = useState(null);
 
   const navItems = [
-    {
-      title: "Cycle",
-      page: "cycle",
-      icon: <User size={20} />,
-    },
     {
       title: "Statistics",
       page: "statistics",
@@ -45,14 +41,23 @@ function ScadSideBar({ setActivePage, activePage, onWidthChange }) {
     },
   ];
 
+  useEffect(() => {
+    const width = isSidebarHovered ? "16rem" : "4rem";
+    onWidthChange(width);
+  }, [isSidebarHovered, onWidthChange]);
+
   const getButtonStyle = (itemPage) => {
     const isActive = activePage === itemPage;
     return {
       width: "100%",
       padding: "0.75rem",
       textAlign: "left",
-      color: "#000",
-      background: isActive ? "#4d8f88" : "transparent",
+      color: isActive || hoveredButton === itemPage ? "#fff" : "#000",
+      background: isActive
+        ? "#2a9d8f"
+        : hoveredButton === itemPage
+        ? "#2a9d8f"
+        : "transparent",
       borderRadius: "0.375rem",
       fontSize: "0.875rem",
       fontWeight: "500",
@@ -73,60 +78,42 @@ function ScadSideBar({ setActivePage, activePage, onWidthChange }) {
     }
   };
 
-  // Notify parent of width change when hover state changes
-  const currentWidth = isSidebarHovered ? "16rem" : "4rem";
-  React.useEffect(() => {
-    onWidthChange(currentWidth);
-  }, [isSidebarHovered, onWidthChange]);
-
   return (
     <div
       onMouseEnter={() => setIsSidebarHovered(true)}
-      onMouseLeave={() => setIsSidebarHovered(false)}
+      onMouseLeave={() => {
+        setIsSidebarHovered(false);
+        setHoveredButton(null);
+      }}
       style={{
-        flex: "0 0 auto", // Ensure it doesn't grow or shrink beyond its width
+        flex: "0 0 auto",
         background: "linear-gradient(#fff 100%)",
         display: "flex",
         flexDirection: "column",
-        width: currentWidth,
-        height: "100vh",
+        width: isSidebarHovered ? "16rem" : "4rem",
+        height: "100%", // Adjust height to account for header
         transition: "width 0.3s ease-in-out",
         boxShadow: isSidebarHovered ? "2px 0 4px rgba(0, 0, 0, 0.1)" : "none",
         overflowX: "hidden",
+        position: "relative", // Changed from fixed to relative
       }}
     >
-      <div
-        style={{
-          padding: "1rem",
-          borderBottom: "1px solid #e5e7eb",
-        }}
-      ></div>
-      <ul
-        style={{
-          listStyle: "none",
-          padding: "0.5rem",
-          position: "relative",
-          top: "20px",
-        }}
-      >
+      <ul style={{ listStyle: "none", padding: "0.5rem", margin: 0 }}>
         {navItems.map((item, index) => (
           <li key={index} style={{ margin: "0.25rem 0" }}>
             <button
               style={getButtonStyle(item.page)}
               onClick={() => handleNavigation(item.page)}
-              onMouseOver={(e) => {
-                if (activePage !== item.page) {
-                  e.currentTarget.style.background = "#4d8f88";
-                }
-              }}
-              onMouseOut={(e) => {
-                if (activePage !== item.page) {
-                  e.currentTarget.style.background = "transparent";
-                }
-              }}
+              onMouseOver={() => setHoveredButton(item.page)}
+              onMouseOut={() => setHoveredButton(null)}
             >
               {React.cloneElement(item.icon, {
-                color: activePage === item.page ? "#bcb8b1" : "#999",
+                color:
+                  activePage === item.page
+                    ? "#bcb8b1"
+                    : hoveredButton === item.page
+                    ? "#fff"
+                    : "#999",
               })}
               {isSidebarHovered && (
                 <span style={{ whiteSpace: "nowrap", overflow: "hidden" }}>

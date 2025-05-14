@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import SideBar from './Components/SideBar';
 import Header from './Components/Header';
+import SideBar from './Components/SideBar';
+import './StudentHomePage.css'; 
 import { Mail, Upload, Paperclip, User, Phone, PhoneIncoming, Home, LogOut, Edit, MapPin, Globe, MessageSquare, Briefcase, Activity, BookOpen, Clipboard, Menu } from 'lucide-react';
 
 function ProfileStudent() {
@@ -12,8 +13,18 @@ function ProfileStudent() {
   const formRef = useRef(null);
   const [clickedButtons, setClickedButtons] = useState({});
   const [sidebarWidth, setSidebarWidth] = useState('4rem');
-  const [documents, setDocuments] = useState([]);
+  const [documents, setDocuments] = useState({
+    certificates: [],
+    cv: [],
+    coverLetter: [],
+    other: []
+  });
   const [selectedDocument, setSelectedDocument] = useState(null);
+  const [activeDocCategory, setActiveDocCategory] = useState('certificates')
+
+  
+const storedProfile = JSON.parse(sessionStorage.getItem("studentProfile") || "{}");
+const email = (location.state?.email || storedProfile.email || "").toLowerCase();
 
   const initialProfileData = {
     name: '...',
@@ -37,7 +48,7 @@ function ProfileStudent() {
   // Import Roboto font
   useEffect(() => {
     const link = document.createElement('link');
-    link.href = 'https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap';
+    link.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap';
     link.rel = 'stylesheet';
     document.head.appendChild(link);
     return () => document.head.removeChild(link);
@@ -164,28 +175,35 @@ function ProfileStudent() {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  const handleDocumentUpload = (e) => {
+  const handleDocumentUpload = (e, category) => {
     const files = Array.from(e.target.files);
     files.forEach((file) => {
       const reader = new FileReader();
       reader.onload = () => {
-        setDocuments((prev) => [
+        setDocuments(prev => ({
           ...prev,
-          {
-            id: Date.now() + Math.random(),
-            name: file.name,
-            type: file.type,
-            size: file.size,
-            data: reader.result,
-          },
-        ]);
+          [category]: [
+            ...prev[category],
+            {
+              id: Date.now() + Math.random(),
+              name: file.name,
+              type: file.type,
+              size: file.size,
+              data: reader.result,
+            }
+          ]
+        }));
       };
       reader.readAsDataURL(file);
     });
   };
 
-  const handleDeleteDocument = (id) => {
-    setDocuments((prev) => prev.filter((doc) => doc.id !== id));
+
+  const handleDeleteDocument = (id, category) => {
+    setDocuments(prev => ({
+      ...prev,
+      [category]: prev[category].filter(doc => doc.id !== id)
+    }));
   };
 
   return (
@@ -196,6 +214,9 @@ function ProfileStudent() {
         {/* Sidebar */}
         <div style={styles.sidebar}>
           <SideBar
+            setActivePage={(page) =>
+            navigate(`/student${page === "home" ? "" : "/" + page}`, { state: { email } })
+          }  
             isOpen={isSidebarOpen}
             setSidebarWidth={setSidebarWidth}
           />
@@ -214,7 +235,7 @@ function ProfileStudent() {
           <div style={styles.profileHeader}>
             <h1 style={styles.mainTitle}>Student Profile</h1>
             <button
-              style={styles.editBtn}
+              className='actionButton'
               onClick={(e) => {
                 handleButtonClick('editProfile');
                 setShowEditModal(true);
@@ -228,12 +249,15 @@ function ProfileStudent() {
             <div style={styles.profileBox}>
               <div style={styles.profileSection}>
                 <SectionHeader title="Personal Information" icon={<User size={18} style={styles.iconStyle} />} />
-                <div style={styles.infoGrid}>
-                  <ProfileItem label="Name" value={profileData.name} />
-                  <ProfileItem label="Phone Number" value={profileData.phone} />
-                  <ProfileItem label="Email" value={profileData.email} />
-                  <ProfileItem label="Major" value={profileData.major} />
-                  <ProfileItem label="Semester" value={profileData.semester} />
+               <div style={styles.detailsGrid}>
+    <div style={styles.detailColumn}>
+      <ProfileItem label="Name" value={profileData.name} />
+      <ProfileItem label="Email" value={profileData.email} />
+            <ProfileItem label="Phone Number" value={profileData.phone} />
+
+    </div>
+   
+  
                 </div>
               </div>
 
@@ -247,6 +271,8 @@ function ProfileStudent() {
                   </div>
                   <div style={styles.detailColumn}>
                     <ProfileItem label="Language" value={profileData.language} />
+                     <ProfileItem label="Major" value={profileData.major} />
+            <ProfileItem label="Semester" value={profileData.semester} />
                   </div>
                 </div>
               </div>
@@ -402,6 +428,7 @@ function ProfileStudent() {
                     <button
                       type="submit"
                       style={styles.saveBtn}
+                    className=''
                       onClick={(e) => handleButtonClick('saveChanges')}
                     >
                       Save Changes
@@ -422,143 +449,204 @@ function ProfileStudent() {
             </div>
           )}
 
-          <div style={styles.doc}>
-            <SectionHeader title="Documents" icon={<Paperclip size={18} style={styles.iconStyle} />} />
-            {/* Upload Button */}
-            <div style={{ marginBottom: '1rem' }}>
-              <label
-                htmlFor="document-upload"
+
+        <div style={styles.doc}>
+  <SectionHeader title="Documents" icon={<Paperclip size={18} style={styles.iconStyle} />} />
+  
+  {/* Document Tabs */}
+  <div style={styles.tabContainer}>
+    <button
+      style={{
+        ...styles.tabButton,
+        ...(activeDocCategory === 'certificates' && styles.activeTab)
+      }}
+      onClick={() => setActiveDocCategory('certificates')}
+    >
+      Certificates
+    </button>
+    <button
+      style={{
+        ...styles.tabButton,
+        ...(activeDocCategory === 'cv' && styles.activeTab)
+      }}
+      onClick={() => setActiveDocCategory('cv')}
+    >
+      CV
+    </button>
+    <button
+      style={{
+        ...styles.tabButton,
+        ...(activeDocCategory === 'coverLetter' && styles.activeTab)
+      }}
+      onClick={() => setActiveDocCategory('coverLetter')}
+    >
+      Cover Letter
+    </button>
+    <button
+      style={{
+        ...styles.tabButton,
+        ...(activeDocCategory === 'other' && styles.activeTab)
+      }}
+      onClick={() => setActiveDocCategory('other')}
+    >
+      Other
+    </button>
+  </div>
+
+  {/* Tab Content */}
+  <div style={styles.tabContent}>
+    {/* Upload Button for current category */}
+    <div style={{ marginBottom: '1rem' }}>
+      <label
+        htmlFor={`document-upload-${activeDocCategory}`}
+        style={{
+          padding: '0.5rem 1rem',
+          background: '#2a9d8f',
+          color: '#fff',
+          borderRadius: '0.25rem',
+          display: 'flex',
+          alignItems: 'center',
+          cursor: 'pointer',
+          fontSize: '0.875rem',
+        }}
+        onMouseOver={(e) => (e.target.style.background = '#30b3a3')}
+        onMouseOut={(e) => (e.target.style.background = '#2a9d8f')}
+      >
+        <Upload size={16} style={{ marginRight: '0.5rem' }} /> 
+        Upload {activeDocCategory === 'cv' ? 'CV' : 
+               activeDocCategory === 'coverLetter' ? 'Cover Letter' : 
+               activeDocCategory === 'certificates' ? 'Certificates' : 'Other Documents'}
+      </label>
+      <input
+        id={`document-upload-${activeDocCategory}`}
+        type="file"
+        multiple
+        accept=".pdf,.doc,.docx,.jpg,.png"
+        style={{ display: 'none' }}
+        onChange={(e) => handleDocumentUpload(e, activeDocCategory)}
+      />
+    </div>
+
+    {/* Documents List for current category */}
+    {documents[activeDocCategory].length > 0 ? (
+      <div style={{ background: '#fff', padding: '1.5rem', borderRadius: '0.375rem', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(15rem, 1fr))', gap: '1.5rem' }}>
+          {documents[activeDocCategory].map((doc) => (
+            <div
+              key={doc.id}
+              style={{
+                background: '#fff',
+                padding: '1rem',
+                borderRadius: '0.375rem',
+                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                transition: 'box-shadow 0.3s, background-color 0.3s',
+              }}
+            >
+              <span
                 style={{
-                  padding: '0.5rem 1rem',
-                  background: '#2a9d8f',
-                  color: '#fff',
-                  borderRadius: '0.25rem',
-                  display: 'flex',
-                  alignItems: 'center',
                   cursor: 'pointer',
-                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  color: '#2a9d8f',
+                  textDecoration: 'underline',
+                  flex: 1,
+                  padding: '0.5rem'
                 }}
-                onMouseOver={(e) => (e.target.style.background = '#30b3a3')}
-                onMouseOut={(e) => (e.target.style.background = '#2a9d8f')}
+                onClick={() => setSelectedDocument(doc)}
               >
-                <Upload size={16} style={{ marginRight: '0.5rem' }} /> Upload Documents
-              </label>
-              <input
-                id="document-upload"
-                type="file"
-                multiple
-                accept=".pdf,.doc,.docx,.jpg,.png"
-                style={{ display: 'none' }}
-                onChange={handleDocumentUpload}
-              />
+                {doc.name}
+              </span>
+              <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.75rem' }}>
+                <button
+                  style={{
+                    padding: '0.5rem 1rem',
+                    background: '#ef4444',
+                    color: '#fff',
+                    borderRadius: '0.25rem',
+                    cursor: 'pointer',
+                    fontSize: '0.875rem',
+                  }}
+                  onClick={() => handleDeleteDocument(doc.id, activeDocCategory)}
+                  onMouseOver={(e) => (e.target.style.background = '#dc2626')}
+                  onMouseOut={(e) => (e.target.style.background = '#ef4444')}
+                >
+                  Delete
+                </button>
+              </div>
             </div>
-
-            {/* Documents List */}
-            {documents.length > 0 && (
-              <div style={{ background: '#fff', padding: '1.5rem', borderRadius: '0.375rem', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(15rem, 1fr))', gap: '1.5rem' }}>
-                  {documents.map((doc) => (
-                    <div
-                      key={doc.id}
-                      style={{
-                        background: '#fff',
-                        padding: '1rem',
-                        borderRadius: '0.375rem',
-                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-                        transition: 'box-shadow 0.3s, background-color 0.3s',
-                      }}
-                    >
-                      <span
-                        style={{
-                          cursor: 'pointer',
-                          fontWeight: '500',
-                          color: '#2a9d8f',
-                          textDecoration: 'underline',
-                          flex: 1,
-                          padding: '0.5rem'
-                        }}
-                        onClick={() => setSelectedDocument(doc)}
-                      >
-                        {doc.name}
-                      </span>
-                      <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.75rem' }}>
-                        <button
-                          style={{
-                            padding: '0.5rem 1rem',
-                            background: '#ef4444',
-                            color: '#fff',
-                            borderRadius: '0.25rem',
-                            cursor: 'pointer',
-                            fontSize: '0.875rem',
-                          }}
-                          onClick={() => handleDeleteDocument(doc.id)}
-                          onMouseOver={(e) => (e.target.style.background = '#dc2626')}
-                          onMouseOut={(e) => (e.target.style.background = '#ef4444')}
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Document Preview Modal */}
-            {selectedDocument && (
-              <div style={{
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                backgroundColor: 'rgba(0,0,0,0.5)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                zIndex: 1003,
-              }}>
-                <div style={{
-                  backgroundColor: 'white',
-                  padding: '2rem',
-                  borderRadius: '0.5rem',
-                  maxWidth: '80%',
-                  maxHeight: '80%',
-                  overflow: 'auto'
-                }}>
-                  <h3 style={{ fontSize: "0.4rem" }}>{selectedDocument.name}</h3>
-                  {selectedDocument.type.includes('image') ? (
-                    <img
-                      src={selectedDocument.data}
-                      alt={selectedDocument.name}
-                      style={{ maxWidth: '100%', maxHeight: '400px' }}
-                    />
-                  ) : (
-                    <iframe
-                      src={selectedDocument.data}
-                      title={selectedDocument.name}
-                      style={{ width: '100%', height: '500px', border: 'none' }}
-                    />
-                  )}
-                  <button
-                    style={{
-                      marginTop: '1rem',
-                      padding: '0.5rem 1rem',
-                      backgroundColor: '#3b82f6',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '0.25rem',
-                      cursor: 'pointer'
-                    }}
-                    onClick={() => setSelectedDocument(null)}
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
+          ))}
         </div>
+      </div>
+    ) : (
+      <div style={{ 
+        background: '#fff', 
+        padding: '1.5rem', 
+        borderRadius: '0.375rem', 
+        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', 
+        textAlign: 'center',
+        color: '#6b7280'
+      }}>
+        No {activeDocCategory === 'cv' ? 'CV' : 
+            activeDocCategory === 'coverLetter' ? 'Cover Letter' : 
+            activeDocCategory === 'certificates' ? 'certificates' : 'other documents'} uploaded yet
+      </div>
+    )}
+  </div>
+
+  {/* Document Preview Modal */}
+  {selectedDocument && (
+    <div style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0,0,0,0.5)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 1003,
+    }}>
+      <div style={{
+        backgroundColor: 'white',
+        padding: '2rem',
+        borderRadius: '0.5rem',
+        maxWidth: '80%',
+        maxHeight: '80%',
+        overflow: 'auto'
+      }}>
+        <h3>{selectedDocument.name}</h3>
+        {selectedDocument.type.includes('image') ? (
+          <img
+            src={selectedDocument.data}
+            alt={selectedDocument.name}
+            style={{ maxWidth: '100%', maxHeight: '400px' }}
+          />
+        ) : (
+          <iframe
+            src={selectedDocument.data}
+            title={selectedDocument.name}
+            style={{ width: '100%', height: '500px', border: 'none' }}
+          />
+        )}
+        <button
+          style={{
+            marginTop: '1rem',
+            padding: '0.5rem 1rem',
+            backgroundColor: '#3b82f6',
+            color: 'white',
+            border: 'none',
+            borderRadius: '0.25rem',
+            cursor: 'pointer'
+          }}
+          onClick={() => setSelectedDocument(null)}
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  )}
+</div>
+        
       </div>
 
       {/* Overlay for mobile */}
@@ -576,6 +664,8 @@ function ProfileStudent() {
         />
       )}
     </div>
+    
+    </div>
   );
 }
 
@@ -583,13 +673,15 @@ const ProfileItem = ({ label, value, icon }) => {
   const getIcon = () => {
     const iconMap = {
       'Name': <User size={16} style={styles.iconStyle} />,
-      'Phone': <Phone size={16} style={styles.iconStyle} />,
+      'Phone Number': <Phone size={16} style={styles.iconStyle} />, // Updated label to match JSX
       'Email': <Mail size={16} style={styles.iconStyle} />,
       'Gender': <User size={16} style={styles.iconStyle} />,
       'Address': <MapPin size={16} style={styles.iconStyle} />,
       'Nationality': <Globe size={16} style={styles.iconStyle} />,
       'Language': <MessageSquare size={16} style={styles.iconStyle} />,
-      'Activities': <Activity size={16} style={styles.iconStyle} />
+      'Activities': <Activity size={16} style={styles.iconStyle} />,
+      'Semester': <BookOpen size={16} style={styles.iconStyle} />, // Added for Semester
+      'Major': <Briefcase size={16} style={styles.iconStyle} />,
     };
     return iconMap[label] || null;
   };
@@ -638,7 +730,7 @@ const SectionHeader = ({ title, icon }) => (
 
 const styles = {
   container: {
-    fontFamily: 'Segoe UI, sans-serif',
+    fontFamily: 'Inter, sans-serif',
     backgroundColor: '#f3f4f6',
     minHeight: '100vh',
     display: 'flex',
@@ -721,17 +813,7 @@ const styles = {
     color: '#1f2937',
     margin: 0,
   },
-  editBtn: {
-    backgroundColor: '#2a9d8f',
-    color: '#fff',
-    padding: '0.5rem 1rem',
-    border: 'none',
-    borderRadius: '0.375rem',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    fontSize: '0.875rem',
-  },
+
   profileBox: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
@@ -745,8 +827,8 @@ const styles = {
     boxShadow: '0 4px 6px rgba(0, 0, 0, 0.08)',
     padding: '1.5rem',
     width: '100%',
-    height: 'fit-content',
-    display: 'flex',
+ minHeight: '300px',
+     display: 'flex',
     flexDirection: 'column',
     boxSizing: 'border-box',
     transition: 'transform 0.2s, box-shadow 0.2s',
@@ -763,7 +845,7 @@ const styles = {
     boxShadow: '0 4px 6px rgba(0, 0, 0, 0.08)',
     padding: '1.5rem',
     width: '100%',
-    height: 'fit-content',
+  minHeight: '300px', 
     display: 'flex',
     flexDirection: 'column',
     boxSizing: 'border-box',
@@ -791,10 +873,10 @@ const styles = {
     margin: '1rem 0 0.5rem',
   },
   infoGrid: {
-    display: 'grid',
-    gridTemplateColumns: '1fr',
-    gap: '1rem',
-    marginBottom: '1rem',
+   display: 'grid',
+  gridTemplateColumns: '1fr 1fr',
+  gap: '1rem',
+ 
   },
   detailsGrid: {
     display: 'grid',
@@ -837,18 +919,18 @@ const styles = {
     margin: 0,
   },
   profileItem: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.25rem',
-    fontSize: '0.875rem',
-    marginBottom: '1rem',
-    paddingBottom: '0.75rem',
-    borderBottom: '1px dashed #e5e7eb',
-    ':last-child': {
-      borderBottom: 'none',
-      marginBottom: 0,
-      paddingBottom: 0
-    }
+   display: 'flex',
+  flexDirection: 'column',
+  gap: '0.25rem',
+  fontSize: '0.875rem',
+  marginBottom: '0.5rem', // Reduced from 1rem
+  paddingBottom: '0.5rem', // Reduced from 0.75rem
+  borderBottom: '1px dashed #e5e7eb',
+  ':last-child': {
+    borderBottom: 'none',
+    marginBottom: 0,
+    paddingBottom: 0,
+  },
   },
   iconStyle: {
     color: '#2a9d8f',
@@ -937,22 +1019,27 @@ const styles = {
     marginTop: '1.5rem',
   },
   saveBtn: {
-    backgroundColor: '#4e4f50',
+ backgroundColor: '#2a9d8f',
     color: '#fff',
     padding: '0.75rem 1.5rem',
     border: 'none',
-    borderRadius: '0.375rem',
+    borderRadius: '0.5rem',
     cursor: 'pointer',
     fontSize: '0.875rem',
+    transition: 'background-color 0.2s ease',
   },
   cancelBtn: {
-    backgroundColor: '#ef4444',
+   backgroundColor: '#ef4444',
     color: '#fff',
     padding: '0.75rem 1.5rem',
     border: 'none',
-    borderRadius: '0.375rem',
+    borderRadius: '0.5rem',
     cursor: 'pointer',
     fontSize: '0.875rem',
+    transition: 'background-color 0.2s ease',
+    ':hover': {
+      backgroundColor: '#dc2626',
+    },
   },
   emptyProfileMessage: {
     textAlign: 'center',
@@ -962,6 +1049,29 @@ const styles = {
     boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
     color: '#4b5563',
     fontSize: '1rem',
+  },
+  tabContainer: {
+    display: 'flex',
+    borderBottom: '1px solid #e5e7eb',
+    marginBottom: '1rem',
+  },
+  tabButton: {
+    padding: '0.75rem 1.5rem',
+    background: 'transparent',
+    border: 'none',
+    borderBottom: '2px solid transparent',
+    cursor: 'pointer',
+    fontSize: '0.875rem',
+    fontWeight: '500',
+    color: '#6b7280',
+    transition: 'all 0.2s ease',
+  },
+  activeTab: {
+    color: '#2a9d8f',
+    borderBottom: '2px solid #2a9d8f',
+  },
+  tabContent: {
+    padding: '1rem 0',
   },
 };
 
