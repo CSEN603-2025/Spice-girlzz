@@ -67,6 +67,7 @@ function SideBarCompany({ onHoverChange }) {
       onMouseEnter={() => handleHoverChange(true)}
       onMouseLeave={() => handleHoverChange(false)}
       style={{
+        marginTop: 0.2,
         flex: 1,
         background: "linear-gradient(#fff 100%)",
         display: "flex",

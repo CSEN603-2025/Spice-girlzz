@@ -12,6 +12,7 @@ const NotificationSystem = () => {
   const storedProfile = JSON.parse(sessionStorage.getItem("studentProfile") || "{}");
   const email = (location.state?.email || storedProfile.email || "").toLowerCase();
   const isStudent = email.endsWith('@student.guc.edu.eg');
+  const isCompany = email.endsWith('@acceptedcorp.com');
 
   const callNotifications = [
     { 
@@ -67,6 +68,27 @@ const NotificationSystem = () => {
     },
   ];
 
+  const companyNotifications = [
+    { 
+      id: 9, 
+      message: 'New Application', 
+      details: 'You have a new applicant for Data Science Internship.',
+      type: 'alert'
+    },
+    { 
+      id: 10, 
+      message: 'New Application', 
+      details: 'You have a new applicant for Data Science Internship.',
+      type: 'alert'
+    },
+    { 
+      id: 11, 
+      message: 'New Application', 
+      details: 'You have a new applicant for Software Engineering Internship.',
+      type: 'alert'
+    },
+  ];
+
   // Get appropriate icon based on notification type
   const getIcon = (type) => {
     switch(type) {
@@ -98,7 +120,7 @@ const NotificationSystem = () => {
     return () => clearInterval(interval);
   }, [isStudent]);
 
-  // Interval for other notifications
+  // Interval for other student notifications
   useEffect(() => {
     if (!isStudent) return; // Skip if not a student
 
@@ -121,6 +143,29 @@ const NotificationSystem = () => {
     return () => clearInterval(interval);
   }, [isStudent]);
 
+  // Interval for company notifications
+  useEffect(() => {
+    if (!isCompany) return; // Skip if not company
+
+    const interval = setInterval(() => {
+      const randomIndex = Math.floor(Math.random() * companyNotifications.length);
+      const newNotification = { 
+        ...companyNotifications[randomIndex], 
+        id: Date.now() + Math.random(), // Unique ID
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+
+      setNotifications(prev => [...prev, newNotification]);
+
+      // Auto-dismiss non-call notifications after 5 seconds
+      setTimeout(() => {
+        setNotifications(prev => prev.filter(notif => notif.id !== newNotification.id));
+      }, 5000);
+    }, 15000); // Every 15 seconds
+
+    return () => clearInterval(interval);
+  }, [isCompany]);
+
   const handleDismiss = (id) => {
     setNotifications(prev => prev.filter(notif => notif.id !== id));
   };
@@ -134,8 +179,14 @@ const NotificationSystem = () => {
     handleDismiss(id);
   };
 
-  // Only render notifications for student users
-  if (!isStudent) return null;
+  // Handle company notification applications button click
+  const handleApplicationsClick = (id) => {
+    navigate('/company/applicants', { state: { email } });
+    handleDismiss(id);
+  };
+
+  // Render notifications for both student and company users
+  if (!isStudent && !isCompany) return null;
 
   return (
     <div className="notification-container">
@@ -153,7 +204,7 @@ const NotificationSystem = () => {
               <span className="notification-time">{notif.time}</span>
             </div>
             <p className="notification-details">{notif.details}</p>
-            {notif.type === 'call' && (
+            {notif.type === 'call' && isStudent && (
               <div className="call-actions">
                 <button
                   className="call-action accept"
@@ -171,10 +222,24 @@ const NotificationSystem = () => {
                 </button>
               </div>
             )}
+            {isCompany && (
+              <div className="call-actions">
+                <button
+                  className="call-action applications"
+                  onClick={() => handleApplicationsClick(notif.id)}
+                >
+                  <CheckCircle size={14} />
+                  Applications
+                </button>
+              </div>
+            )}
           </div>
           <button 
             className="notification-close"
-            onClick={() => handleDismiss(notif.id)}
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent triggering the notification click
+              handleDismiss(notif.id);
+            }}
             aria-label="Dismiss notification"
           >
             <X size={16} />

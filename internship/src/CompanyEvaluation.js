@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import SideBarCompany from './Components/SideBarCompany';
 import { Mail, Home, LogOut, User, Menu } from 'lucide-react';
 import './CompanyStyles.css';
+import CompanyHeader from './CompanyHeader';
 
 const EvaluationManager = () => {
   const navigate = useNavigate();
@@ -11,16 +12,21 @@ const EvaluationManager = () => {
   const [formData, setFormData] = useState({
     id: null,
     studentId: '',
+    companyName: '',
+    supervisor: '',
+    startDate: '',
+    endDate: '',
     rating: 5,
     strengths: '',
     areasForImprovement: '',
     recommendation: 'yes',
-    comments: ''
+    comments: '',
+    internshipTitle: '',
+    yearOfStudy: ''
   });
   const [isEditing, setIsEditing] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarHovered, setIsSidebarHovered] = useState(false);
-  const [clickedButtons, setClickedButtons] = useState({});
   const [mails, setMails] = useState([
     {
       id: 3,
@@ -53,8 +59,8 @@ const EvaluationManager = () => {
 
   useEffect(() => {
     const fetchedStudents = [
-      { id: 1, name: 'John Ramzy', program: 'Computer Science', internship: 'Software Developer' },
-      { id: 2, name: 'Menna Ibrahim', program: 'Data Science', internship: 'Data Analyst' }
+      { id: 1, name: 'John Ramzy', program: 'Computer Science', internship: 'Software Developer', yearOfStudy: '3rd Year' },
+      { id: 2, name: 'Menna Ibrahim', program: 'Data Science', internship: 'Data Analyst', yearOfStudy: '4th Year' }
     ];
     setStudents(fetchedStudents);
 
@@ -63,12 +69,18 @@ const EvaluationManager = () => {
         id: 1,
         studentId: 1,
         studentName: 'John Ramzy',
+        companyName: 'TechCorp',
+        supervisor: 'Jane Doe',
+        startDate: '2023-04-01',
+        endDate: '2023-06-30',
         rating: 4,
         strengths: 'Excellent problem-solving skills, quick learner',
         areasForImprovement: 'Could improve documentation skills',
         recommendation: 'yes',
         comments: 'Would happily hire again',
-        date: '2023-05-15'
+        date: '2023-05-15',
+        internshipTitle: 'Software Developer',
+        yearOfStudy: '3rd Year'
       }
     ];
     setEvaluations(fetchedEvaluations);
@@ -84,18 +96,23 @@ const EvaluationManager = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const selectedStudent = students.find(s => s.id == formData.studentId);
     if (isEditing) {
-      setEvaluations(evaluations.map(evaluation => 
-        evaluation.id === formData.id ? { 
-          ...formData, 
-          studentName: students.find(s => s.id == formData.studentId)?.name || 'Unknown'
+      setEvaluations(evaluations.map(evaluation =>
+        evaluation.id === formData.id ? {
+          ...formData,
+          studentName: selectedStudent?.name || 'Unknown',
+          internshipTitle: selectedStudent?.internship || '',
+          yearOfStudy: selectedStudent?.yearOfStudy || ''
         } : evaluation
       ));
     } else {
       const newEvaluation = {
         ...formData,
         id: evaluations.length + 1,
-        studentName: students.find(s => s.id == formData.studentId)?.name || 'Unknown',
+        studentName: selectedStudent?.name || 'Unknown',
+        internshipTitle: selectedStudent?.internship || '',
+        yearOfStudy: selectedStudent?.yearOfStudy || '',
         date: new Date().toISOString().split('T')[0]
       };
       setEvaluations([...evaluations, newEvaluation]);
@@ -116,95 +133,42 @@ const EvaluationManager = () => {
     setFormData({
       id: null,
       studentId: '',
+      companyName: '',
+      supervisor: '',
+      startDate: '',
+      endDate: '',
       rating: 5,
       strengths: '',
       areasForImprovement: '',
       recommendation: 'yes',
-      comments: ''
+      comments: '',
+      internshipTitle: '',
+      yearOfStudy: ''
     });
     setIsEditing(false);
-  };
-
-  const handleButtonClick = (buttonId) => {
-    setClickedButtons(prev => ({
-      ...prev,
-      [buttonId]: true
-    }));
   };
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  const unreadApplicationCount = mails.filter(mail => 
+  const unreadApplicationCount = mails.filter(mail =>
     mail.type === 'application' && !mail.read
   ).length;
 
   return (
     <div className="container">
-      <header className="header">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: '1 0 auto', maxWidth: '50%' }}>
-          <button className="header-btn" title="Toggle Sidebar" onClick={toggleSidebar}>
-            <Menu size={20} />
-          </button>
-          <h2 className="header-title">Student Evaluations</h2>
-        </div>
-        <div className="header-buttons">
-          <button
-            className={`header-btn ${clickedButtons['headerMail'] ? 'clicked' : ''}`}
-            title="Messages"
-            onClick={() => {
-              handleButtonClick('headerMail');
-              navigate('/company/mail');
-            }}
-          >
-            <Mail size={20} />
-            {unreadApplicationCount > 0 && (
-              <span className="notification-badge">{unreadApplicationCount}</span>
-            )}
-          </button>
-          <button
-            className={`header-btn ${clickedButtons['headerProfile'] ? 'clicked' : ''}`}
-            title="Profile"
-            onClick={() => {
-              handleButtonClick('headerProfile');
-              navigate('/company/profile');
-            }}
-          >
-            <User size={20} />
-          </button>
-          <button
-            className={`header-btn ${clickedButtons['headerHome'] ? 'clicked' : ''}`}
-            title="Home"
-            onClick={() => {
-              handleButtonClick('headerHome');
-              navigate('/company');
-            }}
-          >
-            <Home size={20} />
-          </button>
-          <button
-            className={`header-btn ${clickedButtons['headerLogout'] ? 'clicked' : ''}`}
-            title="Logout"
-            onClick={() => {
-              handleButtonClick('headerLogout');
-              navigate('/');
-            }}
-          >
-            <LogOut size={20} />
-          </button>
-        </div>
-      </header>
+      <CompanyHeader  />
 
       <div className="layout">
         <SideBarCompany onHoverChange={setIsSidebarHovered} />
         <div className={`content ${isSidebarHovered && window.innerWidth > 768 ? 'sidebar-expanded' : ''}`}>
           <div className="card">
             <h3 className="section-title">{isEditing ? 'Update Evaluation' : 'Create New Evaluation'}</h3>
-            <form onSubmit={handleSubmit} className="form">
+            <form onSubmit={handleSubmit} className="form"  >
               <div className="form-group">
                 <label className="form-label">Student</label>
-                <select
+                <select 
                   name="studentId"
                   value={formData.studentId}
                   onChange={handleInputChange}
@@ -214,10 +178,54 @@ const EvaluationManager = () => {
                   <option value="">Select a student</option>
                   {students.map(student => (
                     <option key={student.id} value={student.id}>
-                      {student.name} - {student.internship}
+                      {student.name} - {student.internship} ({student.yearOfStudy} {student.program})
                     </option>
                   ))}
                 </select>
+              </div>
+              <div className="form-group">
+                <label className="form-label">Company Name</label>
+                <input
+                  type="text"
+                  name="companyName"
+                  value={formData.companyName}
+                  onChange={handleInputChange}
+                  className="form-input"
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Main Supervisor</label>
+                <input
+                  type="text"
+                  name="supervisor"
+                  value={formData.supervisor}
+                  onChange={handleInputChange}
+                  className="form-input"
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Internship Start Date</label>
+                <input
+                  type="date"
+                  name="startDate"
+                  value={formData.startDate}
+                  onChange={handleInputChange}
+                  className="form-input"
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Internship End Date</label>
+                <input
+                  type="date"
+                  name="endDate"
+                  value={formData.endDate}
+                  onChange={handleInputChange}
+                  className="form-input"
+                  required
+                />
               </div>
               <div className="form-group">
                 <label className="form-label">Rating (1-5)</label>
@@ -296,20 +304,24 @@ const EvaluationManager = () => {
               <div className="evaluation-list">
                 {evaluations.map(evaluation => (
                   <div key={evaluation.id} className="evaluation-card">
+                    <div className="evaluation-subtitle">{evaluation.internshipTitle}</div>
                     <div className="evaluation-header">
                       <h4 className="evaluation-title">
-                        {evaluation.studentName}
-                        <span className="rating">
-                          {Array.from({ length: 5 }).map((_, i) => (
-                            <span key={i} className={i < evaluation.rating ? 'star-filled' : 'star-empty'}>
-                              ★
-                            </span>
-                          ))}
-                        </span>
+                        {evaluation.studentName}, {evaluation.yearOfStudy} {students.find(s => s.id == evaluation.studentId)?.program || 'Unknown'}
+                       
                       </h4>
                       <span className="evaluation-date">{evaluation.date}</span>
                     </div>
                     <div className="evaluation-details">
+                      <div className="detail-row">
+                        <strong>Company:</strong> {evaluation.companyName}
+                      </div>
+                      <div className="detail-row">
+                        <strong>Supervisor:</strong> {evaluation.supervisor}
+                      </div>
+                      <div className="detail-row">
+                        <strong>Internship Period:</strong> {evaluation.startDate} to {evaluation.endDate}
+                      </div>
                       <div className="detail-row">
                         <strong>Strengths:</strong> {evaluation.strengths}
                       </div>
@@ -329,10 +341,10 @@ const EvaluationManager = () => {
                       )}
                     </div>
                     <div className="evaluation-actions">
-                      <button onClick={() => handleEdit(evaluation)} className="btn btn-light">
+                      <button  style={{width:"100px"}} onClick={() => handleEdit(evaluation)} className="btn btn-light">
                         Edit
                       </button>
-                      <button onClick={() => handleDelete(evaluation.id)} className="btn btn-danger">
+                      <button style={{width:"100px"}} onClick={() => handleDelete(evaluation.id)} className="btn btn-danger">
                         Delete
                       </button>
                     </div>

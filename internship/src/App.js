@@ -30,6 +30,16 @@ import CompanyApplications from "./CompanyApplications";
 import CompanyInterns from "./CompanyInterns";
 import CompanyEvaluation from "./CompanyEvaluation";
 
+import FacultyLayout from './FacultyLayout';
+import FacultyStatistics from './FacultyStatistics';
+import FacultyReport from './FacultyReport';
+import FacultyHomePage from "./FacultyHomePage";
+import NotificationSystem from './Components/NotificationsStudent';
+import ProfileStudent from './ProfileStudent';
+import UpcomingWorkshops from './UpcomingWorkshops';
+import FacultyMail from './FacultyMail';
+import FacultyCompEvaluations from "./FacultyCompEvaluations";
+import SCADHome from './SCADHome';
 import Report from "./Report";
 import EvaluationStudent from "./EvaluationStudent";
 import FacultyLayout from "./FacultyLayout";
@@ -54,6 +64,7 @@ function App() {
       return [];
     }
   });
+  
 
   useEffect(() => {
     sessionStorage.setItem(
@@ -103,6 +114,15 @@ function App() {
         <Route path="/student/workshops" element={<UpcomingWorkshops />} />{" "}
         {/* Added Route */}
         <Route path="/staff" element={<SCADStaffDashboard />} />
+
+      <Route path="/faculty" element={<FacultyLayout />}>
+        <Route index element={<FacultyStatistics />} />
+        <Route path="reports" element={<FacultyReport />} />
+        <Route path="internships" element={<FacultyHomePage />} />
+        <Route path="mail" element={<FacultyMail />} />
+        <Route path="eval" element={<FacultyCompEvaluations />} />
+
+      </Route>
         <Route path="/staff/SCADHome" element={<SCADHome />} />
         <Route path="/faculty" element={<FacultyLayout />}>
           <Route path="reports" element={<FacultyReport />} />

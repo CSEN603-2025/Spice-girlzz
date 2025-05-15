@@ -1,8 +1,89 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SideBarCompany from './Components/SideBarCompany';
-import { Mail, Home, LogOut, User, Menu } from 'lucide-react';
+import { Mail, Home, LogOut, User, Menu, Download } from 'lucide-react';
 import './CompanyStyles.css';
+import CompanyHeader from './CompanyHeader';
+import { generateStatisticsReport } from "./pdfGeneratorCV";
+
+const initialCV = {
+  personalInfo: {
+    name: "John Ramzy",
+    email: "john.ramzy@student.guc.edu.eg",
+    phone: "+1-555-123-4567",
+    linkedin: "https://linkedin.com/in/janedoe",
+    location: "Cairo, Egypt"
+  },
+  education: [
+    {
+      degree: "Bachelor of Science in Computer Science",
+      institution: "University of Example",
+      startDate: "2021-09-01",
+      endDate: "2025-05-31",
+      gpa: 3.8
+    }
+  ],
+  skills: [
+    "JavaScript",
+    "React",
+    "Python",
+    "SQL",
+    "Data Analysis",
+    "Team Collaboration"
+  ],
+  workExperience: [
+    {
+      title: "Software Engineering Intern",
+      company: "TechCorp",
+      location: "Remote",
+      startDate: "2024-06-01",
+      endDate: "2024-08-31",
+      responsibilities: [
+        "Developed web applications using React and Node.js",
+        "Collaborated with a team of 5 to implement new features",
+        "Optimized API endpoints for better performance"
+      ]
+    },
+    {
+      title: "Data Science Intern",
+      company: "MediHealth",
+      location: "San Francisco, CA",
+      startDate: "2023-06-01",
+      endDate: "2023-08-31",
+      responsibilities: [
+        "Analyzed patient data using Python and Pandas",
+        "Created data visualizations for stakeholder presentations",
+        "Assisted in building predictive models"
+      ]
+    }
+  ],
+  projects: [
+    {
+      name: "Personal Portfolio Website",
+      description: "Built a responsive portfolio website using React and Tailwind CSS.",
+      technologies: ["React", "Tailwind CSS", "JavaScript"],
+      link: "https://janedoe-portfolio.example.com"
+    },
+    {
+      name: "Machine Learning Classifier",
+      description: "Developed a model to classify customer feedback using Python and scikit-learn.",
+      technologies: ["Python", "scikit-learn", "Pandas"],
+      link: ""
+    }
+  ],
+  certifications: [
+    {
+      name: "AWS Certified Solutions Architect",
+      issuer: "Amazon Web Services",
+      date: "2024-03-15"
+    },
+    {
+      name: "Python for Data Science",
+      issuer: "Coursera",
+      date: "2023-12-10"
+    }
+  ]
+};
 
 const Applications = () => {
   const navigate = useNavigate();
@@ -16,6 +97,8 @@ const Applications = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarHovered, setIsSidebarHovered] = useState(false);
   const [clickedButtons, setClickedButtons] = useState({});
+    const [CV_content] = useState(initialCV);
+  
 
   useEffect(() => {
     const fetchedInternships = [
@@ -251,57 +334,8 @@ const Applications = () => {
 
   return (
     <div className="container">
-      <header className="header">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: '1 0 auto', maxWidth: '50%' }}>
-          <button className="header-btn" title="Toggle Sidebar" onClick={toggleSidebar}>
-            <Menu size={20} />
-          </button>
-          <h2 className="header-title">Applications Manager</h2>
-        </div>
-        <div className="header-buttons">
-          <button
-            className={`header-btn ${clickedButtons['headerMail'] ? 'clicked' : ''}`}
-            title="Messages"
-            onClick={() => {
-              handleButtonClick('headerMail');
-              navigate('/company/mail');
-            }}
-          >
-            <Mail size={20} />
-            <span className="notification-badge">1</span>
-          </button>
-          <button
-            className={`header-btn ${clickedButtons['headerProfile'] ? 'clicked' : ''}`}
-            title="Profile"
-            onClick={() => {
-              handleButtonClick('headerProfile');
-              navigate('/company/profile');
-            }}
-          >
-            <User size={20} />
-          </button>
-          <button
-            className={`header-btn ${clickedButtons['headerHome'] ? 'clicked' : ''}`}
-            title="Home"
-            onClick={() => {
-              handleButtonClick('headerHome');
-              navigate('/company');
-            }}
-          >
-            <Home size={20} />
-          </button>
-          <button
-            className={`header-btn ${clickedButtons['headerLogout'] ? 'clicked' : ''}`}
-            title="Logout"
-            onClick={() => {
-              handleButtonClick('headerLogout');
-              navigate('/');
-            }}
-          >
-            <LogOut size={20} />
-          </button>
-        </div>
-      </header>
+            <CompanyHeader  />
+
 
       <div className="layout">
         <SideBarCompany onHoverChange={setIsSidebarHovered} />
@@ -364,9 +398,22 @@ const Applications = () => {
             <h3 className="section-title">Applicant Details</h3>
             <p><strong>Name:</strong> {selectedApplicant.applicantName}</p>
             <p><strong>Email:</strong> {selectedApplicant.email}</p>
-            <p><strong>Resume:</strong> 
-              <button onClick={toggleResume} className="btn btn-light">
-                {isResumeVisible ? 'Hide Resume' : 'View Resume'}
+                       <p style={{ color: '#4b5563', marginBottom: '0.25rem', fontSize: '0.875rem' }}>
+              <strong>CV:</strong>
+              <button
+                onClick={() => generateStatisticsReport(CV_content)}
+                className="actionButton"
+                style={{
+                  padding: '0.3rem 0.8rem',
+                  fontSize: '0.75rem',
+                  marginLeft: '0.5rem',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  verticalAlign: 'middle',
+                }}
+              >
+                <Download size={14} style={{ marginRight: '0.3rem' }} />
+                Download CV
               </button>
             </p>
             {isResumeVisible && (
@@ -401,9 +448,9 @@ const Applications = () => {
             )}
             <p><strong>Cover Letter:</strong> {isCoverLetterExpanded ? selectedApplicant.coverLetter : truncateCoverLetter(selectedApplicant.coverLetter)}</p>
             {selectedApplicant.coverLetter.length > 100 && (
-              <button
+              <button 
                 onClick={toggleCoverLetter}
-                className="btn btn-light"
+                className="btn btn-light" style={{width:"130px"}}
               >
                 {isCoverLetterExpanded ? 'Read Less' : 'Read More'}
               </button>
@@ -412,7 +459,7 @@ const Applications = () => {
             <p><strong>Status:</strong> {selectedApplicant.status.charAt(0).toUpperCase() + selectedApplicant.status.slice(1)}</p>
             <div className="form-group">
               <label className="form-label">Update Status</label>
-              <select
+              <select style={{width:"180px"}}
                 value={selectedApplicant.status}
                 onChange={(e) => updateStatus(selectedApplicant.id, e.target.value)}
                 className="form-select"
@@ -425,9 +472,9 @@ const Applications = () => {
                 <option value="internship complete">Internship Complete</option>
               </select>
             </div>
-            <button
+            <button style={{width:"90px"}}
               onClick={() => setSelectedApplicant(null)}
-              className="btn btn-danger"
+              className="btn btn-danger" 
             >
               Close
             </button>

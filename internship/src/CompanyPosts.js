@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import SideBarCompany from './Components/SideBarCompany';
 import { Mail, Home, LogOut, User, Menu } from 'lucide-react';
 import './CompanyStyles.css';
+import './StudentHomePage.css'; // Import StudentHomePage CSS for card styling
+import CompanyHeader from './CompanyHeader';
 
 const JobPostManager = () => {
   const navigate = useNavigate();
@@ -23,7 +25,8 @@ const JobPostManager = () => {
   const [showModal, setShowModal] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarHovered, setIsSidebarHovered] = useState(false);
-  const [clickedButtons, setClickedButtons] = useState({});
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [selectedInternship, setSelectedInternship] = useState(null);
 
   useEffect(() => {
     const fetchedInternships = [
@@ -34,7 +37,11 @@ const JobPostManager = () => {
         isPaid: true,
         salary: '$20/hour',
         skills: 'JavaScript, React, Node.js',
-        description: 'Develop web applications.'
+        description: 'Develop web applications.',
+        company: 'TechCorp',
+        location: 'Remote',
+        posted: '1 day ago',
+        applicants: 15
       },
       {
         id: 2,
@@ -43,7 +50,11 @@ const JobPostManager = () => {
         isPaid: false,
         salary: '',
         skills: 'Python, Pandas, SQL',
-        description: 'Analyze data and build models.'
+        description: 'Analyze data and build models.',
+        company: 'DataCorp',
+        location: 'New York, NY',
+        posted: '2 days ago',
+        applicants: 8
       }
     ];
     const fetchedApplications = [
@@ -82,7 +93,7 @@ const JobPostManager = () => {
       setInternships(internships.map(internship => internship.id === formData.id ? { ...formData } : internship));
       setIsEditing(false);
     } else {
-      const newInternship = { ...formData, id: internships.length + 1 };
+      const newInternship = { ...formData, id: internships.length + 1, company: 'Your Company', location: 'Remote', posted: 'Just now', applicants: 0 };
       setInternships([...internships, newInternship]);
     }
     closeModal();
@@ -116,11 +127,14 @@ const JobPostManager = () => {
     setIsEditing(false);
   };
 
-  const handleButtonClick = (buttonId) => {
-    setClickedButtons(prev => ({
-      ...prev,
-      [buttonId]: true
-    }));
+  const openDetailsModal = (internship) => {
+    setSelectedInternship(internship);
+    setShowDetailsModal(true);
+  };
+
+  const closeDetailsModal = () => {
+    setShowDetailsModal(false);
+    setSelectedInternship(null);
   };
 
   const toggleSidebar = () => {
@@ -129,64 +143,32 @@ const JobPostManager = () => {
 
   return (
     <div className="container">
-      <header className="header">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: '1 0 auto', maxWidth: '50%' }}>
-          <button className="header-btn" title="Toggle Sidebar" onClick={toggleSidebar}>
-            <Menu size={20} />
-          </button>
-          <h2 className="header-title">Internship Post Manager</h2>
-        </div>
-        <div className="header-buttons">
-          <button
-            className={`header-btn ${clickedButtons['headerMail'] ? 'clicked' : ''}`}
-            title="Messages"
-            onClick={() => {
-              handleButtonClick('headerMail');
-              navigate('/company/mail');
-            }}
-          >
-            <Mail size={20} />
-            <span className="notification-badge">1</span>
-          </button>
-          <button
-            className={`header-btn ${clickedButtons['headerProfile'] ? 'clicked' : ''}`}
-            title="Profile"
-            onClick={() => {
-              handleButtonClick('headerProfile');
-              navigate('/company/profile');
-            }}
-          >
-            <User size={20} />
-          </button>
-          <button
-            className={`header-btn ${clickedButtons['headerHome'] ? 'clicked' : ''}`}
-            title="Home"
-            onClick={() => {
-              handleButtonClick('headerHome');
-              navigate('/company');
-            }}
-          >
-            <Home size={20} />
-          </button>
-          <button
-            className={`header-btn ${clickedButtons['headerLogout'] ? 'clicked' : ''}`}
-            title="Logout"
-            onClick={() => {
-              handleButtonClick('headerLogout');
-              navigate('/');
-            }}
-          >
-            <LogOut size={20} />
-          </button>
-        </div>
-      </header>
-
+      <CompanyHeader />
       <div className="layout">
         <SideBarCompany onHoverChange={setIsSidebarHovered} />
         <div className={`content ${isSidebarHovered && window.innerWidth > 768 ? 'sidebar-expanded' : ''}`}>
           <div className="card">
-            <h3 className="section-title">Create Post</h3>
-            <button onClick={openModal} className="btn btn-primary">Create Post</button>
+            <h3 className="section-title">Create New Internship Post</h3>
+            <div className="form-preview">
+              <div className="preview-field">
+                <label>Title:</label>
+                <div className="preview-value">Software Engineering Intern</div>
+              </div>
+              <div className="preview-field">
+                <label>Duration:</label>
+                <div className="preview-value">3 months</div>
+              </div>
+              <div className="preview-field">
+                <label>Payment:</label>
+                <div className="preview-value">Paid ($20/hour)</div>
+              </div>
+              <button 
+                onClick={openModal} 
+                className="btn btn-primary create-post-btn"
+              >
+                + Create New Post
+              </button>
+            </div>
           </div>
 
           <div className="card">
@@ -220,21 +202,71 @@ const JobPostManager = () => {
                 </select>
               </div>
             </div>
-            <div className="post-list">
+            <div className="cardHolder" style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
               {filteredInternships.length === 0 ? (
                 <p className="no-data">No internship posts found.</p>
               ) : (
                 filteredInternships.map(post => (
-                  <div key={post.id} className="post-card">
-                    <h4 className="post-title">{post.title}</h4>
-                    <p><strong>Duration:</strong> {post.duration}</p>
-                    <p><strong>Paid:</strong> {post.isPaid ? `Yes (${post.salary})` : 'No'}</p>
-                    <p><strong>Skills:</strong> {post.skills}</p>
-                    <p><strong>Description:</strong> {post.description}</p>
-                    <p><strong>Applications:</strong> {getApplicationCount(post.id)}</p>
-                    <div className="job-actions">
-                      <button onClick={() => handleEdit(post)} className="btn btn-light">Edit</button>
-                      <button onClick={() => handleDelete(post.id)} className="btn btn-danger">Delete</button>
+                  <div
+                    key={post.id}
+                    className="card"
+                    style={{
+                      width: '400px',
+                      minHeight: '300px',
+                      padding: '1.5rem',
+                      margin: '20px',
+                      display: 'flex',
+                      flexDirection: 'column'
+                    }}
+                  >
+                    <div
+                      className="card-content"
+                      style={{ flex: '1 0 auto', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
+                    >
+                      <div>
+                        <div className="card-header">
+                          <h3 className="program-title">{post.title}</h3>
+                          <div className="company-info">
+                            <span className="company-name">{post.company}</span>
+                            <span className="company-location">{post.location}</span>
+                            <span className="post-date">{post.posted}</span>
+                          </div>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem' }}>
+                          <div className="alumni-count">
+                            <span className="pin-icon">📌</span>
+                            <span>{post.applicants} students have applied already</span>
+                          </div>
+                          <button
+                            onClick={() => openDetailsModal(post)}
+                            className="actionButton"
+                            style={{ padding: '8px 16px' }}
+                          >
+                            View Details
+                          </button>
+                        </div>
+                      </div>
+                      <div className="card-footer" style={{ marginTop: 'auto', paddingTop: '1rem' }}>
+                        <div
+                          className="job-actions"
+                          style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}
+                        >
+                          <button
+                            onClick={() => handleEdit(post)}
+                            className="btn btn-light"
+                            style={{ width: '100px', padding: '8px' }}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(post.id)}
+                            className="btn btn-danger"
+                            style={{ width: '100px', padding: '8px' }}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 ))
@@ -329,6 +361,46 @@ const JobPostManager = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {showDetailsModal && selectedInternship && (
+        <div className="modal-overlay" role="dialog" aria-labelledby="modal-title">
+          <div className="modal-content">
+            <h3 id="modal-title" className="modal-title">{selectedInternship.title}</h3>
+            <p className="modal-info">
+              <strong>Company:</strong> {selectedInternship.company}
+            </p>
+            <p className="modal-info">
+              <strong>Location:</strong> {selectedInternship.location}
+            </p>
+            <p className="modal-info">
+              <strong>Duration:</strong> {selectedInternship.duration}
+            </p>
+            <p className="modal-info">
+              <strong>Paid/Unpaid:</strong> {selectedInternship.isPaid ? `Paid (${selectedInternship.salary})` : 'Unpaid'}
+            </p>
+            <p className="modal-info">
+              <strong>Skills Required:</strong> {selectedInternship.skills}
+            </p>
+            <p className="modal-info">
+              <strong>Description:</strong> {selectedInternship.description}
+            </p>
+            <p className="modal-info">
+              <strong>Posted:</strong> {selectedInternship.posted}
+            </p>
+            <p className="modal-info">
+              <strong>Applicants:</strong> {selectedInternship.applicants}
+            </p>
+            <div className="modal-footer">
+              <button
+                className="modal-close-button"
+                onClick={closeDetailsModal}
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}

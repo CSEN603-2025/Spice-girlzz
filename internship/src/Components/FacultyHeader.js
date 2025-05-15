@@ -1,13 +1,12 @@
-// Header.jsx
 import React from "react";
-import { Menu, Mail, Home, User, LogOut } from "lucide-react"; // adjust import as needed
-import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { Mail, Home, User, LogOut } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
+import "../HomePage.css";
 
-const FacultyHeader = ({ toggleSidebar }) => {
+const FacultyHeader = () => {
   const navigate = useNavigate();
-    const [clickedButtons, setClickedButtons] = useState({});
-     const [mails, setMails] = useState([
+  const location = useLocation();
+  const [mails] = React.useState([
     {
       id: 3,
       from: 'InternHub',
@@ -36,72 +35,47 @@ const FacultyHeader = ({ toggleSidebar }) => {
       type: 'system'
     }
   ]);
-  
+
   const unreadApplicationCount = mails.filter(mail => 
     mail.type === 'application' && !mail.read
   ).length;
-   const handleButtonClick = (buttonId) => {
-    setClickedButtons(prev => ({
-      ...prev,
-      [buttonId]: true
-    }));
-  };
- 
+
+  // Check if current route is the mail page
+  const isMailPage = location.pathname === '/faculty/mail';
 
   return (
     <header className="header">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: '1 0 auto', maxWidth: '50%' }}>
-          <button className="header-btn" title="Toggle Sidebar" onClick={toggleSidebar}>
-            <Menu size={20} />
-          </button>
-          <h2 className="header-title">Student Evaluations</h2>
-        </div>
-        <div className="header-buttons">
-          <button
-            className={`header-btn ${clickedButtons['headerMail./'] ? 'clicked' : ''}`}
-            title="Messages"
-            onClick={() => {
-              handleButtonClick('headerMail');
-              navigate('/faculty/mail');
-            }}
-          >
-            <Mail size={20} />
-            {unreadApplicationCount > 0 && (
-              <span className="notification-badge">{unreadApplicationCount}</span>
-            )}
-          </button>
-          <button
-            className={`header-btn ${clickedButtons['headerProfile'] ? 'clicked' : ''}`}
-            title="Profile"
-            onClick={() => {
-              handleButtonClick('headerProfile');
-              navigate('/faculy/profile');
-            }}
-          >
-            <User size={20} />
-          </button>
-          <button
-            className={`header-btn ${clickedButtons['headerHome'] ? 'clicked' : ''}`}
-            title="Home"
-            onClick={() => {
-              handleButtonClick('headerHome');
-              navigate('/faculty');
-            }}
-          >
-            <Home size={20} />
-          </button>
-          <button
-            className={`header-btn ${clickedButtons['headerLogout'] ? 'clicked' : ''}`}
-            title="Logout"
-            onClick={() => {
-              handleButtonClick('headerLogout');
-              navigate('/');
-            }}
-          >
-            <LogOut size={20} />
-          </button>
-        </div>
-      </header>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: '1 0 auto', maxWidth: '50%' }}>
+        <h2 className="header-title">InternHub</h2>
+      </div>
+      <div className="header-buttons">
+        <button
+          className="header-btn"
+          title="Messages"
+          onClick={() => navigate('/faculty/mail')}
+        >
+          <Mail size={20} />
+          {!isMailPage && unreadApplicationCount > 0 && (
+            <span className="notification-badge">{unreadApplicationCount}</span>
+          )}
+        </button>
+
+        <button
+          className="header-btn"
+          title="Home"
+          onClick={() => navigate('/faculty')}
+        >
+          <Home size={20} />
+        </button>
+        <button
+          className="header-btn"
+          title="Logout"
+          onClick={() => navigate('/')}
+        >
+          <LogOut size={20} />
+        </button>
+      </div>
+    </header>
   );
 };
 

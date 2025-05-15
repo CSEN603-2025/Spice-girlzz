@@ -121,7 +121,7 @@ export default function FacultyStatistics({ isSidebarOpen }) {
           className="actionButton"
         >
           <Download size={18} />
-          Generate Comprehensive Report
+          Generate Report
         </button>
         <p className="report-description">
           This will generate a PDF with all current statistics.

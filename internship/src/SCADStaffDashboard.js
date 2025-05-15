@@ -1696,6 +1696,7 @@ export default function SCADStaffDashboard() {
                   placeholder="Search by student name..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
+                  className="headerBtn"
                   style={{
                     padding: "0.75rem 0.75rem 0.75rem 2.5rem",
                     width: "100%",
@@ -1723,6 +1724,7 @@ export default function SCADStaffDashboard() {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
+                className="headerBtn"
                 style={{
                   padding: "0.75rem",
                   border: "1px solid #d1d5db",
@@ -1759,6 +1761,7 @@ export default function SCADStaffDashboard() {
               <select
                 value={majorFilter}
                 onChange={(e) => setMajorFilter(e.target.value)}
+                className="headerBtn"
                 style={{
                   padding: "0.75rem",
                   border: "1px solid #d1d5db",
@@ -3101,6 +3104,7 @@ export default function SCADStaffDashboard() {
                       }}
                     >
                       <span
+                        className="list-bullet"
                         style={{
                           width: "0.5rem",
                           height: "0.5rem",
