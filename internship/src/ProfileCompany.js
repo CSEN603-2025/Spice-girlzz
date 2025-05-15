@@ -73,11 +73,11 @@ function ProfileCompany() {
     return initialProfileData;
   });
 
-  useEffect(() => {
-    if (!profileData.hasProfile || profileData.name === '...') {
-      setShowEditModal(true);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!profileData.hasProfile || profileData.name === '...') {
+  //     setShowEditModal(true);
+  //   }
+  // }, []);
 
   useEffect(() => {
     sessionStorage.setItem('companyProfile', JSON.stringify(profileData));

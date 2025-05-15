@@ -148,8 +148,27 @@ const JobPostManager = () => {
         <SideBarCompany onHoverChange={setIsSidebarHovered} />
         <div className={`content ${isSidebarHovered && window.innerWidth > 768 ? 'sidebar-expanded' : ''}`}>
           <div className="card">
-            <h3 className="section-title">Create Post</h3>
-            <button onClick={openModal} className="btn btn-primary">Create Post</button>
+            <h3 className="section-title">Create New Internship Post</h3>
+            <div className="form-preview">
+              <div className="preview-field">
+                <label>Title:</label>
+                <div className="preview-value">Software Engineering Intern</div>
+              </div>
+              <div className="preview-field">
+                <label>Duration:</label>
+                <div className="preview-value">3 months</div>
+              </div>
+              <div className="preview-field">
+                <label>Payment:</label>
+                <div className="preview-value">Paid ($20/hour)</div>
+              </div>
+              <button 
+                onClick={openModal} 
+                className="btn btn-primary create-post-btn"
+              >
+                + Create New Post
+              </button>
+            </div>
           </div>
 
           <div className="card">
@@ -302,84 +321,95 @@ const JobPostManager = () => {
                   <label className="form-label">Expected Salary</label>
                   <input
                     type="text"
-                  name="salary"
-                  value={formData.salary}
+                    name="salary"
+                    value={formData.salary}
+                    onChange={handleInputChange}
+                    className="form-input"
+                    placeholder="e.g., $20/hour"
+                    required
+                  />
+                </div>
+              )}
+              <div className="form-group">
+                <label className="form-label">Skills Required</label>
+                <input
+                  type="text"
+                  name="skills"
+                  value={formData.skills}
                   onChange={handleInputChange}
                   className="form-input"
-                  placeholder="e.g., $20/hour"
+                  placeholder="e.g., JavaScript, React"
                   required
                 />
               </div>
-            )}
-            <div className="form-group">
-              <label className="form-label">Skills Required</label>
-              <input
-                type="text"
-                name="skills"
-                value={formData.skills}
-                onChange={handleInputChange}
-                className="form-input"
-                placeholder="e.g., JavaScript, React"
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Internship Description</label>
-              <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleInputChange}
-                className="form-textarea"
-                required
-              ></textarea>
-            </div>
-            <div className="form-actions">
-              <button type="submit" className={isEditing ? 'btn btn-primary' : 'btn btn-primary'}>
-                {isEditing ? 'Update' : 'Save'}
-              </button>
-              <button type="button" onClick={closeModal} className="btn btn-danger">
-                Cancel
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    )}
-
-    {showDetailsModal && selectedInternship && (
-      <div className="modal">
-        <div className="modal-content">
-          <h3 className="section-title">{selectedInternship.title}</h3>
-          <div className="form-group">
-            <label className="form-label">Company:</label>
-            <p>{selectedInternship.company}</p>
-            <label className="form-label">Location:</label>
-            <p>{selectedInternship.location}</p>
-            <label className="form-label">Duration:</label>
-            <p>{selectedInternship.duration}</p>
-            <label className="form-label">Payment:</label>
-            <p>{selectedInternship.isPaid ? `Paid (${selectedInternship.salary})` : 'Unpaid'}</p>
-            <label className="form-label">Skills:</label>
-            <p>{selectedInternship.skills}</p>
-            <label className="form-label">Description:</label>
-            <p>{selectedInternship.description}</p>
-            <label className="form-label">Posted:</label>
-            <p>{selectedInternship.posted}</p>
-            <label className="form-label">Applicants:</label>
-            <p>{selectedInternship.applicants}</p>
-          </div>
-          <div className="form-actions">
-            <button onClick={closeDetailsModal} className="btn btn-danger">Close</button>
+              <div className="form-group">
+                <label className="form-label">Internship Description</label>
+                <textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleInputChange}
+                  className="form-textarea"
+                  required
+                ></textarea>
+              </div>
+              <div className="form-actions">
+                <button type="submit" className={isEditing ? 'btn btn-primary' : 'btn btn-primary'}>
+                  {isEditing ? 'Update' : 'Save'}
+                </button>
+                <button type="button" onClick={closeModal} className="btn btn-danger">
+                  Cancel
+                </button>
+              </div>
+            </form>
           </div>
         </div>
-      </div>
-    )}
+      )}
 
-    {isSidebarOpen && (
-      <div className={`mobile-overlay ${isSidebarOpen ? 'active' : ''}`} onClick={() => setIsSidebarOpen(false)} />
-    )}
-  </div>
-);
+      {showDetailsModal && selectedInternship && (
+        <div className="modal-overlay" role="dialog" aria-labelledby="modal-title">
+          <div className="modal-content">
+            <h3 id="modal-title" className="modal-title">{selectedInternship.title}</h3>
+            <p className="modal-info">
+              <strong>Company:</strong> {selectedInternship.company}
+            </p>
+            <p className="modal-info">
+              <strong>Location:</strong> {selectedInternship.location}
+            </p>
+            <p className="modal-info">
+              <strong>Duration:</strong> {selectedInternship.duration}
+            </p>
+            <p className="modal-info">
+              <strong>Paid/Unpaid:</strong> {selectedInternship.isPaid ? `Paid (${selectedInternship.salary})` : 'Unpaid'}
+            </p>
+            <p className="modal-info">
+              <strong>Skills Required:</strong> {selectedInternship.skills}
+            </p>
+            <p className="modal-info">
+              <strong>Description:</strong> {selectedInternship.description}
+            </p>
+            <p className="modal-info">
+              <strong>Posted:</strong> {selectedInternship.posted}
+            </p>
+            <p className="modal-info">
+              <strong>Applicants:</strong> {selectedInternship.applicants}
+            </p>
+            <div className="modal-footer">
+              <button
+                className="modal-close-button"
+                onClick={closeDetailsModal}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isSidebarOpen && (
+        <div className={`mobile-overlay ${isSidebarOpen ? 'active' : ''}`} onClick={() => setIsSidebarOpen(false)} />
+      )}
+    </div>
+  );
 };
 
 export default JobPostManager;

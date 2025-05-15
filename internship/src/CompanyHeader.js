@@ -20,23 +20,23 @@ const CompanyHeader = ({ title, mails, setIsSidebarOpen }) => {
     mail.type === 'application' && !mail.read
   ).length;
 
-  // Trigger random popup (not on /company/mail)
-  useEffect(() => {
-    if (location.pathname === '/company/mail') return;
+  // // Trigger random popup (not on /company/mail)
+  // useEffect(() => {
+  //   if (location.pathname === '/company/mail') return;
 
-    // Check if popup has already shown in this session
-    const hasShown = sessionStorage.getItem('notificationPopupShown');
-    if (hasShown) return;
+  //   // Check if popup has already shown in this session
+  //   const hasShown = sessionStorage.getItem('notificationPopupShown');
+  //   if (hasShown) return;
 
-    // Random delay between 10-30 seconds
-    const delay = Math.floor(Math.random() * (20000 - 10000 + 1)) + 10000;
-    const timer = setTimeout(() => {
-      setShowPopup(true);
-      sessionStorage.setItem('notificationPopupShown', 'true');
-    }, delay);
+  //   // Random delay between 10-30 seconds
+  //   const delay = Math.floor(Math.random() * (20000 - 10000 + 1)) + 10000;
+  //   const timer = setTimeout(() => {
+  //     setShowPopup(true);
+  //     sessionStorage.setItem('notificationPopupShown', 'true');
+  //   }, delay);
 
-    return () => clearTimeout(timer); // Cleanup on unmount
-  }, [location.pathname]);
+  //   return () => clearTimeout(timer); // Cleanup on unmount
+  // }, [location.pathname]);
 
   // Handle Go to Mail button
   const handleGoToMail = () => {
@@ -49,7 +49,7 @@ const CompanyHeader = ({ title, mails, setIsSidebarOpen }) => {
   console.log('CompanyHeader - unreadApplicationCount:', unreadApplicationCount);
   console.log('CompanyHeader - location.pathname:', location.pathname);
   console.log('CompanyHeader - showNotificationBadge:', showNotificationBadge);
-  console.log('CompanyHeader - showPopup:', showPopup);
+  // console.log('CompanyHeader - showPopup:', showPopup);
 
   return (
     <>
@@ -92,7 +92,7 @@ const CompanyHeader = ({ title, mails, setIsSidebarOpen }) => {
           </button>
         </div>
       </header>
-      {showPopup && (
+      {/* {showPopup && (
         <div className="notification-popup">
           <div className="notification-content">
             <h3>New Application Received!</h3>
@@ -107,7 +107,7 @@ const CompanyHeader = ({ title, mails, setIsSidebarOpen }) => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </>
   );
 };
