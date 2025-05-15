@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useEffect } from "react";
 import SideBar from "./Components/ScadSideBar";
 import Header from "./Components/SCADHeader";
@@ -10,7 +11,9 @@ import { FaPaperPlane } from "react-icons/fa"; // Import the icon (install react
 import { FaEnvelope } from "react-icons/fa"; // Import the mail icon
 import { FiBriefcase } from "react-icons/fi";
 import { FaIndustry } from "react-icons/fa";
-
+import VideoCallDashboard from "./videoCallSCAD";
+import SCADHome from "./SCADHome.js";
+import SCADMail from "./Mail.js";
 import {
   Settings,
   Building,
@@ -445,6 +448,7 @@ const initialStatistics = {
 };
 
 export default function SCADStaffDashboard() {
+  const inputRefs = React.useRef({});
   const toggleSidebar = () => {
     setSidebarWidth(sidebarWidth === "16rem" ? "4rem" : "16rem");
   };
@@ -470,6 +474,8 @@ export default function SCADStaffDashboard() {
   const [startDateFilter, setStartDateFilter] = useState("");
   const [endDateFilter, setEndDateFilter] = useState("");
   const [sidebarWidth, setSidebarWidth] = useState("4rem"); // Default width (collapsed)
+
+  const [sidebarOpen, setSidebarOpen] = useState(false); // For toggleSidebar
 
   const downloadPDF = (companyName) => {
     const fileName = `${companyName.replace(/\s+/g, "_")}.pdf`;
@@ -1087,6 +1093,27 @@ export default function SCADStaffDashboard() {
 
   const renderContent = () => {
     switch (activePage) {
+      case "home":
+        return (
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              marginTop: "1rem",
+              marginLeft: "1rem",
+              boxSizing: "border-box",
+            }}
+          >
+            <SCADHome />
+          </div>
+        );
+      case "messages":
+        return (
+          <div style={{ marginTop: "1rem", marginLeft: "1rem" }}>
+            <SCADMail />
+          </div>
+        );
+
       case "companies":
         const handleCompanyAction = (id, action) => {
           // Update status based on action
@@ -2682,6 +2709,9 @@ export default function SCADStaffDashboard() {
                                       e.target.value = "";
                                     }
                                   }}
+                                  ref={(el) =>
+                                    (inputRefs.current[report.id] = el)
+                                  } // Assign unique ref
                                 />
                                 <button
                                   className="uniform-action-button"
@@ -2700,9 +2730,7 @@ export default function SCADStaffDashboard() {
                                     justifyContent: "center",
                                   }}
                                   onClick={() => {
-                                    const input = document.querySelector(
-                                      `input[placeholder="Add a comment..."]`
-                                    );
+                                    const input = inputRefs.current[report.id];
                                     if (input && input.value.trim()) {
                                       handleAddComment(
                                         report.id,
@@ -3274,146 +3302,11 @@ export default function SCADStaffDashboard() {
         );
       case "video-calls":
         return (
-          <div style={{ animation: "fadeIn 0.3s" }}>
-            <h2
-              style={{
-                fontSize: "1.5rem",
-                fontWeight: "bold",
-                marginBottom: "1.5rem",
-                color: "#1f2937",
-              }}
-            >
-              Video Call
-            </h2>
-            {callStatus === "ongoing" ? (
-              <div
-                style={{
-                  background: "#fff",
-                  padding: "1.5rem",
-                  borderRadius: "0.375rem",
-                  boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    marginBottom: "1.5rem",
-                  }}
-                >
-                  <div
-                    style={{
-                      width: "100%",
-                      height: "16rem",
-                      background: "#e5e7eb",
-                      borderRadius: "0.375rem",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      marginBottom: "1rem",
-                    }}
-                  >
-                    <p style={{ color: "#6b7280" }}>Video Feed (Simulated)</p>
-                  </div>
-                  <div style={{ display: "flex", gap: "1rem" }}>
-                    <button
-                      onClick={() => setIsMuted(!isMuted)}
-                      style={{
-                        padding: "0.75rem",
-                        borderRadius: "9999px",
-                        background: isMuted ? "#ef4444" : "#4b5563",
-                        color: "#fff",
-                        cursor: "pointer",
-                      }}
-                      onMouseOver={(e) =>
-                        (e.target.style.background = isMuted
-                          ? "#dc2626"
-                          : "#374151")
-                      }
-                      onMouseOut={(e) =>
-                        (e.target.style.background = isMuted
-                          ? "#ef4444"
-                          : "#4b5563")
-                      }
-                    >
-                      {isMuted ? <MicOff size={24} /> : <Mic size={24} />}
-                    </button>
-                    <button
-                      onClick={() => setIsVideoOn(!isVideoOn)}
-                      style={{
-                        padding: "0.75rem",
-                        borderRadius: "9999px",
-                        background: isVideoOn ? "#4b5563" : "#ef4444",
-                        color: "#fff",
-                        cursor: "pointer",
-                      }}
-                      onMouseOver={(e) =>
-                        (e.target.style.background = isVideoOn
-                          ? "#374151"
-                          : "#dc2626")
-                      }
-                      onMouseOut={(e) =>
-                        (e.target.style.background = isVideoOn
-                          ? "#4b5563"
-                          : "#ef4444")
-                      }
-                    >
-                      {isVideoOn ? <Video size={24} /> : <VideoOff size={24} />}
-                    </button>
-                    <button
-                      onClick={() => setIsScreenSharing(!isScreenSharing)}
-                      style={{
-                        padding: "0.75rem",
-                        borderRadius: "9999px",
-                        background: isScreenSharing ? "#3b82f6" : "#4b5563",
-                        color: "#fff",
-                        cursor: "pointer",
-                      }}
-                      onMouseOver={(e) =>
-                        (e.target.style.background = isScreenSharing
-                          ? "#2563eb"
-                          : "#374151")
-                      }
-                      onMouseOut={(e) =>
-                        (e.target.style.background = isScreenSharing
-                          ? "#3b82f6"
-                          : "#4b5563")
-                      }
-                    >
-                      <Monitor size={24} />
-                    </button>
-                    <button
-                      onClick={() => handleCallAction("leave")}
-                      style={{
-                        padding: "0.75rem",
-                        borderRadius: "9999px",
-                        background: "#ef4444",
-                        color: "#fff",
-                        cursor: "pointer",
-                      }}
-                      onMouseOver={(e) =>
-                        (e.target.style.background = "#dc2626")
-                      }
-                      onMouseOut={(e) =>
-                        (e.target.style.background = "#ef4444")
-                      }
-                    >
-                      <PhoneOff size={24} />
-                    </button>
-                  </div>
-                </div>
-                <p style={{ color: "#1f2937", textAlign: "center" }}>
-                  Call with Alice Johnson
-                </p>
-              </div>
-            ) : (
-              <div style={{ textAlign: "center", padding: "3rem" }}>
-                <p style={{ color: "#6b7280" }}>
-                  No active call. Start a call from the student profile.
-                </p>
-              </div>
-            )}
+          <div
+            className="w-screen h-screen"
+            style={{ marginLeft: -90, marginTop: -20 }}
+          >
+            <VideoCallDashboard />
           </div>
         );
 
@@ -3425,7 +3318,7 @@ export default function SCADStaffDashboard() {
   return (
     <div style={{ display: "flex", height: "100vh", background: "#f3f4f6" }}>
       {/* Sidebar */}
-      {/* Sidebar */}
+
       <SideBar
         setActivePage={setActivePage}
         activePage={activePage}
@@ -3434,7 +3327,11 @@ export default function SCADStaffDashboard() {
       {/* Main Content */}
       <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
         {/* Header edited */}
-        <Header toggleSidebar={toggleSidebar} />
+        <Header
+          setActivePage={setActivePage}
+          activePage={activePage}
+          toggleSidebar={toggleSidebar}
+        />
         {/* Notification Panel */}
         {showNotifications && (
           <div

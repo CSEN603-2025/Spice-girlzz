@@ -13,10 +13,12 @@ import {
 import Login from "./Login";
 import Register from "./Register";
 import StudentHomePage from "./StudentHomePage";
+import SCADReport from "./Components/SCADReport";
 
 import SCADStaffDashboard from "./SCADStaffDashboard";
 import AppliedInternships from "./Applied internships";
 import FacultyMember from "./FacultyMember";
+import videoCallSCAD from "./videoCallSCAD";
 import VideoCall from "./VideoCall";
 import ScheduleCall from "./ScheduleCall";
 import StartCall from "./StartCall";
@@ -38,9 +40,8 @@ import { PDFDocument } from "pdf-lib";
 import UpcomingWorkshops from "./UpcomingWorkshops";
 import NotificationSystem from "./Components/NotificationsStudent";
 import Assessment from "./Assessment";
-import ProfileStudent from "./ProfileStudent" ; 
-
-
+import ProfileStudent from "./ProfileStudent";
+import Mail from "./Mail";
 import SCADHome from "./SCADHome";
 
 function App() {
@@ -63,24 +64,22 @@ function App() {
 
   return (
     <Router>
-
-       <div>
+      <div>
         <NotificationSystem />
-    </div>
+      </div>
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/student" element={<StudentHomePage />}/>
-         <Route path="/student/startCall" element={<StartCall />} /> 
-
-        <Route path="/company" element={<CompanyHomePage />} /> 
-
-        <Route path="/company/mail" element={<CompanyMail />} /> 
-        <Route path="/company/profile" element={<ProfileCompany />} /> 
-        <Route path="/company/evaluate" element={<CompanyEvaluation />} /> 
-        <Route path="/company/interns" element={<CompanyInterns />} /> 
-        <Route path="/company/posts" element={<CompanyPosts />} /> 
-        <Route path="/company/applicants" element={<CompanyApplications />} /> 
+        <Route path="/student" element={<StudentHomePage />} />
+        <Route path="/student/startCall" element={<StartCall />} />
+        <Route path="/company" element={<CompanyHomePage />} />
+        <Route path="/company/mail" element={<CompanyMail />} />
+        <Route path="/company/profile" element={<ProfileCompany />} />
+        <Route path="/company/evaluate" element={<CompanyEvaluation />} />
+        <Route path="/company/interns" element={<CompanyInterns />} />
+        <Route path="/company/posts" element={<CompanyPosts />} />
+        <Route path="/company/applicants" element={<CompanyApplications />} />
+        <Route path="/Mail" element={<Mail />} />
         <Route
           path="/student/applied"
           element={
@@ -90,13 +89,8 @@ function App() {
             />
           }
         />
-         <Route
-          path="/student/scheduleCall"
-          element={
-            <ScheduleCall/>
-          }
-        />
-        <Route path="/student/call" element={<VideoCall/>}/>
+        <Route path="/student/scheduleCall" element={<ScheduleCall />} />
+        <Route path="/student/call" element={<VideoCall />} />
         <Route path="/startCall" element={<StartCall />} />
         <Route path="/company" element={<CompanyHomePage />} />
         <Route path="/company/mail" element={<CompanyMail />} />
@@ -106,7 +100,8 @@ function App() {
         <Route path="/company/posts" element={<CompanyPosts />} />
         <Route path="/company/applicants" element={<CompanyApplications />} />
         <Route path="/student/profile" element={<ProfileStudent />} />
-        <Route path="/student/workshops" element={<UpcomingWorkshops />} /> {/* Added Route */}
+        <Route path="/student/workshops" element={<UpcomingWorkshops />} />{" "}
+        {/* Added Route */}
         <Route path="/staff" element={<SCADStaffDashboard />} />
         <Route path="/staff/SCADHome" element={<SCADHome />} />
         <Route path="/faculty" element={<FacultyLayout />}>
@@ -115,19 +110,11 @@ function App() {
         </Route>
         <Route path="/student/report" element={<Report />} />
         <Route path="/student/evaluation" element={<EvaluationStudent />} />
-        <Route path="/student/assessments" element={<Assessment />} /> 
-
-
-        
-
-         
+        <Route path="/student/assessments" element={<Assessment />} />
+        <Route path="/scadreport" element={<SCADReport />} />
       </Routes>
     </Router>
-
-   
   );
-
-
 }
 
 export default App;
