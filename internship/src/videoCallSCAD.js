@@ -827,7 +827,7 @@ function VideoCallDashboard() {
         height: "100%",
         objectFit: "cover",
         display: mediaStream ? "block" : "none",
-        visibility: isVideoOn ? "visible" : "hidden",
+        
       }}
     />
                           {connectionWarning && (
