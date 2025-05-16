@@ -432,17 +432,17 @@ function SideBarFaculty({ onHoverChange }) {
 
   const navItems = [
     {
-      title: "Student Reports",
-      page: "FacultyReport",
+      title: "Reports and Evaluations",
+      page: "FacultyReportEval",
       icon: <FilePlus size={20} />,
-      path: "/faculty/reports",
+      path: "/faculty/reportseval",
     },
-    {
-      title: "Companies Evaluations",
-      page: "FacultyCompEval",
-      icon: <Clipboard size={20} />,
-      path: "/faculty/eval",
-    },
+    // {
+    //   title: "Companies Evaluations",
+    //   page: "FacultyCompEval",
+    //   icon: <Clipboard size={20} />,
+    //   path: "/faculty/eval",
+    // },
     {
       title: "Explore Internships",
       page: "FacultyHomePage",

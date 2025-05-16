@@ -30,7 +30,7 @@ import CompanyEvaluation from "./CompanyEvaluation";
 
 import FacultyLayout from './FacultyLayout';
 import FacultyStatistics from './FacultyStatistics';
-import FacultyReport from './FacultyReport';
+import FacultyReportEval from './FacultyReportEval';
 import FacultyHomePage from "./FacultyHomePage";
 import NotificationSystem from './Components/NotificationsStudent';
 import ProfileStudent from './ProfileStudent';
@@ -105,17 +105,14 @@ function App() {
 
       <Route path="/faculty" element={<FacultyLayout />}>
         <Route index element={<FacultyStatistics />} />
-        <Route path="reports" element={<FacultyReport />} />
+        <Route path="reportseval" element={<FacultyReportEval />} />
         <Route path="internships" element={<FacultyHomePage />} />
         <Route path="mail" element={<FacultyMail />} />
-        <Route path="eval" element={<FacultyCompEvaluations />} />
-
+        {/* <Route path="eval" element={<FacultyCompEvaluations />} /> */}
       </Route>
+      
         <Route path="/staff/SCADHome" element={<SCADHome />} />
-        <Route path="/faculty" element={<FacultyLayout />}>
-          <Route path="reports" element={<FacultyReport />} />
-          <Route path="statistics" element={<FacultyStatistics />} />
-        </Route>
+     
         <Route path="/student/report" element={<Report />} />
         <Route path="/student/evaluation" element={<EvaluationStudent />} />
         <Route path="/student/assessments" element={<Assessment />} /> 
