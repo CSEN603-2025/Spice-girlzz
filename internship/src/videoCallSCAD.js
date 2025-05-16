@@ -16,8 +16,10 @@ import {
   Flag,
   Check,
   X,
+  VideoOff,
 } from "lucide-react";
-import { FaEnvelope } from "react-icons/fa";
+import { FaEnvelope, FaMicrophone, FaMicrophoneSlash, FaVideo, FaVideoSlash, FaComment, FaUserFriends, FaDesktop, FaPhoneSlash } from "react-icons/fa";
+import { IoMdNotifications } from "react-icons/io";
 
 function VideoCallDashboard() {
   const navigate = useNavigate();
@@ -38,6 +40,7 @@ function VideoCallDashboard() {
   const [mediaStream, setMediaStream] = useState(null);
   const [videoError, setVideoError] = useState(null);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const [callDuration, setCallDuration] = useState(0); // Added for call duration tracking
   const [newAppointment, setNewAppointment] = useState({
     recipient: "",
     purpose: "",
@@ -47,15 +50,15 @@ function VideoCallDashboard() {
     studentName: "",
     studentEmail: "",
   });
+  const [isMuted, setIsMuted] = useState(false);
+  const [isVideoOn, setIsVideoOn] = useState(true);
+  const [showChat, setShowChat] = useState(false);
+  const [showParticipants, setShowParticipants] = useState(false);
+  const [isScreenSharing, setIsScreenSharing] = useState(false);
+  const [connectionWarning, setConnectionWarning] = useState(false);
 
-  const storedProfile = JSON.parse(
-    sessionStorage.getItem("studentProfile") || "{}"
-  );
-  const email = (
-    location.state?.email ||
-    storedProfile.email ||
-    ""
-  ).toLowerCase();
+  const storedProfile = JSON.parse(sessionStorage.getItem("studentProfile") || "{}");
+  const email = (location.state?.email || storedProfile.email || "").toLowerCase();
 
   const dummySentAppointments = [
     {
@@ -111,18 +114,20 @@ function VideoCallDashboard() {
     },
   ];
 
-  const newAppointments = JSON.parse(
-    sessionStorage.getItem("sentAppointments") || "[]"
-  );
-  const initialSentAppointments = [
-    ...dummySentAppointments,
-    ...newAppointments,
-  ];
+  const newAppointments = JSON.parse(sessionStorage.getItem("sentAppointments") || "[]");
+  const initialSentAppointments = [...dummySentAppointments, ...newAppointments];
 
   const [appointments, setAppointments] = useState({
     sent: initialSentAppointments,
     received: dummyReceivedAppointments,
   });
+
+  // Format duration in MM:SS
+  const formatDuration = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  };
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -150,10 +155,7 @@ function VideoCallDashboard() {
           ? { ...appointment, status: "Read" }
           : appointment
       );
-      sessionStorage.setItem(
-        "sentAppointments",
-        JSON.stringify(updatedNewAppointments)
-      );
+      sessionStorage.setItem("sentAppointments", JSON.stringify(updatedNewAppointments));
       return { sent: updatedSent, received: updatedReceived };
     });
   };
@@ -202,18 +204,17 @@ function VideoCallDashboard() {
   };
 
   const availableAppointments = [
-    ...appointments.sent.filter(
-      (apt) => apt.status === "Accepted" && apt.isOnline
-    ),
-    ...appointments.received.filter(
-      (apt) => apt.status === "Accepted" && apt.isOnline
-    ),
+    ...appointments.sent.filter((apt) => apt.status === "Accepted" && apt.isOnline),
+    ...appointments.received.filter((apt) => apt.status === "Accepted" && apt.isOnline),
   ];
 
   const startVideoCall = async () => {
     try {
       setVideoError(null);
       console.log("Requesting media devices...");
+      if (window.location.protocol !== "https:" && window.location.hostname !== "localhost") {
+        throw new Error("Camera access requires a secure context (HTTPS or localhost).");
+      }
       const stream = await navigator.mediaDevices.getUserMedia({
         video: true,
         audio: true,
@@ -226,11 +227,17 @@ function VideoCallDashboard() {
         throw new Error("No video tracks available");
       }
       videoTracks.forEach((track) => {
-        console.log(
-          `Video track: enabled=${track.enabled}, state=${track.readyState}`
-        );
+        console.log(`Video track: enabled=${track.enabled}, state=${track.readyState}`);
       });
       setMediaStream(stream);
+      if (localVideoRef.current) {
+        localVideoRef.current.srcObject = stream;
+        await localVideoRef.current.play().catch((error) => {
+          console.error("Error playing local video:", error);
+          addNotification("Failed to play local video", "error");
+        });
+        setIsVideoPlaying(true);
+      }
       if (participantVideoRef.current) {
         console.log("Triggering participant video playback...");
         participantVideoRef.current.play().catch((error) => {
@@ -243,15 +250,15 @@ function VideoCallDashboard() {
       console.error("Error accessing camera/microphone:", error);
       let errorMessage = "Failed to access camera/microphone";
       if (error.name === "NotAllowedError") {
-        errorMessage =
-          "Camera/microphone access denied. Please allow permissions.";
+        errorMessage = "Camera/microphone access denied. Please allow permissions.";
       } else if (error.name === "NotFoundError") {
-        errorMessage =
-          "No camera or microphone found. Please connect a device.";
+        errorMessage = "No camera or microphone found. Please connect a device.";
       } else if (error.name === "NotReadableError") {
         errorMessage = "Camera/microphone in use by another application.";
       } else if (error.message === "No video tracks available") {
         errorMessage = "No video stream available. Check camera connection.";
+      } else if (error.message.includes("secure context")) {
+        errorMessage = "Camera access requires HTTPS or localhost.";
       }
       setVideoError(errorMessage);
       addNotification(errorMessage, "error");
@@ -277,6 +284,7 @@ function VideoCallDashboard() {
     setRingingPhase("ringing");
     setVideoError(null);
     setIsVideoPlaying(false);
+    setCallDuration(0); // Reset call duration
     addNotification("Video call ended", "call");
   };
 
@@ -308,6 +316,17 @@ function VideoCallDashboard() {
         });
     }
   };
+
+  // Increment call duration during video phase
+  useEffect(() => {
+    let timer;
+    if (ringingPhase === "video") {
+      timer = setInterval(() => {
+        setCallDuration((prev) => prev + 1);
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [ringingPhase]);
 
   useEffect(() => {
     if (mediaStream && localVideoRef.current) {
@@ -353,13 +372,8 @@ function VideoCallDashboard() {
       }
       if (participantVideoRef.current) {
         console.log("Participant video element:", participantVideoRef.current);
-        console.log(
-          "Participant video src:",
-          participantVideoRef.current.currentSrc
-        );
-        const videoStyles = window.getComputedStyle(
-          participantVideoRef.current
-        );
+        console.log("Participant video src:", participantVideoRef.current.currentSrc);
+        const videoStyles = window.getComputedStyle(participantVideoRef.current);
         console.log("Participant video styles:", {
           display: videoStyles.display,
           visibility: videoStyles.visibility,
@@ -413,10 +427,7 @@ function VideoCallDashboard() {
     const updatedSentAppointments = [...appointments.sent, newAppt];
     const updatedNewAppointments = [...newAppointments, newAppt];
     setAppointments((prev) => ({ ...prev, sent: updatedSentAppointments }));
-    sessionStorage.setItem(
-      "sentAppointments",
-      JSON.stringify(updatedNewAppointments)
-    );
+    sessionStorage.setItem("sentAppointments", JSON.stringify(updatedNewAppointments));
     setShowScheduleCallModal(false);
     setNewAppointment({
       recipient: "",
@@ -427,10 +438,7 @@ function VideoCallDashboard() {
       studentName: "",
       studentEmail: "",
     });
-    addNotification(
-      `Appointment scheduled with ${newAppt.recipient}`,
-      "appointment"
-    );
+    addNotification(`Appointment scheduled with ${newAppt.recipient}`, "appointment");
   };
 
   const addNotification = (message, type = "system") => {
@@ -461,9 +469,7 @@ function VideoCallDashboard() {
     setNotifications(newNotifications);
 
     const timer = setTimeout(() => {
-      const incomingCall = window.confirm(
-        "Incoming call from advisor.mary. Accept?"
-      );
+      const incomingCall = window.confirm("Incoming call from advisor.mary. Accept?");
       if (incomingCall) {
         addNotification("Call started with advisor.mary", "call");
       }
@@ -478,12 +484,7 @@ function VideoCallDashboard() {
   }, []);
 
   return (
-    <div
-      className="dashboard-container"
-      style={{
-        marginTop: "-290px",
-      }}
-    >
+    <div className="dashboard-container" style={{ marginTop: "-290px" }}>
       <Header toggleSidebar={toggleSidebar} />
       <div className="dashboard-content">
         <SideBar
@@ -495,8 +496,7 @@ function VideoCallDashboard() {
           className="main-content"
           style={{
             marginLeft: window.innerWidth > 768 ? sidebarWidth : "0",
-            width:
-              window.innerWidth > 768 ? `calc(100% - ${sidebarWidth})` : "100%",
+            width: window.innerWidth > 768 ? `calc(100% - ${sidebarWidth})` : "100%",
             transition: "margin-left 0.3s ease-in-out, width 0.3s ease-in-out",
             boxSizing: "border-box",
             backgroundColor: "#f9fafb",
@@ -518,8 +518,7 @@ function VideoCallDashboard() {
             >
               <h2 className="section-title">Call Management</h2>
               <p className="company-info">
-                Schedule video calls for personalized career guidance or to
-                clarify internship report details.
+                Schedule video calls for personalized career guidance or to clarify internship report details.
               </p>
               <div className="dashboard-actions">
                 <button
@@ -549,10 +548,7 @@ function VideoCallDashboard() {
                     padding: "0.75rem 1.5rem",
                     background: "transparent",
                     border: "none",
-                    borderBottom:
-                      activeTab === "sent"
-                        ? "2px solid #2a9d8f"
-                        : "2px solid transparent",
+                    borderBottom: activeTab === "sent" ? "2px solid #2a9d8f" : "2px solid transparent",
                     cursor: "pointer",
                     fontSize: "0.875rem",
                     fontWeight: "500",
@@ -568,10 +564,7 @@ function VideoCallDashboard() {
                     padding: "0.75rem 1.5rem",
                     background: "transparent",
                     border: "none",
-                    borderBottom:
-                      activeTab === "received"
-                        ? "2px solid #2a9d8f"
-                        : "2px solid transparent",
+                    borderBottom: activeTab === "received" ? "2px solid #2a9d8f" : "2px solid transparent",
                     cursor: "pointer",
                     fontSize: "0.875rem",
                     fontWeight: "500",
@@ -584,40 +577,26 @@ function VideoCallDashboard() {
                 </button>
               </div>
               <div className="mail-list">
-                {(activeTab === "sent"
-                  ? appointments.sent
-                  : appointments.received
-                ).length === 0 ? (
+                {(activeTab === "sent" ? appointments.sent : appointments.received).length === 0 ? (
                   <p className="no-data">No appointments found.</p>
                 ) : (
-                  (activeTab === "sent"
-                    ? appointments.sent
-                    : appointments.received
-                  ).map((appointment) => (
+                  (activeTab === "sent" ? appointments.sent : appointments.received).map((appointment) => (
                     <div
                       key={appointment.id}
-                      className={`mail-item ${
-                        appointment.status === "Pending" ? "unread" : ""
-                      }`}
+                      className={`mail-item ${appointment.status === "Pending" ? "unread" : ""}`}
                       onClick={() => openAppointment(appointment)}
                     >
                       <div className="mail-header">
                         <span className="flex items-center">
-                          {activeTab === "sent"
-                            ? appointment.recipient
-                            : appointment.sender}
+                          {activeTab === "sent" ? appointment.recipient : appointment.sender}
                           <span
                             className={`inline-flex items-center ml-2 text-xs font-medium px-2 py-1 rounded-full ${
-                              appointment.isOnline
-                                ? "bg-green-100 text-green-800"
-                                : "bg-gray-100 text-gray-800"
+                              appointment.isOnline ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
                             }`}
                           >
                             <span
                               className={`w-2 h-2 rounded-full mr-1 ${
-                                appointment.isOnline
-                                  ? "bg-green-500 animate-pulse"
-                                  : "bg-gray-500"
+                                appointment.isOnline ? "bg-green-500 animate-pulse" : "bg-gray-500"
                               }`}
                             ></span>
                             {appointment.isOnline ? "Online" : "Offline"}
@@ -627,23 +606,15 @@ function VideoCallDashboard() {
                       </div>
                       <div className="mail-subject">
                         {appointment.purpose}
-                        {appointment.status === "Pending" && (
-                          <span className="appoint-badge">Pending</span>
-                        )}
+                        {appointment.status === "Pending" && <span className="appoint-badge">Pending</span>}
                         {appointment.status === "Accepted" && (
-                          <span className="appoint-badge accepted">
-                            Accepted
-                          </span>
+                          <span className="appoint-badge accepted">Accepted</span>
                         )}
                         {appointment.status === "Rejected" && (
-                          <span className="appoint-badge rejected">
-                            Rejected
-                          </span>
+                          <span className="appoint-badge rejected">Rejected</span>
                         )}
                       </div>
-                      <div className="mail-preview">
-                        {appointment.purpose.substring(0, 100)}...
-                      </div>
+                      <div className="mail-preview">{appointment.purpose.substring(0, 100)}...</div>
                     </div>
                   ))
                 )}
@@ -656,13 +627,10 @@ function VideoCallDashboard() {
       {showScheduleCallModal && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <h3 className="section-title">Schedule a New Call</h3>
-            <form onSubmit={handleScheduleCallSubmit}>
-              <div style={{ marginBottom: "1rem" }}>
-                <label
-                  htmlFor="studentName"
-                  style={{ display: "block", marginBottom: "0.5rem" }}
-                >
+            <h3 className="schedule-header">Schedule a New Call</h3>
+            <form onSubmit={handleScheduleCallSubmit} className="schedule-form">
+              <div style={{ marginBottom: "1rem" }} className="form-group">
+                <label htmlFor="studentName" style={{ display: "block", marginBottom: "0.5rem" }} className="form-label">
                   Student Name
                 </label>
                 <input
@@ -670,25 +638,14 @@ function VideoCallDashboard() {
                   id="studentName"
                   value={newAppointment.studentName}
                   onChange={(e) =>
-                    setNewAppointment({
-                      ...newAppointment,
-                      studentName: e.target.value,
-                    })
+                    setNewAppointment({ ...newAppointment, studentName: e.target.value })
                   }
                   required
-                  style={{
-                    width: "100%",
-                    padding: "0.5rem",
-                    border: "1px solid #e5e7eb",
-                    borderRadius: "4px",
-                  }}
+                   className='form-input'
                 />
               </div>
               <div style={{ marginBottom: "1rem" }}>
-                <label
-                  htmlFor="studentEmail"
-                  style={{ display: "block", marginBottom: "0.5rem" }}
-                >
+                <label htmlFor="studentEmail" style={{ display: "block", marginBottom: "0.5rem" }}className="form-label">
                   Student Email
                 </label>
                 <input
@@ -696,25 +653,14 @@ function VideoCallDashboard() {
                   id="studentEmail"
                   value={newAppointment.studentEmail}
                   onChange={(e) =>
-                    setNewAppointment({
-                      ...newAppointment,
-                      studentEmail: e.target.value,
-                    })
+                    setNewAppointment({ ...newAppointment, studentEmail: e.target.value })
                   }
                   required
-                  style={{
-                    width: "100%",
-                    padding: "0.5rem",
-                    border: "1px solid #e5e7eb",
-                    borderRadius: "4px",
-                  }}
+                  className='form-input'
                 />
               </div>
               <div style={{ marginBottom: "1rem" }}>
-                <label
-                  htmlFor="purpose"
-                  style={{ display: "block", marginBottom: "0.5rem" }}
-                >
+                <label htmlFor="purpose" style={{ display: "block", marginBottom: "0.5rem" }}className="form-label">
                   Purpose
                 </label>
                 <input
@@ -722,25 +668,14 @@ function VideoCallDashboard() {
                   id="purpose"
                   value={newAppointment.purpose}
                   onChange={(e) =>
-                    setNewAppointment({
-                      ...newAppointment,
-                      purpose: e.target.value,
-                    })
+                    setNewAppointment({ ...newAppointment, purpose: e.target.value })
                   }
                   required
-                  style={{
-                    width: "100%",
-                    padding: "0.5rem",
-                    border: "1px solid #e5e7eb",
-                    borderRadius: "4px",
-                  }}
+                   className='form-input'
                 />
               </div>
               <div style={{ marginBottom: "1rem" }}>
-                <label
-                  htmlFor="scheduledDate"
-                  style={{ display: "block", marginBottom: "0.5rem" }}
-                >
+                <label htmlFor="scheduledDate" style={{ display: "block", marginBottom: "0.5rem" }}className="form-label">
                   Scheduled Date
                 </label>
                 <input
@@ -748,25 +683,14 @@ function VideoCallDashboard() {
                   id="scheduledDate"
                   value={newAppointment.scheduledDate}
                   onChange={(e) =>
-                    setNewAppointment({
-                      ...newAppointment,
-                      scheduledDate: e.target.value,
-                    })
+                    setNewAppointment({ ...newAppointment, scheduledDate: e.target.value })
                   }
                   required
-                  style={{
-                    width: "100%",
-                    padding: "0.5rem",
-                    border: "1px solid #e5e7eb",
-                    borderRadius: "4px",
-                  }}
+                   className='form-input'
                 />
               </div>
               <div style={{ marginBottom: "1rem" }}>
-                <label
-                  htmlFor="scheduledTime"
-                  style={{ display: "block", marginBottom: "0.5rem" }}
-                >
+                <label htmlFor="scheduledTime" style={{ display: "block", marginBottom: "0.5rem" }}className="form-label">
                   Scheduled Time
                 </label>
                 <input
@@ -774,25 +698,14 @@ function VideoCallDashboard() {
                   id="scheduledTime"
                   value={newAppointment.scheduledTime}
                   onChange={(e) =>
-                    setNewAppointment({
-                      ...newAppointment,
-                      scheduledTime: e.target.value,
-                    })
+                    setNewAppointment({ ...newAppointment, scheduledTime: e.target.value })
                   }
                   required
-                  style={{
-                    width: "100%",
-                    padding: "0.5rem",
-                    border: "1px solid #e5e7eb",
-                    borderRadius: "4px",
-                  }}
+                   className='form-input'
                 />
               </div>
               <div style={{ marginBottom: "1rem" }}>
-                <label
-                  htmlFor="isOnline"
-                  style={{ display: "block", marginBottom: "0.5rem" }}
-                >
+                <label htmlFor="isOnline" style={{ display: "block", marginBottom: "0.5rem" }}className="form-label">
                   Online Call
                 </label>
                 <input
@@ -800,25 +713,22 @@ function VideoCallDashboard() {
                   id="isOnline"
                   checked={newAppointment.isOnline}
                   onChange={(e) =>
-                    setNewAppointment({
-                      ...newAppointment,
-                      isOnline: e.target.checked,
-                    })
+                    setNewAppointment({ ...newAppointment, isOnline: e.target.checked })
                   }
-                  style={{ marginRight: "0.5rem" }}
+                  className='form-input'
                 />
                 <span>Enable Online Call</span>
               </div>
-              <div style={{ display: "flex", justifyContent: "flex-end" }}>
+              <div style={{ display: "flex", justifyContent: "flex-end" , gap:"10px"}}>
                 <button
                   type="button"
-                  className="btn btn-danger"
+                  className="clear"
                   onClick={() => setShowScheduleCallModal(false)}
-                  style={{ marginRight: "0.5rem" }}
+                  
                 >
                   Cancel
                 </button>
-                <button type="submit" className="btn btn-primary">
+                <button type="submit" className="submit">
                   Schedule
                 </button>
               </div>
@@ -832,26 +742,19 @@ function VideoCallDashboard() {
           <div className="modal-content">
             <h3 className="section-title">Select Appointment to Start Call</h3>
             {availableAppointments.length === 0 ? (
-              <p className="no-data">
-                No accepted and online appointments available.
-              </p>
+              <p className="no-data">No accepted and online appointments available.</p>
             ) : (
               <div style={{ maxHeight: "300px", overflowY: "auto" }}>
                 {availableAppointments.map((apt) => (
                   <div
                     key={apt.id}
                     className="mail-item"
-                    style={{
-                      cursor: "pointer",
-                      padding: "1rem",
-                      borderBottom: "1px solid #e5e7eb",
-                    }}
+                    style={{ cursor: "pointer", padding: "1rem", borderBottom: "1px solid #e5e7eb" }}
                     onClick={() => handleSelectAppointment(apt)}
                   >
                     <div className="mail-header">
                       <span className="flex items-center">
-                        {activeTab === "sent" ? apt.recipient : apt.sender} (
-                        {apt.studentName})
+                        {activeTab === "sent" ? apt.recipient : apt.sender} ({apt.studentName})
                         <span className="inline-flex items-center ml-2 text-xs font-medium px-2 py-1 rounded-full bg-green-100 text-green-800">
                           <span className="w-2 h-2 rounded-full mr-1 bg-green-500 animate-pulse"></span>
                           Online
@@ -880,7 +783,6 @@ function VideoCallDashboard() {
       {ringingAppointment && (
         <div className="modal-overlay">
           <div
-            className
             style={{
               background: "#fff",
               padding: "1.5rem",
@@ -888,7 +790,6 @@ function VideoCallDashboard() {
               maxWidth: "900px",
               width: "100%",
               maxHeight: "700px",
-              //overflowY: "auto",
               boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
               textAlign: ringingPhase === "ringing" ? "center" : "left",
             }}
@@ -898,17 +799,11 @@ function VideoCallDashboard() {
                 <h3 className="section-title">Calling...</h3>
                 <p
                   className="animate-pulse"
-                  style={{
-                    color: "#2a9d8f",
-                    fontSize: "1.25rem",
-                    margin: "1rem 0",
-                  }}
+                  style={{ color: "#2a9d8f", fontSize: "1.25rem", margin: "1rem 0" }}
                 >
                   📞 Ringing{" "}
-                  {activeTab === "sent"
-                    ? ringingAppointment.recipient
-                    : ringingAppointment.sender}{" "}
-                  ({ringingAppointment.studentName})
+                  {activeTab === "sent" ? ringingAppointment.recipient : ringingAppointment.sender} (
+                  {ringingAppointment.studentName})
                 </p>
               </>
             ) : (
@@ -921,108 +816,179 @@ function VideoCallDashboard() {
                 ) : (
                   <div style={{ marginBottom: "1rem" }}>
                     <div style={{ position: "relative" }}>
-                      <video
-                        ref={localVideoRef}
-                        autoPlay
-                        playsInline
-                        muted
-                        style={{
-                          width: "100% ",
-                          maxHeight: "500px ",
-                          borderRadius: "0.375rem",
-                          background: "#000",
-                          objectFit: "cover",
-                          display: mediaStream
-                            ? "block !important"
-                            : "none !important",
-                          visibility: "visible !important",
-                        }}
-                      />
-                      {mediaStream &&
-                      mediaStream.getVideoTracks().length === 0 ? (
-                        <p style={{ color: "#991b1b", marginTop: "0.5rem" }}>
-                          No video stream available. Check camera connection.
-                        </p>
-                      ) : !mediaStream ? (
-                        <p style={{ color: "#6b7280", marginTop: "0.5rem" }}>
-                          Waiting for camera...
-                        </p>
-                      ) : null}
-                      <div
-                        style={{
-                          position: "absolute",
-                          top: "10px",
-                          left: "10px",
-                          width: "150px",
-                          height: "100px",
-                          border: "2px solid #fff",
-                          borderRadius: "8px",
-                          overflow: "hidden",
-                          background: "rgba(0, 0, 0, 0.5)",
-                          visibility: "visible !important",
-                        }}
-                      >
-                        <video
-                          ref={participantVideoRef}
-                          autoPlay
-                          playsInline
-                          muted
-                          loop
-                          style={{
-                            width: "100% !important",
-                            height: "100% ",
-                            objectFit: "cover",
-                            display: "block !important",
-                            visibility: "visible !important",
-                          }}
-                        >
-                          <source
+                      {/* Main Video (Remote Participant) */}
+                      <div className="w-full h-64 bg-gray-100 rounded-md flex items-center justify-center mb-4 overflow-hidden">
+                        <div className="relative w-full h-full">
+                         <img
+      src="https://media1.tenor.com/m/fSQKu0TBPi0AAAAd/stock-cam-webcampro.gif"
+      alt="Remote participant placeholder"
+      style={{
+        width: "100%",
+        height: "100%",
+        objectFit: "cover",
+        display: mediaStream ? "block" : "none",
+        visibility: isVideoOn ? "visible" : "hidden",
+      }}
+    />
+                          {connectionWarning && (
+                            <div className="absolute top-2 left-2 bg-yellow-100 text-yellow-800 px-2 py-1 rounded-md text-sm flex items-center">
+                              <IoMdNotifications className="mr-1" /> Weak connection
+                            </div>
+                          )}
+                          <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded-md text-sm">
+                            {ringingAppointment.studentName}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Local Video (Small overlay) */}
+                      <div className="absolute bottom-4 right-4 w-24 h-32 bg-gray-200 rounded-md border-2 border-white overflow-hidden">
+                        {isVideoOn ? (
+                          <video
+                           
+                            autoPlay
+                            playsInline
+                            muted
+                            loop
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "cover",
+                              display: "block",
+                              visibility: "visible",
+                            }}
                             src="https://media.giphy.com/media/m9cEHoc70Xtqy7jrMJ/giphy.mp4"
-                            type="video/mp4"
                           />
-                          Your browser does not support the video tag.
-                        </video>
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-black">
+                            <FaVideoSlash size={20} className="text-gray-600" />
+                          </div>
+                        )}
+                        <div className="absolute bottom-1 left-1 bg-black bg-opacity-50 text-white px-1 rounded text-xs">
+                          You (SCAD)
+                        </div>
+                      </div>
+
+                      {/* Call Duration */}
+                      <div className="absolute top-2 right-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded-md text-sm">
+                        {formatDuration(callDuration)}
                       </div>
                     </div>
-                    <p
-                      style={{
-                        fontSize: "0.875rem",
-                        color: "#6b7280",
-                        marginTop: "0.5rem",
-                      }}
-                    >
-                      {mediaStream
-                        ? `Camera ${isVideoPlaying ? "playing" : "active"}`
-                        : "Waiting for camera..."}
-                    </p>
-                    {!isVideoPlaying && mediaStream && (
+
+                    {/* Call Controls */}
+                    <div className="flex justify-center gap-4 mb-4">
                       <button
-                        className="btn btn-primary"
-                        onClick={playVideosManually}
-                        style={{ marginTop: "0.5rem" }}
+                        onClick={() => setIsMuted(!isMuted)}
+                        className={`p-3 rounded-full text-white cursor-pointer transition-all duration-200 ${
+                          isMuted ? 'bg-red-500 hover:bg-red-600' : 'bg-gray-600 hover:bg-gray-700'
+                        }`}
+                        title={isMuted ? "Unmute" : "Mute"}
                       >
-                        Play Video
+                        {isMuted ? <FaMicrophoneSlash size={20} /> : <FaMicrophone size={20} />}
                       </button>
+                      <button
+                        onClick={() => setIsVideoOn(!isVideoOn)}
+                        className={`p-3 rounded-full text-white cursor-pointer transition-all duration-200 ${
+                          !isVideoOn ? 'bg-red-500 hover:bg-red-600' : 'bg-gray-600 hover:bg-gray-700'
+                        }`}
+                        title={isVideoOn ? "Turn off camera" : "Turn on camera"}
+                      >
+                        {isVideoOn ? <FaVideo size={20} /> : <FaVideoSlash size={20} />}
+                      </button>
+                      <button
+                        onClick={() => setShowChat(!showChat)}
+                        className={`p-3 rounded-full text-white cursor-pointer transition-all duration-200 ${
+                          showChat ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-600 hover:bg-gray-700'
+                        }`}
+                        title="Chat"
+                      >
+                        <FaComment size={20} />
+                      </button>
+                      <button
+                        onClick={() => setShowParticipants(!showParticipants)}
+                        className={`p-3 rounded-full text-white cursor-pointer transition-all duration-200 ${
+                          showParticipants ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-600 hover:bg-gray-700'
+                        }`}
+                        title="Participants"
+                      >
+                        <FaUserFriends size={20} />
+                      </button>
+                      <button
+                        onClick={() => setIsScreenSharing(!isScreenSharing)}
+                        className={`p-3 rounded-full text-white cursor-pointer transition-all duration-200 ${
+                          isScreenSharing ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-600 hover:bg-gray-700'
+                        }`}
+                        title="Share screen"
+                      >
+                        <FaDesktop size={20} />
+                      </button>
+                      <button
+                        onClick={stopVideoCall}
+                        className="p-3 rounded-full bg-red-500 text-white cursor-pointer hover:bg-red-600 transition-all duration-200"
+                        title="End call"
+                      >
+                        <FaPhoneSlash size={20} />
+                      </button>
+                    </div>
+
+                    {/* Chat Sidebar */}
+                    {showChat && (
+                      <div className="absolute right-4 top-20 w-64 bg-white border border-gray-200 rounded-md shadow-lg p-3 z-10">
+                        <div className="flex justify-between items-center mb-3">
+                          <h3 className="font-medium">Chat</h3>
+                          <button onClick={() => setShowChat(false)} className="text-gray-500 hover:text-gray-700">
+                            ×
+                          </button>
+                        </div>
+                        <div className="h-48 overflow-y-auto mb-3 space-y-2">
+                          <div className="text-right">
+                            <div className="inline-block bg-blue-500 text-white px-3 py-1 rounded-lg max-w-xs">
+                              Hi there!
+                            </div>
+                          </div>
+                          <div>
+                            <div className="inline-block bg-gray-200 px-3 py-1 rounded-lg max-w-xs">
+                              Hello! Can you hear me?
+                            </div>
+                          </div>
+                        </div>
+                        <input 
+                          type="text" 
+                          placeholder="Type a message..." 
+                          className="w-full p-2 border border-gray-300 rounded-md" 
+                          disabled
+                        />
+                      </div>
+                    )}
+
+                    {/* Participants Sidebar */}
+                    {showParticipants && (
+                      <div className="absolute right-4 top-20 w-64 bg-white border border-gray-200 rounded-md shadow-lg p-3 z-10">
+                        <div className="flex justify-between items-center mb-3">
+                          <h3 className="font-medium">Participants (2)</h3>
+                          <button onClick={() => setShowParticipants(false)} className="text-gray-500 hover:text-gray-700">
+                            ×
+                          </button>
+                        </div>
+                        <ul className="space-y-2">
+                          <li className="flex items-center">
+                            <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-2">
+                              <span className="text-blue-600 text-sm">SC</span>
+                            </div>
+                            <span>SCAD Office (Host)</span>
+                          </li>
+                          <li className="flex items-center">
+                            <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-2">
+                              <span className="text-green-600 text-sm">S</span>
+                            </div>
+                            <span>{ringingAppointment.studentName}</span>
+                            <span className="ml-auto text-xs text-gray-500">Mic {isMuted ? "off" : "on"}</span>
+                          </li>
+                        </ul>
+                      </div>
                     )}
                   </div>
                 )}
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    gap: "0.5rem",
-                  }}
-                >
-                  <button
-                    className="btn btn-danger"
-                    style={{
-                      marginBottom: "70px",
-                    }}
-                    onClick={stopVideoCall}
-                  >
-                    End Call
-                  </button>
-                </div>
               </>
             )}
           </div>
@@ -1057,56 +1023,49 @@ function VideoCallDashboard() {
             <div className="mail-meta">
               <p>
                 <strong>{activeTab === "sent" ? "To" : "From"}:</strong>{" "}
-                {activeTab === "sent"
-                  ? selectedAppointment.recipient
-                  : selectedAppointment.sender}
+                {activeTab === "sent" ? selectedAppointment.recipient : selectedAppointment.sender}
               </p>
               <p>
                 <strong>Student Name:</strong> {selectedAppointment.studentName}
               </p>
               <p>
-                <strong>Student Email:</strong>{" "}
-                {selectedAppointment.studentEmail}
+                <strong>Student Email:</strong> {selectedAppointment.studentEmail}
               </p>
               <p>
                 <strong>Date Sent:</strong> {selectedAppointment.dateSent}
               </p>
               <p>
-                <strong>Scheduled Date:</strong>{" "}
-                {selectedAppointment.scheduledDate}
+                <strong>Scheduled Date:</strong> {selectedAppointment.scheduledDate}
               </p>
               <p>
-                <strong>Scheduled Time:</strong>{" "}
-                {selectedAppointment.scheduledTime}
+                <strong>Scheduled Time:</strong> {selectedAppointment.scheduledTime}
               </p>
               <p>
                 <strong>Status:</strong> {selectedAppointment.status}
               </p>
-              {selectedAppointment.status === "Pending" &&
-                activeTab === "received" && (
-                  <span className="application-tag">Pending Appointment</span>
-                )}
+              {selectedAppointment.status === "Pending" && activeTab === "received" && (
+                <span className="application-tag">Pending Appointment</span>
+              )}
             </div>
             <div className="mail-body-container">
               <p className="mail-body">{selectedAppointment.purpose}</p>
-              {selectedAppointment.status === "Pending" &&
-                activeTab === "received" && (
-                  <div>
-                    <button
-                      className="btn btn-primary"
-                      onClick={() => handleAccept(selectedAppointment.id)}
-                      style={{ marginRight: "0.5rem" }}
-                    >
-                      Accept
-                    </button>
-                    <button
-                      className="btn btn-danger"
-                      onClick={() => handleReject(selectedAppointment.id)}
-                    >
-                      Reject
-                    </button>
-                  </div>
-                )}
+              {selectedAppointment.status === "Pending" && activeTab === "received" && (
+                <div>
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => handleAccept(selectedAppointment.id)}
+                    style={{ marginRight: "0.5rem" }}
+                  >
+                    Accept
+                  </button>
+                  <button
+                    className="btn btn-danger"
+                    onClick={() => handleReject(selectedAppointment.id)}
+                  >
+                    Reject
+                  </button>
+                </div>
+              )}
             </div>
             <button className="btn btn-danger" onClick={closeAppointment}>
               Close
@@ -1129,25 +1088,13 @@ function VideoCallDashboard() {
           }}
         >
           <div style={{ padding: "1rem", borderBottom: "1px solid #e5e7eb" }}>
-            <h3
-              style={{
-                fontSize: "1.125rem",
-                fontWeight: "bold",
-                color: "#1f2937",
-              }}
-            >
+            <h3 style={{ fontSize: "1.125rem", fontWeight: "bold", color: "#1f2937" }}>
               Notifications
             </h3>
           </div>
           <div style={{ maxHeight: "24rem", overflowY: "auto" }}>
             {notifications.length === 0 ? (
-              <p
-                style={{
-                  padding: "1rem",
-                  color: "#6b7280",
-                  textAlign: "center",
-                }}
-              >
+              <p style={{ padding: "1rem", color: "#6b7280", textAlign: "center" }}>
                 No notifications
               </p>
             ) : (
@@ -1163,9 +1110,7 @@ function VideoCallDashboard() {
                   onMouseOut={(e) => (e.target.style.background = "none")}
                 >
                   <p style={{ color: "#4b5563" }}>{notification.message}</p>
-                  <p style={{ fontSize: "0.75rem", color: "#6b7280" }}>
-                    {notification.time}
-                  </p>
+                  <p style={{ fontSize: "0.75rem", color: "#6b7280" }}>{notification.time}</p>
                 </div>
               ))
             )}
@@ -1189,10 +1134,7 @@ function VideoCallDashboard() {
       )}
 
       {isSidebarOpen && (
-        <div
-          className="mobile-overlay active"
-          onClick={() => setIsSidebarOpen(false)}
-        />
+        <div className="mobile-overlay active" onClick={() => setIsSidebarOpen(false)} />
       )}
     </div>
   );

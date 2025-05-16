@@ -25,6 +25,9 @@ function ProfileCompany() {
 
   const storedProfile = JSON.parse(sessionStorage.getItem("companyProfile") || "{}");
   const email = (location.state?.email || storedProfile.email || "").toLowerCase();
+  
+
+  const [isSidebarHovered, setIsSidebarHovered] = useState(false);
 
   const initialProfileData = {
     name: 'Tech Innovators Ltd.',
@@ -166,15 +169,17 @@ function ProfileCompany() {
       {/* Layout */}
       <div style={{ ...styles.layout, marginTop: '4rem', minHeight: 'calc(100vh - 4rem)' }}>
         {/* Sidebar */}
-        <div style={styles.sidebar}>
-          <SideBar
-            setActivePage={(page) =>
-              navigate(`/company${page === "home" ? "" : "/" + page}`, { state: { email } })
-            }
-            isOpen={isSidebarOpen}
-            setSidebarWidth={setSidebarWidth}
-          />
-        </div>
+         <SideBar onHoverChange={setIsSidebarHovered} style={styles.sidebar}  />
+      <main
+        style={{
+          padding: "1rem",
+          overflowY: "auto",
+          width: "100%",
+          boxSizing: "border-box",
+          backgroundColor: "#f9fafb",
+          minHeight: "100vh",
+        }}
+      className={`content ${isSidebarHovered || isSidebarOpen ? 'sidebar-expanded' : ''}`}>
 
         {/* Profile Content */}
         <div
@@ -540,7 +545,9 @@ function ProfileCompany() {
             onClick={() => setIsSidebarOpen(false)}
           />
         )}
+        </main>
       </div>
+
     </div>
   );
 }

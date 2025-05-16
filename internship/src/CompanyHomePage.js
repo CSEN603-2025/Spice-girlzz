@@ -544,37 +544,14 @@ const toggleSidebar = () => {
               <strong>Description:</strong> {selectedInternship.description}
             </p>
             <div className="modal-footer">
-              <button
-                onClick={() => setShowVideoModal(true)}
-                className="quickButton"
-                aria-label="Open internship requirements video guide"
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <MdOutlinePlayCircle
-                  style={{
-                    marginRight: "8px",
-                    color: "#ef4444",
-                    fontSize: "1.25rem",
-                  }}
-                />
-                <span>Quick Guide: Internship Requirements</span>
-              </button>
+
               <button
                 className="modal-close-button"
                 onClick={() => setSelectedInternship(null)}
               >
                 Close
               </button>
-              <button
-                className="modal-button"
-                onClick={() => handleApply(selectedInternship)}
-              >
-                Apply
-              </button>
+
             </div>
           </div>
         </div>
@@ -583,19 +560,8 @@ const toggleSidebar = () => {
       {showVideoModal && (
         <div className="modal-overlay" role="dialog" aria-labelledby="video-modal-title">
           <div className="modal-content">
-            <h3 id="video-modal-title" className="modal-title">
-              Internship Requirements
-            </h3>
-            <div className="video-container">
-              <video
-                controls
-                src={videoByMajor[""]} // Use general video as default
-                style={{ width: "100%", maxHeight: "400px" }}
-                onError={() => alert("Failed to load video. Please try again later.")}
-              >
-                Your browser does not support the video tag.
-              </video>
-            </div>
+          
+          
             <div className="modal-footer">
               <button
                 className="modal-close-button"

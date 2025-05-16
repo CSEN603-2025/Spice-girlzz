@@ -418,6 +418,7 @@ import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FilePlus, Clipboard, Users, CheckSquare,  BarChart2,  FileText } from "lucide-react";
 
+
 function SideBarFaculty({ onHoverChange }) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -432,17 +433,17 @@ function SideBarFaculty({ onHoverChange }) {
 
   const navItems = [
     {
-      title: "Student Reports",
-      page: "FacultyReport",
+      title: "Reports and Evaluations",
+      page: "FacultyReportEval",
       icon: <FilePlus size={20} />,
-      path: "/faculty/reports",
+      path: "/faculty/reportseval",
     },
-    {
-      title: "Companies Evaluations",
-      page: "FacultyCompEval",
-      icon: <Clipboard size={20} />,
-      path: "/faculty/eval",
-    },
+    // {
+    //   title: "Companies Evaluations",
+    //   page: "FacultyCompEval",
+    //   icon: <Clipboard size={20} />,
+    //   path: "/faculty/eval",
+    // },
     {
       title: "Explore Internships",
       page: "FacultyHomePage",
@@ -502,11 +503,13 @@ function SideBarFaculty({ onHoverChange }) {
               onMouseOver={(e) => {
                 if (location.pathname !== item.path) {
                   e.currentTarget.style.background = "#4d8f88";
+                   e.currentTarget.style.color = "white"; // Change text color to white
                 }
               }}
               onMouseOut={(e) => {
                 if (location.pathname !== item.path) {
                   e.currentTarget.style.background = "transparent";
+                   e.currentTarget.style.color = ""; 
                 }
               }}
             >

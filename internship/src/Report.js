@@ -244,7 +244,9 @@ const predefinedReports = [
 
   const handleAddCourse = () => {
     if (!selectedCourseId) {
-      alert("Please select a course to add.");
+      
+       showSuccessToast("Please select a course to add");
+      
       return;
     }
 
@@ -259,7 +261,8 @@ const predefinedReports = [
       );
       setSelectedCourseId("");
     } else if (report.courses.includes(selectedCourse.name)) {
-      alert("This course has already been added.");
+      
+       showSuccessToast("This course has already been added");
     }
   };
 
@@ -280,7 +283,8 @@ const predefinedReports = [
 
   const handleSubmit = () => {
     if (!internshipId || !selectedInternship) {
-      alert("Please select an internship before submitting.");
+  
+       showSuccessToast("Please select an internship before submitting.");
       return;
     }
 
@@ -371,14 +375,16 @@ const predefinedReports = [
 
   const handleUpdate = () => {
     if (!editingReportId) {
-      alert("No report selected for editing.");
+    
+       showSuccessToast("No report selected for editing.");
       return;
     }
 
     // Find the original report to preserve its data
     const originalReport = reports.find(r => r.id === editingReportId);
     if (!originalReport) {
-      alert("Report not found.");
+     
+       showSuccessToast("No report was found");
       return;
     }
 
@@ -484,7 +490,8 @@ const predefinedReports = [
 
   const handleAppealSubmit = () => {
     if (!appealMessage.trim()) {
-      alert("Please enter an appeal message");
+    
+       showSuccessToast("Please enter an appeal message");
       return;
     }
     

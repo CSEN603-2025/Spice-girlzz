@@ -7,6 +7,7 @@ import {
   FileText,
   Phone,
   LogOut,
+  Play,
 } from "lucide-react";
 
 function ScadSideBar({ setActivePage, activePage, onWidthChange }) {
@@ -39,6 +40,12 @@ function ScadSideBar({ setActivePage, activePage, onWidthChange }) {
       page: "video-calls",
       icon: <Phone size={20} />,
     },
+    {
+      title: "Workshops",
+      page: "workshops",
+      icon: <Play size={20} />,
+    },
+ 
   ];
 
   useEffect(() => {
@@ -91,13 +98,16 @@ function ScadSideBar({ setActivePage, activePage, onWidthChange }) {
         display: "flex",
         flexDirection: "column",
         width: isSidebarHovered ? "16rem" : "4rem",
-        height: "100%",
+         height: "100vh",
         transition: "width 0.3s ease-in-out",
         boxShadow: isSidebarHovered ? "2px 0 4px rgba(0, 0, 0, 0.1)" : "none",
         overflowX: "hidden",
         position: "relative",
+        
+
       }}
     >
+      <div style={{marginTop: "60px"}}></div>
       <ul style={{ listStyle: "none", padding: "0.5rem", margin: 0 }}>
         {navItems.map((item, index) => (
           <li key={index} style={{ margin: "0.25rem 0" }}>

@@ -27,6 +27,8 @@ function EvaluationStudent() {
   const [editingEvaluationId, setEditingEvaluationId] = useState(null);
   const [viewingEvaluation, setViewingEvaluation] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+    const [showSuccessNotification, setShowSuccessNotification] = useState(false);
+    const [successMessage, setSuccessMessage] = useState("");
 
   const storedProfile = JSON.parse(sessionStorage.getItem("studentProfile") || "{}");
   const email = (location.state?.email || storedProfile.email || "").toLowerCase();
@@ -189,7 +191,7 @@ function EvaluationStudent() {
 
   const handleAddCourse = () => {
     if (!selectedCourseId) {
-      alert("Please select a course to add.");
+      showSuccessToast("Please select a course to add.");
       return;
     }
 
@@ -204,7 +206,8 @@ function EvaluationStudent() {
       );
       setSelectedCourseId("");
     } else if (evaluation.courses.includes(selectedCourse.name)) {
-      alert("This course has already been added.");
+      showSuccessToast("This course has already been added.");
+
     }
   };
 
@@ -223,9 +226,18 @@ function EvaluationStudent() {
     }
   };
 
+      const showSuccessToast = (message) => {
+    setShowSuccessNotification(true);
+    setSuccessMessage(message);
+    setTimeout(() => {
+      setShowSuccessNotification(false);
+    }, 3000);
+  };
+  
+
   const handleSubmit = () => {
     if (!internshipId || !selectedInternship) {
-      alert("Please select an internship before submitting.");
+       showSuccessToast("Please select an internship before submtting");
       return;
     }
 
@@ -275,7 +287,8 @@ function EvaluationStudent() {
       }
       const courseList = majorCourses[studentMajor] || majorCourses["default"];
       setCourses(courseList);
-      alert("Evaluation submitted successfully!");
+     showSuccessToast("Evaluation submitted successfully!");
+   
     }, 1000);
   };
 
@@ -312,7 +325,7 @@ function EvaluationStudent() {
 
   const handleUpdate = () => {
     if (!internshipId || !selectedInternship) {
-      alert("Please select an internship before updating.");
+     showSuccessToast("Please select an internship before updating!");
       return;
     }
 
@@ -355,7 +368,7 @@ function EvaluationStudent() {
     }
     const courseList = majorCourses[studentMajor] || majorCourses["default"];
     setCourses(courseList);
-    alert("Evaluation updated successfully!");
+    showSuccessToast("Evaluation submitted successfully!");
   };
 
   const handleDelete = (evaluationId) => {
@@ -363,7 +376,7 @@ function EvaluationStudent() {
       const updatedEvaluations = evaluations.filter((r) => r.id !== evaluationId);
       setEvaluations(updatedEvaluations);
       sessionStorage.setItem("studentEvaluations", JSON.stringify(updatedEvaluations));
-      alert("Evaluation deleted successfully!");
+       showSuccessToast("Evaluation deleted successfully!");
     }
   };
 
@@ -1050,6 +1063,76 @@ function EvaluationStudent() {
                   </button>
                 </div>
               </div>
+            </div>
+          </div>
+        )}
+
+              {/* Success Notification */}
+        {showSuccessNotification && (
+          <div
+            style={{
+              position: "fixed",
+              top: "20px",
+              left: "50%",
+              transform: "translateX(-50%)",
+              zIndex: 1002,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              width: "100%",
+              maxWidth: "320px",
+            }}
+          >
+            <div
+              style={{
+                position: "relative",
+                display: "flex",
+                alignItems: "flex-start",
+                padding: "0.875rem 1rem",
+                borderRadius: "0.5rem",
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+                background: "white",
+                borderLeft: "4px solid #2a9d8f",
+                width: "100%",
+                animation: "slideIn 0.3s ease-out forwards",
+              }}
+            >
+              <div style={{ marginRight: "0.75rem", marginTop: "0.125rem", flexShrink: 0, color: "#2a9d8f" }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "0.25rem" }}>
+                  <h4 style={{ fontWeight: "600", fontSize: "0.875rem", margin: 0, color: "#1f2937" }}>
+                    {successMessage}
+                  </h4>
+                  <span style={{ fontSize: "0.6875rem", color: "#6b7280" }}>
+                    {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                </div>
+              </div>
+              <button 
+                onClick={() => setShowSuccessNotification(false)}
+                style={{
+                  position: "absolute",
+                  top: "0.5rem",
+                  right: "0.5rem",
+                  background: "none",
+                  border: "none",
+                  color: "#9ca3af",
+                  cursor: "pointer",
+                  padding: "0.25rem",
+                  borderRadius: "50%",
+                  transition: "all 0.2s ease",
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
             </div>
           </div>
         )}

@@ -89,21 +89,7 @@ const SCADHeader = ({ setActivePage, activePage, toggleSidebar }) => {
           maxWidth: "50%",
         }}
       >
-        <button
-          onClick={toggleSidebar}
-          style={{
-            padding: "0.5rem",
-            color: "#000",
-            background: "transparent",
-            border: "none",
-            borderRadius: "6px",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
-          }}
-        ></button>
+
         <h2
           style={{
             fontFamily: "'Inter', sans-serif",

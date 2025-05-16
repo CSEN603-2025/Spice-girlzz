@@ -15,6 +15,7 @@ const NotificationSystem = () => {
   const email = (location.state?.email || storedProfile.email || "").toLowerCase();
   const isStudent = email.endsWith('@student.guc.edu.eg');
   const isCompany = email.endsWith('@acceptedcorp.com');
+   const isSCAD = email.endsWith('@guc.edu.eg');
 
   const callNotifications = [
     { 
@@ -83,6 +84,28 @@ const NotificationSystem = () => {
       details: 'Your supervisor has reviewed your latest submission',
       type: 'success'
     },
+  ];
+
+  const SCADnotifs = [
+    { 
+      id: 1, 
+      message: 'Alaa@student accepted your appointment!', 
+      details: 'Head to video call to start a call!',
+      type: 'alert'
+    },
+    { 
+      id: 2, 
+      message: 'Alaa@student accepted your appointment!', 
+      details: 'Head to video call to start a call!',
+      type: 'alert'
+    },
+     { 
+      id: 3, 
+      message: 'Alaa@student accepted your appointment!', 
+      details: 'Head to video call to start a call!',
+      type: 'alert'
+    },
+ 
   ];
 
   const companyNotifications = [
@@ -188,6 +211,27 @@ const NotificationSystem = () => {
     return () => clearInterval(interval);
   }, [isCompany]);
 
+    useEffect(() => {
+    if (!isSCAD) return;
+
+    const interval = setInterval(() => {
+      const randomIndex = Math.floor(Math.random() * SCADnotifs.length);
+      const newNotification = { 
+        ...SCADnotifs[randomIndex], 
+        id: Date.now() + Math.random(),
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      };
+
+      setNotification(newNotification);
+
+      setTimeout(() => {
+        setNotification(null);
+      }, 5000);
+    }, 15000);
+
+    return () => clearInterval(interval);
+  }, [isSCAD]);
+
   const handleDismiss = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     setNotification(null);
@@ -209,7 +253,7 @@ const NotificationSystem = () => {
     setNotification(null);
   };
 
-  if (!isStudent && !isCompany) return null;
+  if (!isStudent && !isCompany &&isSCAD) return null;
 
   return (
     <div className="notification-container">

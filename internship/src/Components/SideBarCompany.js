@@ -6,6 +6,8 @@ function SideBarCompany({ onHoverChange }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [isSidebarHovered, setIsSidebarHovered] = useState(false);
+    const [hoveredButton, setHoveredButton] = useState(null);
+  
 
   const handleHoverChange = (hovered) => {
     setIsSidebarHovered(hovered);
@@ -47,8 +49,8 @@ function SideBarCompany({ onHoverChange }) {
       width: "100%",
       padding: "0.75rem",
       textAlign: "left",
-      color: "#000",
-      background: isActive ? "#4d8f88" : "transparent",
+  color: isActive || hoveredButton === itemPath ? "#fff" : "#000",
+      background: isActive ? "#2a9d8f" : hoveredButton === itemPath ? "#2a9d8f" : "transparent",
       borderRadius: "0.375rem",
       fontSize: "0.875rem",
       fontWeight: "500",
@@ -89,20 +91,17 @@ function SideBarCompany({ onHoverChange }) {
             <button
               style={getButtonStyle(item.path)}
               onClick={() => navigate(item.path)}
-              onMouseOver={(e) => {
-                if (location.pathname !== item.path) {
-                  e.currentTarget.style.background = "#4d8f88";
-                }
-              }}
-              onMouseOut={(e) => {
-                if (location.pathname !== item.path) {
-                  e.currentTarget.style.background = "transparent";
-                }
-              }}
+               onMouseOver={() => setHoveredButton(item.path)}
+              onMouseOut={() => setHoveredButton(null)}
             >
-              {React.cloneElement(item.icon, {
-                color: location.pathname === item.path ? "#bcb8b1" : "#999",
-              })}
+             {React.cloneElement(item.icon, {
+                             color:
+                               location.pathname === item.path
+                                 ? "#bcb8b1"
+                                 : hoveredButton === item.path
+                                 ? "#fff"
+                                 : "#999",
+                           })}
               {isSidebarHovered && (
                 <span style={{ whiteSpace: "nowrap", overflow: "hidden" }}>
                   {item.title}
