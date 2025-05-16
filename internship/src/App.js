@@ -20,6 +20,7 @@ import FacultyMember from "./FacultyMember";
 import VideoCall from "./VideoCall";
 import ScheduleCall from "./ScheduleCall";
 import StartCall from "./StartCall";
+import StudentMail from "./StudentMail";
 import ProfileCompany from "./ProfileCompany";
 import CompanyMail from "./CompanyMail";
 import CompanyHomePage from "./CompanyHomePage";
@@ -116,11 +117,7 @@ function App() {
         <Route path="/student/report" element={<Report />} />
         <Route path="/student/evaluation" element={<EvaluationStudent />} />
         <Route path="/student/assessments" element={<Assessment />} /> 
-
-
-        
-
-         
+        <Route path="/student/messages" element={<StudentMail />} /> 
       </Routes>
     </Router>
 

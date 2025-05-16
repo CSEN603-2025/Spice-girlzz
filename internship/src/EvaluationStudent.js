@@ -11,7 +11,6 @@ function EvaluationStudent() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [sidebarWidth, setSidebarWidth] = useState("4rem");
   const [evaluation, setEvaluation] = useState({
-
     body: "",
     courses: [],
     recommend: "",
@@ -234,7 +233,6 @@ function EvaluationStudent() {
     setTimeout(() => {
       const newEvaluation = {
         id: Date.now(),
-   
         body: evaluation.body,
         courses: evaluation.courses,
         internshipId: internshipId,
@@ -257,7 +255,6 @@ function EvaluationStudent() {
 
       setIsSubmitting(false);
       setEvaluation({
-    
         body: "",
         courses: [],
         recommend: "",
@@ -294,7 +291,6 @@ function EvaluationStudent() {
     const evaluationToEdit = evaluations.find((r) => r.id === evaluationId);
     if (evaluationToEdit) {
       setEvaluation({
-
         body: evaluationToEdit.body,
         courses: evaluationToEdit.courses,
         recommend: evaluationToEdit.recommend || "",
@@ -338,7 +334,6 @@ function EvaluationStudent() {
 
     setIsSubmitting(false);
     setEvaluation({
- 
       body: "",
       courses: [],
       recommend: "",
@@ -373,148 +368,149 @@ function EvaluationStudent() {
   };
 
   const handleDownloadPDF = (evaluationId) => {
-  const evaluationToDownload = evaluations.find((r) => r.id === evaluationId);
-  if (evaluationToDownload) {
-    const doc = new jsPDF();
-    
-    // Set document properties
-    doc.setProperties({
-      title: `${evaluationToDownload.title} Evaluation`,
-      subject: 'Internship Evaluation Report',
-      author: 'GUC Internship System',
-      creator: 'GUC Internship System'
-    });
+    const evaluationToDownload = evaluations.find((r) => r.id === evaluationId);
+    if (evaluationToDownload) {
+      const doc = new jsPDF();
+      
+      // Set document properties
+      doc.setProperties({
+        title: `${evaluationToDownload.title} Evaluation`,
+        subject: 'Internship Evaluation Report',
+        author: 'GUC Internship System',
+        creator: 'GUC Internship System'
+      });
 
-    // Add logo or header
-    doc.setFontSize(20);
-    doc.setTextColor(40, 157, 143); // #2a9d8f color
-    doc.text('German University in Cairo', 105, 20, { align: 'center' });
-    doc.setFontSize(16);
-    doc.setTextColor(0, 0, 0); // Black color
-    doc.text('Internship Evaluation Report', 105, 30, { align: 'center' });
+      // Add logo or header
+      doc.setFontSize(20);
+      doc.setTextColor(40, 157, 143); // #2a9d8f color
+      doc.text('German University in Cairo', 105, 20, { align: 'center' });
+      doc.setFontSize(16);
+      doc.setTextColor(0, 0, 0); // Black color
+      doc.text('Internship Evaluation Report', 105, 30, { align: 'center' });
 
-    // Add horizontal line
-    doc.setDrawColor(40, 157, 143);
-    doc.setLineWidth(0.5);
-    doc.line(20, 35, 190, 35);
+      // Add horizontal line
+      doc.setDrawColor(40, 157, 143);
+      doc.setLineWidth(0.5);
+      doc.line(20, 35, 190, 35);
 
 
-    const introductionLines = doc.splitTextToSize(
-      evaluationToDownload.introduction, 
-      170
-    );
-    doc.text(introductionLines, 20, 80);
+      const introductionLines = doc.splitTextToSize(
+        evaluationToDownload.introduction, 
+        170
+      );
+      doc.text(introductionLines, 20, 80);
 
-    // Body Section
-    let yPosition = 80 + introductionLines.length * 7;
-    if (yPosition > 250) {
-      doc.addPage();
-      yPosition = 20;
-    }
-    
-    doc.setFontSize(14);
-    doc.setTextColor(40, 157, 143);
-    doc.text('Evaluation Details', 20, yPosition);
-    doc.setFontSize(12);
-    doc.setTextColor(0, 0, 0);
-    yPosition += 10;
-    const bodyLines = doc.splitTextToSize(evaluationToDownload.body, 170);
-    doc.text(bodyLines, 20, yPosition);
-
-    // Helpful Courses Section
-    yPosition += bodyLines.length * 7 + 10;
-    if (yPosition > 250) {
-      doc.addPage();
-      yPosition = 20;
-    }
-    
-    doc.setFontSize(14);
-    doc.setTextColor(40, 157, 143);
-    doc.text('Helpful Courses', 20, yPosition);
-    doc.setFontSize(12);
-    doc.setTextColor(0, 0, 0);
-    yPosition += 10;
-    
-    evaluationToDownload.courses.forEach((course, index) => {
+      // Body Section
+      let yPosition = 80 + introductionLines.length * 7;
       if (yPosition > 250) {
         doc.addPage();
         yPosition = 20;
       }
-      doc.text(`• ${course}`, 25, yPosition);
-      yPosition += 7;
-    });
+      
+      doc.setFontSize(14);
+      doc.setTextColor(40, 157, 143);
+      doc.text('Evaluation Details', 20, yPosition);
+      doc.setFontSize(12);
+      doc.setTextColor(0, 0, 0);
+      yPosition += 10;
+      const bodyLines = doc.splitTextToSize(evaluationToDownload.body, 170);
+      doc.text(bodyLines, 20, yPosition);
 
-    // Recommendation Section
-    yPosition += 10;
-    if (yPosition > 250) {
-      doc.addPage();
-      yPosition = 20;
-    }
-    
-    doc.setFontSize(14);
-    doc.setTextColor(40, 157, 143);
-    doc.text('Recommendation', 20, yPosition);
-    doc.setFontSize(12);
-    doc.setTextColor(0, 0, 0);
-    yPosition += 10;
-    
-    doc.text(
-      `Would you recommend this internship? ${evaluationToDownload.recommend === "yes" ? "Yes" : "No"}`,
-      20,
-      yPosition
-    );
-    
-    if (evaluationToDownload.recommend === "yes" && evaluationToDownload.recommendReason) {
+      // Helpful Courses Section
+      yPosition += bodyLines.length * 7 + 10;
+      if (yPosition > 250) {
+        doc.addPage();
+        yPosition = 20;
+      }
+      
+      doc.setFontSize(14);
+      doc.setTextColor(40, 157, 143);
+      doc.text('Helpful Courses', 20, yPosition);
+      doc.setFontSize(12);
+      doc.setTextColor(0, 0, 0);
+      yPosition += 10;
+      
+      evaluationToDownload.courses.forEach((course, index) => {
+        if (yPosition > 250) {
+          doc.addPage();
+          yPosition = 20;
+        }
+        doc.text(`• ${course}`, 25, yPosition);
+        yPosition += 7;
+      });
+
+      // Recommendation Section
       yPosition += 10;
       if (yPosition > 250) {
         doc.addPage();
         yPosition = 20;
       }
-      doc.text('Reason:', 20, yPosition);
-      yPosition += 7;
-      const reasonLines = doc.splitTextToSize(evaluationToDownload.recommendReason, 170);
-      doc.text(reasonLines, 25, yPosition);
-    }
-
-    // Footer
-    const pageCount = doc.internal.getNumberOfPages();
-    for (let i = 1; i <= pageCount; i++) {
-      doc.setPage(i);
-      doc.setFontSize(10);
-      doc.setTextColor(150, 150, 150);
+      
+      doc.setFontSize(14);
+      doc.setTextColor(40, 157, 143);
+      doc.text('Recommendation', 20, yPosition);
+      doc.setFontSize(12);
+      doc.setTextColor(0, 0, 0);
+      yPosition += 10;
+      
       doc.text(
-        `Page ${i} of ${pageCount}`,
-        105,
-        287,
-        { align: 'center' }
+        `Would you recommend this internship? ${evaluationToDownload.recommend === "yes" ? "Yes" : "No"}`,
+        20,
+        yPosition
       );
-      doc.text(
-        'GUC Internship System - Confidential',
-        105,
-        292,
-        { align: 'center' }
-      );
-    }
+      
+      if (evaluationToDownload.recommend === "yes" && evaluationToDownload.recommendReason) {
+        yPosition += 10;
+        if (yPosition > 250) {
+          doc.addPage();
+          yPosition = 20;
+        }
+        doc.text('Reason:', 20, yPosition);
+        yPosition += 7;
+        const reasonLines = doc.splitTextToSize(evaluationToDownload.recommendReason, 170);
+        doc.text(reasonLines, 25, yPosition);
+      }
 
-    // Save the PDF with a proper filename
-    const fileName = `${evaluationToDownload.title.replace(/[^a-zA-Z0-9]/g, '_')}_Evaluation.pdf`;
-    doc.save(fileName);
-  }
-};
+      // Footer
+      const pageCount = doc.internal.getNumberOfPages();
+      for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(10);
+        doc.setTextColor(150, 150, 150);
+        doc.text(
+          `Page ${i} of ${pageCount}`,
+          105,
+          287,
+          { align: 'center' }
+        );
+        doc.text(
+          'GUC Internship System - Confidential',
+          105,
+          292,
+          { align: 'center' }
+        );
+      }
+
+      // Save the PDF with a proper filename
+      const fileName = `${evaluationToDownload.title.replace(/[^a-zA-Z0-9]/g, '_')}_Evaluation.pdf`;
+      doc.save(fileName);
+    }
+  };
   const closeModal = () => {
     setIsModalOpen(false);
     setViewingEvaluation(null);
   };
 
   return (
-    <div style={styles.container}>
+    <div className="containerReports">
       {!isModalOpen && <Header />}
       <div style={{ ...styles.layout, marginTop: "4rem", minHeight: "calc(100vh - 4rem)" }}>
         <div style={styles.sidebar}>
           <SideBar
-   setActivePage={(page) =>
-            navigate(`/student${page === "home" ? "" : "/" + page}`, { state: { email } })
-          }                 isOpen={isSidebarOpen}
+            setActivePage={(page) =>
+              navigate(`/student${page === "home" ? "" : "/" + page}`, { state: { email } })
+            }
+            isOpen={isSidebarOpen}
             setSidebarWidth={setSidebarWidth}
           />
         </div>
@@ -530,409 +526,429 @@ function EvaluationStudent() {
             backgroundColor: "#f9fafb",
           }}
         >
-
-
-          {evaluations.length > 0 && (
-            <div style={{ marginBottom: "2rem" }}>
+          <div style={{ display: "flex", gap: "2rem" }}>
+            {/* Evaluations List Section */}
+            <div style={{ flex: 1 }}>
               <h3 style={{ fontSize: "1.25rem", fontWeight: "600", marginBottom: "1rem", color: "#1f2937" }}>
                 Your Evaluations
               </h3>
-              <ul style={{ listStyle: "none", padding: 0 }}>
-                {evaluations.map((r) => (
-                  <li
-                    key={r.id}
-                    style={{
-                      background: "#fff",
-                      padding: "1rem",
-                      borderRadius: "0.375rem",
-                      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                      marginBottom: "1rem",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    <span style={{ fontSize: "1rem", color: "#1f2937" }}>{r.internshipTitle}</span>
-                    <div style={{ display: "flex", gap: "0.5rem" }}>
-                      <button
-                        onClick={() => handleView(r.id)}
-                        style={{
-                          padding: "0.5rem 1rem",
-                          background: "#3b82f6",
-                          color: "#fff",
-                          borderRadius: "0.25rem",
-                          cursor: "pointer",
-                          fontSize: "0.875rem",
-                        }}
-                        onMouseOver={(e) => (e.target.style.background = "#2563eb")}
-                        onMouseOut={(e) => (e.target.style.background = "#3b82f6")}
-                      >
-                        View
-                      </button>
-                      <button
-                        onClick={() => handleEdit(r.id)}
-                        style={{
-                          padding: "0.5rem 1rem",
-                          background: "#10b981",
-                          color: "#fff",
-                          borderRadius: "0.25rem",
-                          cursor: "pointer",
-                          fontSize: "0.875rem",
-                        }}
-                        onMouseOver={(e) => (e.target.style.background = "#059669")}
-                        onMouseOut={(e) => (e.target.style.background = "#10b981")}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(r.id)}
-                        style={{
-                          padding: "0.5rem 1rem",
-                          background: "#ef4444",
-                          color: "#fff",
-                          borderRadius: "0.25rem",
-                          cursor: "pointer",
-                          fontSize: "0.875rem",
-                        }}
-                        onMouseOver={(e) => (e.target.style.background = "#dc2626")}
-                        onMouseOut={(e) => (e.target.style.background = "#ef4444")}
-                      >
-                        Delete
-                      </button>
-                      <button
-                        onClick={() => handleDownloadPDF(r.id)}
-                        style={{
-                          padding: "0.5rem 1rem",
-                          background: "#8b5cf6",
-                          color: "#fff",
-                          borderRadius: "0.25rem",
-                          cursor: "pointer",
-                          fontSize: "0.875rem",
-                        }}
-                        onMouseOver={(e) => (e.target.style.background = "#7c3aed")}
-                        onMouseOut={(e) => (e.target.style.background = "#8b5cf6")}
-                      >
-                        Download PDF
-                      </button>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          <h3 style={{ fontSize: "1.25rem", fontWeight: "600", marginBottom: "1rem", color: "#1f2937" }}>
-            Add New Evaluation
-          </h3>
-
-          <div
-            style={{
-              background: "#fff",
-              padding: "1.5rem",
-              borderRadius: "0.375rem",
-              boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-            }}
-          >
-            <div style={{ marginBottom: "1rem" }}>
-              <label
-                htmlFor="internship"
-                style={{
-                  display: "block",
-                  fontSize: "0.875rem",
-                  fontWeight: "500",
-                  color: "#1f2937",
-                  marginBottom: "0.25rem",
-                }}
-              >
-                Select an Internship
-              </label>
-              <select
-                id="internship"
-                value={internshipId || ""}
-                onChange={handleInternshipChange}
-                style={{
-                  width: "100%",
-                  padding: "0.5rem",
-                  border: "1px solid #d1d5db",
-                  borderRadius: "0.25rem",
-                  fontSize: "0.875rem",
-                }}
-                onFocus={(e) => (e.target.style.boxShadow = "0 0 0 2px #2a9d8f")}
-                onBlur={(e) => (e.target.style.boxShadow = "none")}
-              >
-                <option value="">Select an internship</option>
-                {internships
-                  .filter((i) => i.status === "completed" && !i.evaluationCreated)
-                  .map((internship) => (
-                    <option key={internship.id} value={internship.id}>
-                      {internship.title} - {internship.company}
-                    </option>
+              {evaluations.length > 0 ? (
+                <ul style={{ listStyle: "none", padding: 0 }}>
+                  {evaluations.map((r) => (
+                    <li
+                      key={r.id}
+                      style={{
+                        background: "#fff",
+                        padding: "1.25rem",
+                        borderRadius: "0.5rem",
+                        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                        marginBottom: "1.5rem",
+                        position: "relative",
+                        cursor: "pointer",
+                        transition: "all 0.2s ease",
+                      }}
+                      onClick={() => handleView(r.id)}
+                    >
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                            <span style={{ fontSize: "1.125rem", fontWeight: "600", color: "#1f2937" }}>
+                              {r.internshipTitle}
+                            </span>
+                          </div>
+                          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginTop: "1rem" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                              <span
+                                style={{
+                                  padding: "0.375rem 0.75rem",
+                                  borderRadius: "9999px",
+                                  fontSize: "0.75rem",
+                                  fontWeight: "500",
+                                  backgroundColor: "#2a9d8f",
+                                  color: "#fff",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "0.375rem",
+                                }}
+                              >
+                                Evaluation
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div style={{ position: "relative" }}>
+                          <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleEdit(r.id);
+                              }}
+                              style={{
+                                padding: "0.375rem 0.75rem",
+                                color: "#A9A9A9",
+                                border: "none",
+                                borderRadius: "0.375rem",
+                                cursor: "pointer",
+                                fontSize: "0.875rem",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "0.375rem",
+                                position: "relative",
+                              }}
+                              title="Edit this evaluation"
+                            >
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                              </svg>
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDownloadPDF(r.id);
+                              }}
+                              style={{
+                                padding: "0.375rem 0.75rem",
+                                color: "#A9A9A9",
+                                border: "none",
+                                borderRadius: "0.375rem",
+                                cursor: "pointer",
+                                fontSize: "0.875rem",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "0.375rem",
+                                position: "relative",
+                              }}
+                              title="Download evaluation as PDF"
+                            >
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                              </svg>
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (window.confirm("Are you sure you want to delete this evaluation? This action cannot be undone.")) {
+                                  handleDelete(r.id);
+                                }
+                              }}
+                              style={{
+                                padding: "0.375rem 0.75rem",
+                                color: "#A9A9A9",
+                                border: "none",
+                                borderRadius: "0.375rem",
+                                cursor: "pointer",
+                                fontSize: "0.875rem",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "0.375rem",
+                                position: "relative",
+                              }}
+                              title="Delete this evaluation"
+                            >
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
                   ))}
-              </select>
-            </div>
-
-
-        
-
-            <div style={{ marginBottom: "1rem" }}>
-              <label
-                htmlFor="body"
-                style={{
-                  display: "block",
-                  fontSize: "0.875rem",
-                  fontWeight: "500",
-                  color: "#1f2937",
-                  marginBottom: "0.25rem",
-                }}
-              >
-                Body
-              </label>
-              <textarea
-                id="body"
-                name="body"
-                value={evaluation.body}
-                onChange={handleInputChange}
-                placeholder="Write the body of the evaluation"
-                style={{
-                  width: "100%",
-                  padding: "0.5rem",
-                  border: "1px solid #d1d5db",
-                  borderRadius: "0.25rem",
-                  fontSize: "0.875rem",
-                  minHeight: "200px",
-                }}
-                onFocus={(e) => (e.target.style.boxShadow = "0 0 0 2px #2a9d8f")}
-                onBlur={(e) => (e.target.style.boxShadow = "none")}
-              />
-            </div>
-
-            <div style={{ marginBottom: "1rem" }}>
-              <label
-                htmlFor="course"
-                style={{
-                  display: "block",
-                  fontSize: "0.875rem",
-                  fontWeight: "500",
-                  color: "#1f2937",
-                  marginBottom: "0.25rem",
-                }}
-              >
-                Select Helpful Course
-              </label>
-              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                <select
-                  id="course"
-                  name="course"
-                  value={selectedCourseId}
-                  onChange={handleCourseSelection}
-                  style={{
-                    width: "100%",
-                    padding: "0.5rem",
-                    border: "1px solid #d1d5db",
-                    borderRadius: "0.25rem",
-                    fontSize: "0.875rem",
-                  }}
-                  onFocus={(e) => (e.target.style.boxShadow = "0 0 0 2px #2a9d8f")}
-                  onBlur={(e) => (e.target.style.boxShadow = "none")}
-                >
-                  <option value="">Select a course</option>
-                  {courses
-                    .filter((course) => !evaluation.courses.includes(course.name))
-                    .map((course) => (
-                      <option key={course.id} value={course.id}>
-                        {course.name}
-                      </option>
-                    ))}
-                </select>
-                <button
-                  type="button"
-                  onClick={handleAddCourse}
-                  style={{
-                    padding: "0.5rem 1rem",
-                    background: "#3b82f6",
-                    color: "#fff",
-                    borderRadius: "0.25rem",
-                    cursor: "pointer",
-                    fontSize: "0.875rem",
-                  }}
-                  onMouseOver={(e) => (e.target.style.background = "#2563eb")}
-                  onMouseOut={(e) => (e.target.style.background = "#3b82f6")}
-                >
-                  Add
-                </button>
-              </div>
-              {evaluation.courses.length > 0 && (
-                <div style={{ marginTop: "0.5rem" }}>
-                  <strong style={{ fontSize: "0.875rem", color: "#1f2937" }}>
-                    Selected Courses:
-                  </strong>
-                  <ul style={{ marginTop: "0.25rem", paddingLeft: "1.5rem" }}>
-                    {evaluation.courses.map((course, index) => (
-                      <li
-                        key={index}
-                        style={{
-                          fontSize: "0.875rem",
-                          color: "#1f2937",
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "0.5rem",
-                          marginBottom: "0.25rem",
-                        }}
-                      >
-                        {course}
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveCourse(course)}
-                          style={{
-                            padding: "0.2rem 0.5rem",
-                            background: "#ef4444",
-                            color: "#fff",
-                            borderRadius: "0.25rem",
-                            cursor: "pointer",
-                            fontSize: "0.75rem",
-                          }}
-                          onMouseOver={(e) => (e.target.style.background = "#dc2626")}
-                          onMouseOut={(e) => (e.target.style.background = "#ef4444")}
-                        >
-                          Remove
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
+                </ul>
+              ) : (
+                <div style={{ 
+                  background: "#fff", 
+                  padding: "2rem", 
+                  borderRadius: "0.375rem", 
+                  textAlign: "center",
+                  color: "#6b7280"
+                }}>
+                  No evaluations yet
                 </div>
               )}
             </div>
 
-            <div style={{ marginBottom: "1rem" }}>
-              <label
-                htmlFor="recommend"
+            {/* New Evaluation Form Section */}
+            <div style={{ flex: 1 }}>
+              <h3 style={{ fontSize: "1.25rem", fontWeight: "600", marginBottom: "1rem", color: "#1f2937" }}>
+                {editingEvaluationId ? "Edit Evaluation" : "Add New Evaluation"}
+              </h3>
+              <div
                 style={{
-                  display: "block",
-                  fontSize: "0.875rem",
-                  fontWeight: "500",
-                  color: "#1f2937",
-                  marginBottom: "0.25rem",
+                  background: "#fff",
+                  padding: "1.5rem",
+                  borderRadius: "0.375rem",
+                  boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                  position: "sticky",
+                  top: "2rem"
                 }}
               >
-                Would you recommend this internship?
-              </label>
-              <select
-                id="recommend"
-                name="recommend"
-                value={evaluation.recommend}
-                onChange={handleInputChange}
-                style={{
-                  width: "100%",
-                  padding: "0.5rem",
-                  border: "1px solid #d1d5db",
-                  borderRadius: "0.25rem",
-                  fontSize: "0.875rem",
-                }}
-                onFocus={(e) => (e.target.style.boxShadow = "0 0 0 2px #2a9d8f")}
-                onBlur={(e) => (e.target.style.boxShadow = "none")}
-              >
-                <option value="">Select an option</option>
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
-              </select>
-            </div>
+                <div style={{ marginBottom: "1rem" }}>
+                  <label
+                    htmlFor="internship"
+                    style={{
+                      display: "block",
+                      fontSize: "0.875rem",
+                      fontWeight: "500",
+                      color: "#1f2937",
+                      marginBottom: "0.25rem",
+                    }}
+                  >
+                    Select an Internship
+                  </label>
+                  <select
+                    id="internship"
+                    value={internshipId || ""}
+                    onChange={handleInternshipChange}
+                    style={{
+                      width: "100%",
+                      padding: "0.75rem",
+                      border: "1px solid #d1d5db",
+                      borderRadius: "0.375rem",
+                      fontSize: "0.875rem",
+                    }}
+                    onFocus={(e) => (e.target.style.boxShadow = "0 0 0 2px #2a9d8f")}
+                    onBlur={(e) => (e.target.style.boxShadow = "none")}
+                  >
+                    <option value="">Select an internship</option>
+                    {internships
+                      .filter((i) => i.status === "completed" && !i.evaluationCreated)
+                      .map((internship) => (
+                        <option key={internship.id} value={internship.id}>
+                          {internship.title} - {internship.company}
+                        </option>
+                      ))}
+                  </select>
+                </div>
 
-            {evaluation.recommend === "yes" && (
-              <div style={{ marginBottom: "1rem" }}>
-                <label
-                  htmlFor="recommendReason"
-                  style={{
-                    display: "block",
-                    fontSize: "0.875rem",
-                    fontWeight: "500",
-                    color: "#1f2937",
-                    marginBottom: "0.25rem",
-                  }}
-                >
-                  Reason for Recommendation
-                </label>
-                <textarea
-                  id="recommendReason"
-                  name="recommendReason"
-                  value={evaluation.recommendReason}
-                  onChange={handleInputChange}
-                  placeholder="Why would you recommend this internship?"
-                  style={{
-                    width: "100%",
-                    padding: "0.5rem",
-                    border: "1px solid #d1d5db",
-                    borderRadius: "0.25rem",
-                    fontSize: "0.875rem",
-                    minHeight: "100px",
-                  }}
-                  onFocus={(e) => (e.target.style.boxShadow = "0 0 0 2px #2a9d8f")}
-                  onBlur={(e) => (e.target.style.boxShadow = "none")}
-                />
+                <div style={{ marginBottom: "1rem" }}>
+                  <label
+                    htmlFor="body"
+                    style={{
+                      display: "block",
+                      fontSize: "0.875rem",
+                      fontWeight: "500",
+                      color: "#1f2937",
+                      marginBottom: "0.25rem",
+                    }}
+                  >
+                    Body
+                  </label>
+                  <textarea
+                    id="body"
+                    name="body"
+                    value={evaluation.body}
+                    onChange={handleInputChange}
+                    placeholder="Write the body of the evaluation"
+                    style={{
+                      width: "100%",
+                      padding: "0.75rem",
+                      border: "1px solid #d1d5db",
+                      borderRadius: "0.375rem",
+                      fontSize: "0.875rem",
+                      minHeight: "200px",
+                      resize: "vertical",
+                    }}
+                    onFocus={(e) => (e.target.style.boxShadow = "0 0 0 2px #2a9d8f")}
+                    onBlur={(e) => (e.target.style.boxShadow = "none")}
+                  />
+                </div>
+
+                <div style={{ marginBottom: "1rem" }}>
+                  <label
+                    htmlFor="course"
+                    style={{
+                      display: "block",
+                      fontSize: "0.875rem",
+                      fontWeight: "500",
+                      color: "#1f2937",
+                      marginBottom: "0.25rem",
+                    }}
+                  >
+                    Select Helpful Course
+                  </label>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                    <select
+                      id="course"
+                      name="course"
+                      value={selectedCourseId}
+                      onChange={handleCourseSelection}
+                      style={{
+                        width: "100%",
+                        padding: "0.75rem",
+                        border: "1px solid #d1d5db",
+                        borderRadius: "0.375rem",
+                        fontSize: "0.875rem",
+                      }}
+                      onFocus={(e) => (e.target.style.boxShadow = "0 0 0 2px #2a9d8f")}
+                      onBlur={(e) => (e.target.style.boxShadow = "none")}
+                    >
+                      <option value="">Select a course</option>
+                      {courses
+                        .filter((course) => !evaluation.courses.includes(course.name))
+                        .map((course) => (
+                          <option key={course.id} value={course.id}>
+                            {course.name}
+                          </option>
+                        ))}
+                    </select>
+                    <button
+                      type="button"
+                      onClick={handleAddCourse}
+                      className="appeal"
+                      onMouseOver={(e) => (e.target.style.background = "#2563eb")}
+                      onMouseOut={(e) => (e.target.style.background = "#3b82f6")}
+                    >
+                      Add
+                    </button>
+                  </div>
+                  {evaluation.courses.length > 0 && (
+                    <div style={{ marginTop: "0.5rem" }}>
+                      <strong style={{ fontSize: "0.875rem", color: "#1f2937" }}>
+                        Selected Courses:
+                      </strong>
+                      <ul style={{ marginTop: "0.25rem", paddingLeft: "1.5rem" }}>
+                        {evaluation.courses.map((course, index) => (
+                          <li
+                            key={index}
+                            style={{
+                              fontSize: "0.875rem",
+                              color: "#1f2937",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "0.5rem",
+                              marginBottom: "0.25rem",
+                            }}
+                          >
+                            {course}
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveCourse(course)}
+                              className="modal-close-button"
+                              onMouseOver={(e) => (e.target.style.background = "#dc2626")}
+                              onMouseOut={(e) => (e.target.style.background = "#ef4444")}
+                            >
+                              Remove
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+
+                <div style={{ marginBottom: "1rem" }}>
+                  <label
+                    htmlFor="recommend"
+                    style={{
+                      display: "block",
+                      fontSize: "0.875rem",
+                      fontWeight: "500",
+                      color: "#1f2937",
+                      marginBottom: "0.25rem",
+                    }}
+                  >
+                    Would you recommend this internship?
+                  </label>
+                  <select
+                    id="recommend"
+                    name="recommend"
+                    value={evaluation.recommend}
+                    onChange={handleInputChange}
+                    style={{
+                      width: "100%",
+                      padding: "0.75rem",
+                      border: "1px solid #d1d5db",
+                      borderRadius: "0.375rem",
+                      fontSize: "0.875rem",
+                    }}
+                    onFocus={(e) => (e.target.style.boxShadow = "0 0 0 2px #2a9d8f")}
+                    onBlur={(e) => (e.target.style.boxShadow = "none")}
+                  >
+                    <option value="">Select an option</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                  </select>
+                </div>
+
+                {evaluation.recommend === "yes" && (
+                  <div style={{ marginBottom: "1rem" }}>
+                    <label
+                      htmlFor="recommendReason"
+                      style={{
+                        display: "block",
+                        fontSize: "0.875rem",
+                        fontWeight: "500",
+                        color: "#1f2937",
+                        marginBottom: "0.25rem",
+                      }}
+                    >
+                      Reason for Recommendation
+                    </label>
+                    <textarea
+                      id="recommendReason"
+                      name="recommendReason"
+                      value={evaluation.recommendReason}
+                      onChange={handleInputChange}
+                      placeholder="Why would you recommend this internship?"
+                      style={{
+                        width: "100%",
+                        padding: "0.75rem",
+                        border: "1px solid #d1d5db",
+                        borderRadius: "0.375rem",
+                        fontSize: "0.875rem",
+                        minHeight: "100px",
+                        resize: "vertical",
+                      }}
+                      onFocus={(e) => (e.target.style.boxShadow = "0 0 0 2px #2a9d8f")}
+                      onBlur={(e) => (e.target.style.boxShadow = "none")}
+                    />
+                  </div>
+                )}
+
+                <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.5rem" }}>
+                  {editingEvaluationId ? (
+                    <button
+                      className="actionButton"
+                      onClick={handleUpdate}
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? "Updating..." : "Update Evaluation"}
+                    </button>
+                  ) : (
+                    <button
+                      className="actionButton"
+                      onClick={handleSubmit}
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? "Submitting..." : "Submit Evaluation"}
+                    </button>
+                  )}
+                  <button
+                    className="clear"
+                    onClick={() => {
+                      setEvaluation({
+                        body: "",
+                        courses: [],
+                        recommend: "",
+                        recommendReason: "",
+                      });
+                      setEditingEvaluationId(null);
+                    }}
+                  >
+                    Clear
+                  </button>
+                </div>
               </div>
-            )}
-
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.5rem" }}>
-              {editingEvaluationId ? (
-                <button
-                  style={{
-                    padding: "0.5rem 1rem",
-                    background: "#10b981",
-                    color: "#fff",
-                    borderRadius: "0.25rem",
-                    cursor: "pointer",
-                    opacity: isSubmitting ? 0.6 : 1,
-                  }}
-                  onClick={handleUpdate}
-                  disabled={isSubmitting}
-                  onMouseOver={(e) => !isSubmitting && (e.target.style.background = "#059669")}
-                  onMouseOut={(e) => !isSubmitting && (e.target.style.background = "#10b981")}
-                >
-                  {isSubmitting ? "Updating..." : "Update Evaluation"}
-                </button>
-              ) : (
-                <button
-                  style={{
-                    padding: "0.5rem 1rem",
-                    background: "#2a9d8f",
-                    color: "#fff",
-                    borderRadius: "0.25rem",
-                    cursor: "pointer",
-                    opacity: isSubmitting ? 0.6 : 1,
-                  }}
-                  onClick={handleSubmit}
-                  disabled={isSubmitting}
-                  onMouseOver={(e) => !isSubmitting && (e.target.style.background = "#21867a")}
-                  onMouseOut={(e) => !isSubmitting && (e.target.style.background = "#2a9d8f")}
-                >
-                  {isSubmitting ? "Submitting..." : "Submit Evaluation"}
-                </button>
-              )}
-              <button
-                style={{
-                  padding: "0.5rem 1rem",
-                  background: "#ef4444",
-                  color: "#fff",
-                  borderRadius: "0.25rem",
-                  cursor: "pointer",
-                }}
-                onClick={() =>
-                  setEvaluation({
-                                
-                    body: "",
-                    courses: [],
-                    recommend: "",
-                    recommendReason: "",
-                  })
-                }
-                onMouseOver={(e) => (e.target.style.background = "#dc2626")}
-                onMouseOut={(e) => (e.target.style.background = "#ef4444")}
-              >
-                Clear
-              </button>
             </div>
           </div>
         </main>
 
+        {/* Modal for Viewing Evaluation */}
         {isModalOpen && viewingEvaluation && (
           <div
             style={{
@@ -951,66 +967,89 @@ function EvaluationStudent() {
             <div
               style={{
                 background: "#fff",
-                padding: "2rem",
+                padding: "1.5rem",
                 borderRadius: "0.5rem",
                 width: "90%",
                 maxWidth: "600px",
                 maxHeight: "80vh",
                 overflowY: "auto",
-                boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+                borderLeft: "4px solid #2a9d8f",
               }}
             >
-              <section>
-                <h3 style={{ fontSize: "1.25rem", fontWeight: "600", marginBottom: "0.5rem", color: "#1f2937" }}>
-                  Body
-                </h3>
-                <p style={{ fontSize: "1rem", color: "#4b5563", marginBottom: "1rem" }}>
-                  {viewingEvaluation.body}
-                </p>
-              </section>
-              <section>
-                <h3 style={{ fontSize: "1.25rem", fontWeight: "600", marginBottom: "0.5rem", color: "#1f2937" }}>
-                  Helpful Courses
-                </h3>
-                <ul style={{ listStyle: "disc", paddingLeft: "1.5rem", color: "#4b5563" }}>
-                  {viewingEvaluation.courses.map((course, index) => (
-                    <li key={index} style={{ fontSize: "1rem", marginBottom: "0.25rem" }}>
-                      {course}
-                    </li>
-                  ))}
-                </ul>
-              </section>
-              <section>
-                <h3 style={{ fontSize: "1.25rem", fontWeight: "600", marginBottom: "0.5rem", color: "#1f2937" }}>
-                  Recommendation
-                </h3>
-                <p style={{ fontSize: "1rem", color: "#4b5563", marginBottom: "1rem" }}>
-                  Would you recommend this internship?{" "}
-                  {viewingEvaluation.recommend === "yes" ? "Yes" : "No"}
-                  {viewingEvaluation.recommend === "yes" && viewingEvaluation.recommendReason && (
-                    <>
-                      <br />
-                      <strong>Reason:</strong> {viewingEvaluation.recommendReason}
-                    </>
-                  )}
-                </p>
-              </section>
-              <button
-                onClick={closeModal}
-                style={{
-                  padding: "0.5rem 1rem",
-                  background: "#ef4444",
-                  color: "#fff",
-                  borderRadius: "0.25rem",
-                  cursor: "pointer",
-                  fontSize: "0.875rem",
-                  marginTop: "1rem",
-                }}
-                onMouseOver={(e) => (e.target.style.background = "#dc2626")}
-                onMouseOut={(e) => (e.target.style.background = "#ef4444")}
-              >
-                Close
-              </button>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+                  <h2 style={{ fontSize: "1.25rem", fontWeight: "600", color: "#1f2937", margin: 0 }}>
+                    {viewingEvaluation.internshipTitle}
+                  </h2>
+                </div>
+                <button
+                  onClick={closeModal}
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    color: "#9ca3af",
+                    cursor: "pointer",
+                    padding: "0.25rem",
+                    borderRadius: "50%",
+                    transition: "all 0.2s ease",
+                  }}
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+              </div>
+
+              <div style={{ borderTop: "1px solid #e5e7eb", paddingTop: "1rem" }}>
+                <section style={{ marginBottom: "1.5rem" }}>
+                  <h3 style={{ fontSize: "1rem", fontWeight: "600", marginBottom: "0.5rem", color: "#1f2937" }}>
+                    Body
+                  </h3>
+                  <p style={{ fontSize: "0.875rem", color: "#4b5563", lineHeight: 1.5 }}>
+                    {viewingEvaluation.body}
+                  </p>
+                </section>
+
+                <section style={{ marginBottom: "1.5rem" }}>
+                  <h3 style={{ fontSize: "1rem", fontWeight: "600", marginBottom: "0.5rem", color: "#1f2937" }}>
+                    Helpful Courses
+                  </h3>
+                  <ul style={{ listStyle: "disc", paddingLeft: "1.5rem", color: "#4b5563" }}>
+                    {viewingEvaluation.courses.map((course, index) => (
+                      <li key={index} style={{ fontSize: "0.875rem", marginBottom: "0.25rem", lineHeight: 1.5 }}>
+                        {course}
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+
+                <section style={{ marginBottom: "1.5rem" }}>
+                  <h3 style={{ fontSize: "1rem", fontWeight: "600", marginBottom: "0.5rem", color: "#1f2937" }}>
+                    Recommendation
+                  </h3>
+                  <p style={{ fontSize: "0.875rem", color: "#4b5563", lineHeight: 1.5 }}>
+                    Would you recommend this internship?{" "}
+                    {viewingEvaluation.recommend === "yes" ? "Yes" : "No"}
+                    {viewingEvaluation.recommend === "yes" && viewingEvaluation.recommendReason && (
+                      <>
+                        <br />
+                        <strong>Reason:</strong> {viewingEvaluation.recommendReason}
+                      </>
+                    )}
+                  </p>
+                </section>
+
+                <div style={{ display: "flex", justifyContent: "flex-end", gap: "1rem", marginTop: "2rem" }}>
+                  <button
+                    onClick={() => handleDownloadPDF(viewingEvaluation.id)}
+                    className="download"
+                  >
+                    Download PDF
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         )}
@@ -1025,7 +1064,7 @@ const styles = {
     backgroundColor: "#F3F4F6",
     minHeight: "100vh",
     display: "flex",
-    flexDirection: "column",
+    flexDirection: "row",
   },
   layout: {
     display: "flex",
