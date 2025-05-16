@@ -502,11 +502,15 @@ function SideBarFaculty({ onHoverChange }) {
               onMouseOver={(e) => {
                 if (location.pathname !== item.path) {
                   e.currentTarget.style.background = "#4d8f88";
+                      e.currentTarget.style.color = "white"; // Change text color to white
+
                 }
               }}
               onMouseOut={(e) => {
                 if (location.pathname !== item.path) {
                   e.currentTarget.style.background = "transparent";
+                      e.currentTarget.style.color = ""; // Reset text color
+
                 }
               }}
             >
