@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import SideBarCompany from './Components/SideBarCompany';
 import { Mail, Home, LogOut, User, Menu } from 'lucide-react';
 import './CompanyStyles.css';
+import CompanyHeader from './CompanyHeader';
 
 const CompanyMail = () => {
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ const CompanyMail = () => {
       subject: 'Your application has been accepted!',
       body: 'Congratulations! We are pleased to inform you that your application has been accepted. Please log in to your dashboard for next steps.',
       date: '2023-06-15',
-      read: false,
+      read: true,
       type: 'system'
     }
   ]);
@@ -74,59 +75,8 @@ const CompanyMail = () => {
 
   return (
     <div className="container">
-      <header className="header">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: '1 0 auto', maxWidth: '50%' }}>
-          <button className="header-btn" title="Toggle Sidebar" onClick={toggleSidebar}>
-            <Menu size={20} />
-          </button>
-          <h2 className="header-title">Company Mail</h2>
-        </div>
-        <div className="header-buttons">
-          <button
-            className={`header-btn ${clickedButtons['headerMail'] ? 'clicked' : ''}`}
-            title="Messages"
-            onClick={() => {
-              handleButtonClick('headerMail');
-              navigate('/company/mail');
-            }}
-          >
-            <Mail size={20} />
-            {unreadApplicationCount > 0 && (
-              <span className="notification-badge">{unreadApplicationCount}</span>
-            )}
-          </button>
-          <button
-            className={`header-btn ${clickedButtons['headerProfile'] ? 'clicked' : ''}`}
-            title="Profile"
-            onClick={() => {
-              handleButtonClick('headerProfile');
-              navigate('/company/profile');
-            }}
-          >
-            <User size={20} />
-          </button>
-          <button
-            className={`header-btn ${clickedButtons['headerHome'] ? 'clicked' : ''}`}
-            title="Home"
-            onClick={() => {
-              handleButtonClick('headerHome');
-              navigate('/company');
-            }}
-          >
-            <Home size={20} />
-          </button>
-          <button
-            className={`header-btn ${clickedButtons['headerLogout'] ? 'clicked' : ''}`}
-            title="Logout"
-            onClick={() => {
-              handleButtonClick('headerLogout');
-              navigate('/');
-            }}
-          >
-            <LogOut size={20} />
-          </button>
-        </div>
-      </header>
+           <CompanyHeader  />
+
 
       <div className="layout">
         <SideBarCompany onHoverChange={setIsSidebarHovered} />

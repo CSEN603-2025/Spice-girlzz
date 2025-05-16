@@ -4,8 +4,6 @@ import { SiVodafone, SiMeta, SiNetflix, SiVisa } from "react-icons/si";
 import { FaApple } from "react-icons/fa6";
 import { SiSiemens } from "react-icons/si";
 import { MdOutlinePlayCircle } from "react-icons/md";
-import Header from "./Components/SCADHeader";
-import "./StudentHomePage.css";
 
 function SCADHome() {
   const [startDateFilter, setStartDateFilter] = useState("");
@@ -24,9 +22,6 @@ function SCADHome() {
   const [filterPaid, setFilterPaid] = useState("");
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [notifications, setNotifications] = useState([]);
-  const [activePage, setActivePage] = useState("home"); // Toggle between "home" and "staff"
-
-  const navigate = useNavigate();
 
   const addNotification = (message, type = "system") => {
     const newNotification = {
@@ -209,51 +204,6 @@ function SCADHome() {
     setTimeout(() => setShowAlert(false), 1000);
   };
 
-  const handleApply = (internship) => {
-    if (appliedInternships.some((app) => app.id === internship.id)) {
-      triggerApplyAlert(`Already applied to ${internship.title}!`);
-      return;
-    }
-    triggerApplyAlert(
-      `Applied to ${internship.title} at ${internship.company}!`
-    );
-    const appliedInternship = {
-      id: internship.id,
-      title: internship.title,
-      company: internship.company,
-      duration: internship.duration,
-      isPaid: internship.isPaid,
-      expectedSalary: internship.expectedSalary,
-      skillsRequired: internship.skillsRequired,
-      description: internship.description,
-      industry: internship.industry,
-      status: "pending",
-      applicationDate: new Date().toISOString().split("T")[0],
-      location: internship.location,
-      role: internship.Job || internship.title,
-    };
-    setAppliedInternships((prev) => [...prev, appliedInternship]);
-    const savedApplications =
-      sessionStorage.getItem("internshipApplications") || "[]";
-    const applications = JSON.parse(savedApplications);
-    const newApplication = {
-      id: applications.length + 1,
-      internshipId: internship.id,
-      internshipTitle: internship.title,
-      company: internship.company,
-      studentId: "faculty_" + Date.now(),
-      studentName: "Faculty User",
-      skills: internship.skillsRequired,
-      applicationStatus: "pending",
-      applicationDate: new Date().toISOString().split("T")[0],
-    };
-    sessionStorage.setItem(
-      "internshipApplications",
-      JSON.stringify([...applications, newApplication])
-    );
-    setSelectedInternship(null);
-  };
-
   useEffect(() => {
     const handleScroll = () => {
       if (
@@ -301,25 +251,8 @@ function SCADHome() {
   }, []);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        minHeight: "100vh",
-        backgroundColor: "#f9fafb",
-      }}
-    >
-      <Header />
-      <main
-        style={{
-          padding: "1.5rem",
-          overflowY: "auto",
-          width: "100%",
-          boxSizing: "border-box",
-          backgroundColor: "#f9fafb",
-          marginTop: "60px",
-        }}
-      >
+    <div>
+      <main>
         <div className="profileContent">
           <div style={{ animation: "fadeIn 0.3s" }}>
             <h2
@@ -333,7 +266,7 @@ function SCADHome() {
             >
               Welcome to InternHub!
             </h2>
-            <div style={{ animation: "fadeIn 0.3s" }}>
+            <div style={{ animation: "fadeIn 0.3s", width: "1700px" }}>
               <h3
                 style={{
                   fontSize: "1.3rem",
@@ -743,18 +676,6 @@ function SCADHome() {
                   }}
                 />
                 <span>Quick Guide: Internship Requirements</span>
-              </button>
-              <button
-                className="modal-close-button"
-                onClick={() => setSelectedInternship(null)}
-              >
-                Close
-              </button>
-              <button
-                className="modal-button"
-                onClick={() => handleApply(selectedInternship)}
-              >
-                Apply
               </button>
             </div>
           </div>

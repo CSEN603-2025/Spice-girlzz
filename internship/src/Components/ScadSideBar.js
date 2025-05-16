@@ -91,11 +91,11 @@ function ScadSideBar({ setActivePage, activePage, onWidthChange }) {
         display: "flex",
         flexDirection: "column",
         width: isSidebarHovered ? "16rem" : "4rem",
-        height: "100%", // Adjust height to account for header
+        height: "100%",
         transition: "width 0.3s ease-in-out",
         boxShadow: isSidebarHovered ? "2px 0 4px rgba(0, 0, 0, 0.1)" : "none",
         overflowX: "hidden",
-        position: "relative", // Changed from fixed to relative
+        position: "relative",
       }}
     >
       <ul style={{ listStyle: "none", padding: "0.5rem", margin: 0 }}>

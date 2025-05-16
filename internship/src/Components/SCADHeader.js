@@ -1,33 +1,64 @@
 import React from "react";
-import { Menu, Mail, User, LogOut, Home } from "lucide-react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { Menu, Mail, LogOut, Home } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
-const SCADHeader = () => {
+const SCADHeader = ({ setActivePage, activePage, toggleSidebar }) => {
   const navigate = useNavigate();
-  const location = useLocation();
 
-  // Determine the "home" destination based on the current route
-  const isStaffPage = location.pathname.endsWith("/staff");
-  const homeDestination = isStaffPage ? "/staff/SCADHome" : "/staff";
-
-  // Determine the "mail" destination based on the current route
-  const isMessagesPage = location.pathname === "/student/messages";
-  const mailDestination = isMessagesPage ? "/staff" : "/student/messages";
-
-  // Define button styles with dynamic background color based on the current route
-  const getButtonStyle = (isActive) => ({
-    padding: "0.5rem",
-    color: "#000",
-    background: isActive ? "#2a9d8f" : "transparent",
-    border: "none",
-    borderRadius: "6px",
-    cursor: "pointer",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
-    transition: "background 0.2s ease",
+  // Debug props
+  console.log("SCADHeader props:", {
+    setActivePage,
+    activePage,
+    toggleSidebar,
   });
+
+  const headerItems = [
+    {
+      title: "Messages",
+      page: "messages",
+      icon: <Mail size={20} />,
+    },
+    {
+      title: "Home",
+      page: "home",
+      icon: <Home size={20} />,
+    },
+    {
+      title: "Logout",
+      page: "logout",
+      icon: <LogOut size={20} />,
+      navigateTo: "/",
+    },
+  ];
+
+  const getButtonStyle = () => {
+    // Static styles, no active state highlighting
+    return {
+      padding: "0.5rem",
+      color: "#000",
+      background: "transparent",
+      border: "none",
+      borderRadius: "6px",
+      cursor: "pointer",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+      transition: "background 0.2s, color 0.2s",
+    };
+  };
+
+  const handleNavigation = (page, navigateTo) => {
+    console.log("Navigating to page:", page); // Debug activePage update
+    if (typeof setActivePage === "function") {
+      setActivePage(page);
+    } else {
+      console.error("setActivePage is not a function:", setActivePage);
+    }
+    if (navigateTo) {
+      navigate(navigateTo);
+    }
+  };
 
   return (
     <header
@@ -58,6 +89,21 @@ const SCADHeader = () => {
           maxWidth: "50%",
         }}
       >
+        <button
+          onClick={toggleSidebar}
+          style={{
+            padding: "0.5rem",
+            color: "#000",
+            background: "transparent",
+            border: "none",
+            borderRadius: "6px",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+          }}
+        ></button>
         <h2
           style={{
             fontFamily: "'Inter', sans-serif",
@@ -80,29 +126,18 @@ const SCADHeader = () => {
           flex: "0 0 auto",
         }}
       >
-        <button
-          style={getButtonStyle(isMessagesPage)}
-          title="Messages"
-          onClick={() => navigate(mailDestination)}
-        >
-          <Mail size={20} />
-        </button>
-
-        <button
-          style={getButtonStyle(location.pathname === "/staff/SCADHome")} // Highlight only on exact home route
-          title="Home"
-          onClick={() => navigate(homeDestination)}
-        >
-          <Home size={20} />
-        </button>
-
-        <button
-          style={getButtonStyle(false)}
-          title="Logout"
-          onClick={() => navigate("/")}
-        >
-          <LogOut size={20} />
-        </button>
+        {headerItems.map((item, index) => (
+          <button
+            key={index}
+            title={item.title}
+            onClick={() => handleNavigation(item.page, item.navigateTo)}
+            style={getButtonStyle()}
+          >
+            {React.cloneElement(item.icon, {
+              color: "#000", // Static icon color
+            })}
+          </button>
+        ))}
       </div>
     </header>
   );

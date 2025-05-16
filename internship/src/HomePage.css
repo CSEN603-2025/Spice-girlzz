@@ -1,43 +1,35 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
-.report-button-container {
-  text-align: center; /* Fallback for centering */
-}
-
-.report-description {
-  margin-top: 0.5rem;
-  color: #6b7280;
-  font-size: 0.875rem;
-}
+/* HomePage.css */
 .container {
-  font-family: "Inter", sans-serif;
-  background-color: #f3f4f6;
+  font-family: 'Inter', sans-serif;
+  background-color: #F3F4F6;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   padding: 1.5rem;
   width: 100%;
   box-sizing: border-box;
-  transition: margin 0.3s ease;
-}
-
-/* Add this class when sidebar is open */
-.container.sidebar-open {
-  margin-left: 250px; /* Adjust this value to match your sidebar width */
-  width: calc(100% - 250px); /* Adjust to match sidebar width */
+  flex: 1;
 }
 
 .header {
+  font-family: 'Inter', sans-serif;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
   background: linear-gradient(#fff);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 0.75rem 1.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  z-index: 1000;
 }
 
 .title {
-  font-family: "Inter", sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 1.5rem;
   font-weight: 600;
   color: #1f2937;
@@ -46,13 +38,23 @@
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-.headerButtons {
+.header-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+  letter-spacing: -0.015em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.header-buttons {
   display: flex;
   align-items: center;
   gap: 0.75rem;
 }
 
-.headerBtn {
+.header-btn {
   padding: 0.5rem;
   color: #000;
   background: transparent;
@@ -63,6 +65,18 @@
   align-items: center;
   justify-content: center;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #e50914;
+  color: #fff;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 0.75rem;
 }
 
 .layout {
@@ -122,21 +136,11 @@
 }
 
 /* Brand colors */
-.client-logo.google {
-  color: #4285f4;
-}
-.client-logo.slack {
-  color: #e01e5a;
-}
-.client-logo.netflix {
-  color: #e50914;
-}
-.client-logo.visa {
-  color: #1a1f71;
-}
-.client-logo.amazon {
-  color: #ff9900;
-}
+.client-logo.google { color: #4285F4; }
+.client-logo.slack { color: #E01E5A; }
+.client-logo.netflix { color: #E50914; }
+.client-logo.visa { color: #1A1F71; }
+.client-logo.amazon { color: #FF9900; }
 
 .cardHolder {
   display: grid;
@@ -199,7 +203,7 @@
 }
 
 .status {
-  color: #e50914;
+  color: #E50914;
 }
 
 /* Card Footer */
@@ -385,6 +389,82 @@
   text-align: left;
 }
 
+/* Evaluation Styles for CompanyEvaluations.js */
+.evaluation-list-new {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(550px, 1fr));
+  gap: 1.5rem;
+}
+
+.evaluation-card-new {
+  background-color: #f8fafc;
+  padding: var(--spacing-md);
+  border-radius: 0.75rem;
+  box-shadow: var(--shadow-md);
+  border-left: 4px solid var(--accent-teal);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  max-width: 550px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.evaluation-card-new:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.evaluation-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.evaluation-title {
+  font-size: 1.125rem;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.evaluation-date {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.evaluation-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  color: var(--text-primary);
+}
+
+.detail-row {
+  line-height: 1.6;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.detail-row strong {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.evaluation-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-sm);
+}
+
+.rating {
+  display: flex;
+  gap: 0.25rem;
+  margin: 0;
+}
+
+
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .container {
@@ -403,14 +483,25 @@
     margin: 10px 15px;
     height: 30px;
   }
+  .evaluation-card {
+    padding: 0.75rem;
+  }
+  .evaluation-title {
+    font-size: 0.875rem;
+  }
+  .evaluation-subtitle {
+    font-size: 0.875rem;
+  }
+  .evaluation-date {
+    font-size: 0.7rem;
+  }
+  .detail-row {
+    font-size: 0.8rem;
+  }
 }
 
 /* Animation keyframes */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }

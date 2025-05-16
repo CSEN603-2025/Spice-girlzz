@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Header from "./Components/Header";
 import "./StudentHomePage.css";
 import SideBar from "./Components/SideBar";
+import "./StudentHomePage.css";
 
 function AppliedInternships() {
   const navigate = useNavigate();

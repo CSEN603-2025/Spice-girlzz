@@ -156,7 +156,7 @@ function LoginPage() {
    if (email.endsWith('@student.guc.edu.eg')) {
       navigate('/student', { state: { email } });
     } else if (email.endsWith("mervat")){
-      navigate("/facultyMember");
+      navigate("/faculty");
     } else if(email.endsWith('@acceptedCorp.com')){
       navigate('/company', { state: { email } });
     }
