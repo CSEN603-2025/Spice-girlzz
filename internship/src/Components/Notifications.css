@@ -5,8 +5,8 @@
   z-index: 1002;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  width: 320px;
+  gap: 0.5rem;
+  width: 280px;
   max-width: calc(100% - 3rem);
 }
 
@@ -14,11 +14,11 @@
   position: relative;
   display: flex;
   align-items: flex-start;
-  padding: 0.875rem 1rem;
-  border-radius: 0.5rem;
+  padding: 0.6rem;
+  border-radius: 0.4rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   background: white;
-  border-left: 4px solid;
+  border-left: 3px solid;
   transform: translateX(0);
   opacity: 1;
   transition: all 0.3s ease;
@@ -38,8 +38,8 @@
 }
 
 .notification-icon {
-  margin-right: 0.75rem;
-  margin-top: 0.125rem;
+  margin-right: 0.5rem;
+  margin-top: 0.1rem;
   flex-shrink: 0;
 }
 
@@ -58,48 +58,49 @@
 .notification-content {
   flex: 1;
   min-width: 0;
+  padding: 0.25rem;
 }
 
 .notification-header {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.1rem;
 }
 
 .notification-title {
   font-weight: 600;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   margin: 0;
   color: #1f2937;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding-right: 1rem;
+  padding-right: 0.5rem;
 }
 
 .notification-time {
-  font-size: 0.6875rem;
+  font-size: 0.6rem;
   color: #6b7280;
   flex-shrink: 0;
 }
 
 .notification-details {
-  font-size: 0.8125rem;
+  font-size: 0.7rem;
   color: #4b5563;
   margin: 0;
-  line-height: 1.4;
+  line-height: 1.2;
 }
 
 .notification-close {
   position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
+  top: 0.25rem;
+  right: 0.25rem;
   background: none;
   border: none;
   color: #9ca3af;
   cursor: pointer;
-  padding: 0.25rem;
+  padding: 0.15rem;
   border-radius: 50%;
   transition: all 0.2s ease;
 }
@@ -144,19 +145,19 @@
 
 .call-actions {
   display: flex;
-  gap: 8px;
-  margin-top: 12px;
+  gap: 4px;
+  margin-top: 6px;
 }
 
 .call-action {
   flex: 1;
-  padding: 6px;
-  border-radius: 4px;
+  padding: 3px 6px;
+  border-radius: 3px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  font-size: 0.85rem;
+  gap: 3px;
+  font-size: 0.7rem;
 }
 
 .call-action.accept {

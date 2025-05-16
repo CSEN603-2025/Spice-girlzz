@@ -45,6 +45,8 @@ function ProfileStudent() {
     assessments: [], // Added assessments field
     isFirstLogin: true,
     hasProfile: false,
+    documents: [], // Will be populated from documents state
+
   };
 
   // Import Roboto font
@@ -82,6 +84,23 @@ function ProfileStudent() {
   });
 
   useEffect(() => {
+    // Flatten documents into a single array for studentProfile
+    const allDocuments = [
+      ...documents.certificates.map(doc => ({ ...doc, category: 'certificates' })),
+      ...documents.cv.map(doc => ({ ...doc, category: 'cv' })),
+      ...documents.coverLetter.map(doc => ({ ...doc, category: 'coverLetter' })),
+      ...documents.other.map(doc => ({ ...doc, category: 'other' }))
+    ];
+    
+    const updatedProfile = {
+      ...profileData,
+      documents: allDocuments
+    };
+    setProfileData(updatedProfile);
+    sessionStorage.setItem('studentProfile', JSON.stringify(updatedProfile));
+  }, [documents]);
+
+  useEffect(() => {
     if (!profileData.hasProfile || profileData.name === '...') {
       setShowEditModal(true);
     }
@@ -89,6 +108,7 @@ function ProfileStudent() {
 
   useEffect(() => {
     sessionStorage.setItem('studentProfile', JSON.stringify(profileData));
+     const { documents, ...profileWithoutDocuments } = profileData;
   }, [profileData]);
 
   const handleEditSubmit = (e) => {
@@ -162,6 +182,7 @@ function ProfileStudent() {
       assessments: profileData.assessments, // Preserve assessments
       isFirstLogin: false,
       hasProfile: formData.get('name') && formData.get('name').trim() !== '...',
+       documents: profileData.documents, // Preserve documents
     };
 
     setProfileData(updatedProfile);
@@ -184,30 +205,75 @@ function ProfileStudent() {
     files.forEach((file) => {
       const reader = new FileReader();
       reader.onload = () => {
-        setDocuments(prev => ({
-          ...prev,
-          [category]: [
-            ...prev[category],
-            {
-              id: Date.now() + Math.random(),
-              name: file.name,
-              type: file.type,
-              size: file.size,
-              data: reader.result,
-            }
-          ]
-        }));
+        const newDocument = {
+          id: Date.now() + Math.random(),
+          name: file.name,
+          type: file.type,
+          size: file.size,
+          data: reader.result,
+          category: category
+        };
+
+        setDocuments(prev => {
+          const updatedDocs = {
+            ...prev,
+            [category]: [...prev[category], newDocument]
+          };
+          
+          // Save to session storage
+          const allDocuments = [
+            ...updatedDocs.certificates.map(doc => ({ ...doc, category: 'certificates' })),
+            ...updatedDocs.cv.map(doc => ({ ...doc, category: 'cv' })),
+            ...updatedDocs.coverLetter.map(doc => ({ ...doc, category: 'coverLetter' })),
+            ...updatedDocs.other.map(doc => ({ ...doc, category: 'other' }))
+          ];
+          
+          sessionStorage.setItem('studentDocuments', JSON.stringify(allDocuments));
+          return updatedDocs;
+        });
       };
       reader.readAsDataURL(file);
     });
   };
 
   const handleDeleteDocument = (id, category) => {
-    setDocuments(prev => ({
-      ...prev,
-      [category]: prev[category].filter(doc => doc.id !== id)
-    }));
+    setDocuments(prev => {
+      const updatedDocs = {
+        ...prev,
+        [category]: prev[category].filter(doc => doc.id !== id)
+      };
+      
+      // Update session storage after deletion
+      const allDocuments = [
+        ...updatedDocs.certificates.map(doc => ({ ...doc, category: 'certificates' })),
+        ...updatedDocs.cv.map(doc => ({ ...doc, category: 'cv' })),
+        ...updatedDocs.coverLetter.map(doc => ({ ...doc, category: 'coverLetter' })),
+        ...updatedDocs.other.map(doc => ({ ...doc, category: 'other' }))
+      ];
+      
+      sessionStorage.setItem('studentDocuments', JSON.stringify(allDocuments));
+      return updatedDocs;
+    });
   };
+
+  // Add this useEffect to load documents from session storage on component mount
+  useEffect(() => {
+    const savedDocuments = sessionStorage.getItem('studentDocuments');
+    if (savedDocuments) {
+      try {
+        const parsedDocuments = JSON.parse(savedDocuments);
+        const categorizedDocs = {
+          certificates: parsedDocuments.filter(doc => doc.category === 'certificates'),
+          cv: parsedDocuments.filter(doc => doc.category === 'cv'),
+          coverLetter: parsedDocuments.filter(doc => doc.category === 'coverLetter'),
+          other: parsedDocuments.filter(doc => doc.category === 'other')
+        };
+        setDocuments(categorizedDocs);
+      } catch (e) {
+        console.error('Error parsing saved documents:', e);
+      }
+    }
+  }, []);
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0];

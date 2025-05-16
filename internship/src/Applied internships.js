@@ -219,16 +219,7 @@ function AppliedInternships() {
             backgroundColor: "#f9fafb",
           }}
         >
-          <h2
-            style={{
-              fontSize: "1.5rem",
-              fontWeight: "bold",
-              marginBottom: "1.5rem",
-              color: "#1f2937",
-            }}
-          >
-            My Internships
-          </h2>
+         
 
           {/* Search and Filter Inputs */}
           <div
@@ -302,7 +293,7 @@ function AppliedInternships() {
                 color: "#1f2937",
               }}
             >
-              Pending Applications
+              My Applications
             </h3>
             {pendingInternships.length > 0 ? (
               <div className="cardHolder">

@@ -28,6 +28,10 @@ function StudentHomePage() {
   const [filterDuration, setFilterDuration] = useState("");
   const [filterPaid, setFilterPaid] = useState("");
   const [showVideoModal, setShowVideoModal] = useState(false);
+  const [showDocumentModal, setShowDocumentModal] = useState(false); // New state for document selection modal
+  const [selectedDocuments, setSelectedDocuments] = useState([]); // New state for selected documents
+   const [showSuccessNotification, setShowSuccessNotification] = useState(false);
+    const [successMessage, setSuccessMessage] = useState("");
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -43,13 +47,14 @@ function StudentHomePage() {
     "": "/videos/general-internships.mp4", // Fallback for unset major
   };
 
-    const [studentProfile, setStudentProfile] = useState({
+  const [studentProfile, setStudentProfile] = useState({
     name: "...",
     isFirstLogin: true,
     hasProfile: false,
     major: "",
     jobInterests: [],
     id: "",
+    documents: [], // Assuming documents array from ProfileStudent.js
   });
 
   useEffect(() => {
@@ -313,9 +318,36 @@ function StudentHomePage() {
 
   const handleApply = (internship) => {
     if (appliedInternships.some((app) => app.id === internship.id)) {
-      triggerApplyAlert(`Already applied to ${internship.title}!`);
+      showSuccessToast("already applied to this internship!")
       return;
     }
+    if (!studentProfile.hasProfile) {
+      triggerApplyAlert(`Please set up your profile before applying!`);
+      navigate("/student/Profile");
+      return;
+    }
+    // Open document selection modal instead of directly applying
+    setSelectedInternship(internship);
+    setShowDocumentModal(true);
+  };
+
+   const showSuccessToast = (message) => {
+    setShowSuccessNotification(true);
+    setSuccessMessage(message);
+    setTimeout(() => {
+      setShowSuccessNotification(false);
+    }, 3000);
+  };
+
+  const handleDocumentSubmit = () => {
+    if (selectedDocuments.length === 0) {
+      triggerApplyAlert("Please select at least one document to submit!");
+      
+      return;
+    }
+    showSuccessToast("You have submitted successfully !");
+
+    const internship = selectedInternship;
     triggerApplyAlert(`Applied to ${internship.title} at ${internship.company}!`);
     const appliedInternship = {
       id: internship.id,
@@ -331,11 +363,13 @@ function StudentHomePage() {
       applicationDate: new Date().toISOString().split('T')[0],
       location: internship.location,
       role: internship.Job || internship.title,
+      documents: selectedDocuments, // Include selected documents
     };
     setAppliedInternships((prevAppliedInternships) => [
       ...prevAppliedInternships,
       appliedInternship,
     ]);
+
     // Save to internshipApplications for JobProviderDashboard
     const savedApplications = sessionStorage.getItem("internshipApplications");
     const applications = savedApplications ? JSON.parse(savedApplications) : [];
@@ -349,12 +383,16 @@ function StudentHomePage() {
       skills: studentProfile.jobInterests.join(', ') || internship.skillsRequired,
       applicationStatus: "pending",
       applicationDate: new Date().toISOString().split('T')[0],
+      documents: selectedDocuments, // Include selected documents
     };
     sessionStorage.setItem(
       "internshipApplications",
       JSON.stringify([...applications, newApplication])
     );
+
     setSelectedInternship(null);
+    setShowDocumentModal(false);
+    setSelectedDocuments([]); // Reset selected documents
   };
 
   useEffect(() => {
@@ -399,8 +437,6 @@ function StudentHomePage() {
   const filteredCompanies = filterInternships(selectedCompanies);
   const internshipsToShow = filteredInternships.slice(0, visibleCards);
 
-
-
   useEffect(() => {
     const savedProfile = sessionStorage.getItem("studentProfile");
     if (savedProfile) {
@@ -410,6 +446,7 @@ function StudentHomePage() {
           ...studentProfile,
           ...parsedProfile,
           jobInterests: Array.isArray(parsedProfile.jobInterests) ? parsedProfile.jobInterests : [],
+          documents: Array.isArray(parsedProfile.documents) ? parsedProfile.documents : [],
         });
       } catch (e) {
         console.error("Error parsing sessionStorage data:", e);
@@ -421,7 +458,7 @@ function StudentHomePage() {
     document.getElementById('available').scrollIntoView({ behavior: 'smooth' });
   };
 
-    const scrollToSection2 = () => {
+  const scrollToSection2 = () => {
     document.getElementById('suggested').scrollIntoView({ behavior: 'smooth' });
   };
 
@@ -462,6 +499,15 @@ function StudentHomePage() {
       );
     }
     return stars;
+  };
+
+  // Handle document selection
+  const handleDocumentToggle = (documentId) => {
+    setSelectedDocuments((prev) =>
+      prev.includes(documentId)
+        ? prev.filter((id) => id !== documentId)
+        : [...prev, documentId]
+    );
   };
 
   return (
@@ -524,9 +570,9 @@ function StudentHomePage() {
                     </p>
                     <button className="prompt-button" onClick={handleProfileSetup}>
                       Set Up Profile
-                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
                     </button>
                   </>
                 ) : (
@@ -617,203 +663,195 @@ function StudentHomePage() {
             </div>
           </section>
           <section id="available">
-          <div className="profileContent">
-            <h2
-              style={{
-                fontSize: "1.5rem",
-                fontWeight: "bold",
-                marginBottom: "1.5rem",
-                color: "#1f2937",
-              }}
-            >
-              Top Internships Postings!
-            </h2>
-            <div className="cardHolder">
-              {filteredTopInternships.length > 0 ? (
-                filteredTopInternships.map((internship) => (
-                  <div className="card" key={internship.id}>
-                    <div className="card-content">
-                      <div className="card-header">
-                        <h3 className="program-title">{internship.title}</h3>
-                        <div className="company-info">
-                          <span className="company-name">{internship.company}</span>
-                          <span className="company-location">{internship.location}</span>
-                          <span className="post-date">{internship.posted}</span>
+            <div className="profileContent">
+              <h2
+                style={{
+                  fontSize: "1.5rem",
+                  fontWeight: "bold",
+                  marginBottom: "1.5rem",
+                  color: "#1f2937",
+                }}
+              >
+                Top Internships Postings!
+              </h2>
+              <div className="cardHolder">
+                {filteredTopInternships.length > 0 ? (
+                  filteredTopInternships.map((internship) => (
+                    <div className="card" key={internship.id}>
+                      <div className="card-content">
+                        <div className="card-header">
+                          <h3 className="program-title">{internship.title}</h3>
+                          <div className="company-info">
+                            <span className="company-name">{internship.company}</span>
+                            <span className="company-location">{internship.location}</span>
+                            <span className="post-date">{internship.posted}</span>
+                          </div>
                         </div>
-                      </div>
-                      <div className="card-footer">
-                        <div className="alumni-count">
-                          <span className="pin-icon">📌</span>
-                          <span>{internship.applicants} students have applied already</span>
+                        <div className="card-footer">
+                          <div className="alumni-count">
+                            <span className="pin-icon">📌</span>
+                            <span>{internship.applicants} students have applied already</span>
+                          </div>
+                          <button
+                            className="actionButton"
+                            onClick={() => setSelectedInternship(internship)}
+                          >
+                            View Details
+                          </button>
                         </div>
-                        <button
-                          className="actionButton"
-                          onClick={() => setSelectedInternship(internship)}
-                        >
-                          View Details
-                        </button>
                       </div>
                     </div>
-                  </div>
-                ))
-              ) : (
-                <p style={{ color: "#4b5563" }}>No internships match your filters.</p>
-              )}
-            </div>
-          </div>
-          <div className="profileContent">
-            <h2
-              style={{
-                fontSize: "1.5rem",
-                fontWeight: "bold",
-                marginBottom: "1.5rem",
-                color: "#1f2937",
-              }}
-            >
-              Available Internships
-            </h2>
-            <div className="cardHolder">
-              {internshipsToShow.length > 0 ? (
-                internshipsToShow.map((internship) => (
-                  <div className="card" key={internship.id}>
-                    <div className="card-content">
-                      <div className="card-header">
-                        <h3 className="program-title">{internship.title}</h3>
-                        <div className="company-info">
-                          <span className="company-name">{internship.company}</span>
-                          <span className="company-location">{internship.location}</span>
-                          <span className="post-date">{internship.posted}</span>
-                        </div>
-                      </div>
-                      <div className="card-footer">
-                        <div className="alumni-count">
-                          <span className="pin-icon">📌</span>
-                          <span>{internship.applicants} students have applied already</span>
-                        </div>
-                        <button
-                          className="actionButton"
-                          onClick={() => setSelectedInternship(internship)}
-                        >
-                          View Details
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <p style={{ color: "#4b5563" }}>No internships match your filters.</p>
-              )}
-            </div>
-            {visibleCards < filteredInternships.length && (
-              <div className="load-more-btn">
-                <button onClick={loadMore}>Load More Internships</button>
+                  ))
+                ) : (
+                  <p style={{ color: "#4b5563" }}>No internships match your filters.</p>
+                )}
               </div>
-            )}
-            
-          </div>
+            </div>
+            <div className="profileContent">
+              <h2
+                style={{
+                  fontSize: "1.5rem",
+                  fontWeight: "bold",
+                  marginBottom: "1.5rem",
+                  color: "#1f2937",
+                }}
+              >
+                Available Internships
+              </h2>
+              <div className="cardHolder">
+                {internshipsToShow.length > 0 ? (
+                  internshipsToShow.map((internship) => (
+                    <div className="card" key={internship.id}>
+                      <div className="card-content">
+                        <div className="card-header">
+                          <h3 className="program-title">{internship.title}</h3>
+                          <div className="company-info">
+                            <span className="company-name">{internship.company}</span>
+                            <span className="company-location">{internship.location}</span>
+                            <span className="post-date">{internship.posted}</span>
+                          </div>
+                        </div>
+                        <div className="card-footer">
+                          <div className="alumni-count">
+                            <span className="pin-icon">📌</span>
+                            <span>{internship.applicants} students have applied already</span>
+                          </div>
+                          <button
+                            className="actionButton"
+                            onClick={() => setSelectedInternship(internship)}
+                          >
+                            View Details
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p style={{ color: "#4b5563" }}>No internships match your filters.</p>
+                )}
+              </div>
+              {visibleCards < filteredInternships.length && (
+                <div className="load-more-btn">
+                  <button onClick={loadMore}>Load More Internships</button>
+                </div>
+              )}
+            </div>
           </section>
           <section id="suggested">
-          <div className="profileContent">
-            <h2
-              style={{
-                fontSize: "1.5rem",
-                fontWeight: "bold",
-                marginBottom: "1.5rem",
-                color: "#1f2937",
-              }}
-            >
-              Suggested Companies
-            </h2>
-            <div className="cardHolder-company">
-              {filteredCompanies.length > 0 ? (
-                filteredCompanies.map((company) => (
-                  <div className="card-company" key={company.id}>
-                    <div className="card-content">
-                      <div className="card-header-company">
-                        <div>
-                          <div className="header-company">
-                               <h3 className="program-title-company">{company.title}</h3>
-                                   <div className={`company-logo-company ${company.title.toLowerCase()}`}>
-                                         <img src={company.image} alt={`${company.title} logo`} className="company-logo-img" />
-                                     </div>
-                           </div>
-                          <div className="company-info-company">
-                            <span>📍 {company.location}</span>
-                          </div>
-                          <div className="company-metrics">
-                            <div className="metric-column">
-                              <div className="metric-item">
-                                <strong>GUC Alumni:</strong> {Math.floor(Math.random() * 50 + 10)} interns
-                              </div>
-                              <div className="metric-item">
-                                <strong>Intern Satisfaction:</strong> {Math.floor(Math.random() * 20 + 80)}%
+            <div className="profileContent">
+              <h2
+                style={{
+                  fontSize: "1.5rem",
+                  fontWeight: "bold",
+                  marginBottom: "1.5rem",
+                  color: "#1f2937",
+                }}
+              >
+                Suggested Companies
+              </h2>
+              <div className="cardHolder-company">
+                {filteredCompanies.length > 0 ? (
+                  filteredCompanies.map((company) => (
+                    <div className="card-company" key={company.id}>
+                      <div className="card-content">
+                        <div className="card-header-company">
+                          <div>
+                            <div className="header-company">
+                              <h3 className="program-title-company">{company.title}</h3>
+                              <div className={`company-logo-company ${company.title.toLowerCase()}`}>
+                                <img src={company.image} alt={`${company.title} logo`} className="company-logo-img" />
                               </div>
                             </div>
-                            <div className="metric-column">
-                              <div className="metric-item">
-                                <strong>Job Interests:</strong> {studentProfile.jobInterests.join(", ")}
-                              </div>
-                              <div className="metric-item">
-                                <strong>Industry:</strong> {company.industry}
-                              </div>
-                              
+                            <div className="company-info-company">
+                              <span>📍 {company.location}</span>
                             </div>
-                          </div>
-                        </div>
-                     
-                      </div>
-                      
-                      {company.feedback && (
-                        <div className="feedback-section">
-                          <div className="feedback-box">
-                            <div className="feedback-header">
-                              <div className="student-pic"></div>
-                              <div>
-                                <span className="student-name">{company.feedback.studentName}</span>
-                                <div className="star-rating">
-                                  {renderStarRating(company.feedback.rating)}
-                                  <span className="rating-text"> ({company.feedback.rating}/5)</span>
+                            <div className="company-metrics">
+                              <div className="metric-column">
+                                <div className="metric-item">
+                                  <strong>GUC Alumni:</strong> {Math.floor(Math.random() * 50 + 10)} interns
+                                </div>
+                                <div className="metric-item">
+                                  <strong>Intern Satisfaction:</strong> {Math.floor(Math.random() * 20 + 80)}%
+                                </div>
+                              </div>
+                              <div className="metric-column">
+                                <div className="metric-item">
+                                  <strong>Job Interests:</strong> {studentProfile.jobInterests.join(", ")}
+                                </div>
+                                <div className="metric-item">
+                                  <strong>Industry:</strong> {company.industry}
                                 </div>
                               </div>
                             </div>
-                            <p className="feedback-text">{company.feedback.feedbackText}</p>
                           </div>
                         </div>
-                      )}
+                        {company.feedback && (
+                          <div className="feedback-section">
+                            <div className="feedback-box">
+                              <div className="feedback-header">
+                                <div className="student-pic"></div>
+                                <div>
+                                  <span className="student-name">{company.feedback.studentName}</span>
+                                  <div className="star-rating">
+                                    {renderStarRating(company.feedback.rating)}
+                                    <span className="rating-text"> ({company.feedback.rating}/5)</span>
+                                  </div>
+                                </div>
+                              </div>
+                              <p className="feedback-text">{company.feedback.feedbackText}</p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="profile-prompt-card">
+                    <div className="prompt-content">
+                      <h3 className="prompt-title">Enhance your profile</h3>
+                      <p className="prompt-message">
+                        Add job interests like "Data Analysis" or "Graphic Design" to discover relevant companies and opportunities
+                      </p>
+                      <button
+                        className="prompt-button"
+                        onClick={handleProfileSetup}
+                        aria-label="Set up your profile"
+                      >
+                        Set Up Profile
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </button>
                     </div>
                   </div>
-                ))
-              ) : (
-               <div className="profile-prompt-card">
-  <div className="prompt-content">
-    <h3 className="prompt-title">Enhance your profile</h3>
-    <p className="prompt-message">
-      Add job interests like "Data Analysis" or "Graphic Design" to discover relevant companies and opportunities
-    </p>
-    <button 
-      className="prompt-button" 
-      onClick={handleProfileSetup}
-      aria-label="Set up your profile"
-    >
-      Set Up Profile
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
-    </button>
-  </div>
-</div>
-              )}
-              
+                )}
+              </div>
             </div>
-            
-            
-          </div>
           </section>
-          
         </main>
       </div>
-      
-      {selectedInternship && (
+
+      {selectedInternship && !showDocumentModal && (
         <div className="modal-overlay">
           <div className="modal-content">
             <h3 className="modal-title">{selectedInternship.title}</h3>
@@ -878,6 +916,68 @@ function StudentHomePage() {
           </div>
         </div>
       )}
+
+      {showDocumentModal && selectedInternship && (
+        <div className="modal-overlay" role="dialog" aria-labelledby="document-modal-title">
+          <div className="modal-content">
+            <h3 id="document-modal-title" className="modal-title">
+              Select Documents for {selectedInternship.title}
+            </h3>
+            <p style={{ color: "#4b5563", marginBottom: "1rem" }}>
+              Please select the documents you want to submit with your application.
+            </p>
+            <div style={{ maxHeight: "300px", overflowY: "auto", marginBottom: "1rem" }}>
+              {studentProfile.documents.length > 0 ? (
+                studentProfile.documents.map((doc) => (
+                  <div
+                    key={doc.id}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      padding: "0.5rem",
+                      borderBottom: "1px solid #e5e7eb",
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      id={`doc-${doc.id}`}
+                      checked={selectedDocuments.includes(doc.id)}
+                      onChange={() => handleDocumentToggle(doc.id)}
+                      style={{ marginRight: "0.5rem" }}
+                    />
+                    <label htmlFor={`doc-${doc.id}`} style={{ color: "#1f2937" }}>
+                      {doc.name}
+                    </label>
+                  </div>
+                ))
+              ) : (
+                <p style={{ color: "#4b5563" }}>
+                  No documents found. Please upload documents in your profile.
+                </p>
+              )}
+            </div>
+            <div className="modal-footer">
+              <button
+                className="modal-close-button"
+                onClick={() => {
+                  setShowDocumentModal(false);
+                  setSelectedDocuments([]);
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                className="modal-button"
+                onClick={handleDocumentSubmit}
+                disabled={studentProfile.documents.length === 0}
+              >
+                Submit Application
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {showVideoModal && (
         <div className="modal-overlay" role="dialog" aria-labelledby="video-modal-title">
           <div className="modal-content">
@@ -905,6 +1005,24 @@ function StudentHomePage() {
           </div>
         </div>
       )}
+
+      {showAlert && (
+        <div
+          style={{
+            position: "fixed",
+            top: "1rem",
+            right: "1rem",
+            background: "#10b981",
+            color: "#fff",
+            padding: "0.75rem 1.5rem",
+            borderRadius: "0.375rem",
+            zIndex: 1000,
+          }}
+        >
+          {alertMessage}
+        </div>
+      )}
+
       {isSidebarOpen && (
         <div
           style={{
@@ -917,6 +1035,75 @@ function StudentHomePage() {
           }}
           onClick={() => setIsSidebarOpen(false)}
         />
+      )}
+
+      {showSuccessNotification && (
+        <div
+          style={{
+            position: 'fixed',
+            top: '20px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 1002,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            width: '100%',
+            maxWidth: '320px',
+          }}
+        >
+          <div
+            style={{
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'flex-start',
+              padding: '0.875rem 1rem',
+              borderRadius: '0.5rem',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+              background: 'white',
+              borderLeft: '4px solid #2a9d8f',
+              width: '100%',
+              animation: 'slideIn 0.3s ease-out forwards',
+            }}
+          >
+            <div style={{ marginRight: '0.75rem', marginTop: '0.125rem', flexShrink: 0, color: '#2a9d8f' }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '0.25rem' }}>
+                <h4 style={{ fontWeight: '600', fontSize: '0.875rem', margin: 0, color: '#1f2937' }}>
+                  {successMessage}
+                </h4>
+                <span style={{ fontSize: '0.6875rem', color: '#6b7280' }}>
+                  {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                </span>
+              </div>
+            </div>
+            <button
+              onClick={() => setShowSuccessNotification(false)}
+              style={{
+                position: 'absolute',
+                top: '0.5rem',
+                right: '0.5rem',
+                background: 'none',
+                border: 'none',
+                color: '#9ca3af',
+                cursor: 'pointer',
+                padding: '0.25rem',
+                borderRadius: '50%',
+                transition: 'all 0.2s ease',
+              }}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );

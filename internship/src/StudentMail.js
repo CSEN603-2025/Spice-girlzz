@@ -49,6 +49,8 @@ const StudentMail = () => {
       read: false,
       type: 'application',
     },
+
+    
   ];
 
   const malakMails = [
@@ -77,6 +79,16 @@ const StudentMail = () => {
       body: 'Head to Video Calls to join your scheduled meeting.',
       date: '2023-06-12',
       read: false,
+      type: 'system',
+    },
+
+     {
+      id: 3,
+      from: 'scad@guc.edu.eg',
+      subject: 'Malak: Congratulations, you have received a PRO badge!',
+      body: 'Due to your completion of 3 months of internships, you can know access more features!.',
+      date: '2023-06-12',
+      read: true,
       type: 'system',
     },
   ];

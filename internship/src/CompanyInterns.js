@@ -95,7 +95,7 @@ const Interns = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarHovered, setIsSidebarHovered] = useState(false);
   const [clickedButtons, setClickedButtons] = useState({});
-  // const [statistics, setStatistics] = useState({});
+  const [isCoverLetterExpanded, setIsCoverLetterExpanded] = useState(false);
   const [CV_content] = useState(initialCV);
 
   useEffect(() => {
@@ -126,7 +126,7 @@ const Interns = () => {
         applicantName: 'John Ramzy',
         email: 'john.ramzy@student.guc.edu.eg',
         resumeLink: 'http://example.com/resume1.pdf',
-        coverLetter: 'I am passionate about software development...',
+        coverLetter: 'I am passionate about software development and have extensive experience in JavaScript and React. My projects include building a web application for task management and contributing to open-source libraries. I am eager to contribute to your team and learn from industry experts.',
         submittedAt: '2025-05-01',
         status: 'current intern'
       },
@@ -136,7 +136,7 @@ const Interns = () => {
         applicantName: 'Menna Ibrahim',
         email: 'menna.ibrahimh@student.guc.edu.eg',
         resumeLink: 'http://example.com/resume2.pdf',
-        coverLetter: 'I have experience with React...',
+        coverLetter: 'I have experience with React and Node.js, having worked on multiple full-stack projects. My recent internship involved developing a user authentication system, and I am excited to bring my skills to your innovative company.',
         submittedAt: '2025-05-02',
         status: 'internship complete'
       },
@@ -146,7 +146,7 @@ const Interns = () => {
         applicantName: 'Alia Mohamed',
         email: 'ala.mohamed@student.guc.edu.eg',
         resumeLink: 'http://example.com/resume3.pdf',
-        coverLetter: 'I am skilled in data analysis...',
+        coverLetter: 'I am skilled in data analysis with Python, Pandas, and SQL. My academic projects include building predictive models for customer churn, and I am enthusiastic about applying my data science knowledge to real-world challenges at your organization.',
         submittedAt: '2025-05-03',
         status: 'current intern'
       },
@@ -156,7 +156,7 @@ const Interns = () => {
         applicantName: 'Karim Hassan',
         email: 'karim.hassan@student.guc.edu.eg',
         resumeLink: 'http://example.com/resume4.pdf',
-        coverLetter: 'Experienced in building web applications...',
+        coverLetter: 'Experienced in building web applications with a focus on user experience and performance. I have worked on several React-based projects and am eager to contribute to your team.',
         submittedAt: '2025-05-04',
         status: 'current intern'
       },
@@ -166,7 +166,7 @@ const Interns = () => {
         applicantName: 'Sara Abdelrahman',
         email: 'sara.abdelrahman@student.guc.edu.eg',
         resumeLink: 'http://example.com/resume5.pdf',
-        coverLetter: 'Proficient in Python and data visualization...',
+        coverLetter: 'Proficient in Python and data visualization, with experience in analyzing large datasets and presenting insights to stakeholders. I am excited to join your team and contribute to data-driven solutions.',
         submittedAt: '2025-05-05',
         status: 'internship complete'
       },
@@ -176,7 +176,7 @@ const Interns = () => {
         applicantName: 'Omar Khaled',
         email: 'omar.khaled@student.guc.edu.eg',
         resumeLink: 'http://example.com/resume6.pdf',
-        coverLetter: 'Skilled in JavaScript and frontend development...',
+        coverLetter: 'Skilled in JavaScript and frontend development, with a passion for creating intuitive user interfaces. I have contributed to several open-source projects and am eager to bring my skills to your organization.',
         submittedAt: '2025-05-06',
         status: 'current intern'
       }
@@ -184,7 +184,6 @@ const Interns = () => {
     setInternships(fetchedInternships);
     setApplications(fetchedApplications);
 
-    // Generate CV statistics
     const interns = fetchedApplications.filter(app => 
       app.status === 'current intern' || app.status === 'internship complete'
     );
@@ -194,7 +193,6 @@ const Interns = () => {
       completed: interns.filter(app => app.status === 'internship complete').length
     };
 
-    // Calculate average submission date (in days since earliest submission)
     const submissionDates = interns.map(app => new Date(app.submittedAt).getTime());
     const avgDays = submissionDates.length > 0 
       ? Math.round(
@@ -203,7 +201,6 @@ const Interns = () => {
         )
       : 0;
 
-    // Aggregate skills from internships
     const skillCounts = interns.reduce((acc, intern) => {
       const job = fetchedInternships.find(post => post.id === intern.postId);
       if (job && job.skills) {
@@ -218,19 +215,11 @@ const Interns = () => {
       .slice(0, 3)
       .map(([name, count]) => ({ name, count }));
 
-    // Count interns per job title
     const internCounts = interns.reduce((acc, intern) => {
       const jobTitle = fetchedInternships.find(post => post.id === intern.postId)?.title || 'Unknown';
       acc[jobTitle] = (acc[jobTitle] || 0) + 1;
       return acc;
     }, {});
-
-    // setStatistics({
-    //   cvStatusCounts,
-    //   averageSubmissionAge: `${avgDays} days`,
-    //   topSkills,
-    //   internCounts
-    // });
   }, []);
 
   const interns = applications.filter(app => 
@@ -247,6 +236,7 @@ const Interns = () => {
 
   const viewInternDetails = (intern) => {
     setSelectedIntern(intern);
+    setIsCoverLetterExpanded(false);
   };
 
   const handleButtonClick = (buttonId) => {
@@ -260,6 +250,16 @@ const Interns = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  const toggleCoverLetter = () => {
+    setIsCoverLetterExpanded(!isCoverLetterExpanded);
+  };
+
+  const truncateCoverLetter = (text) => {
+    const maxLength = 100;
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '...';
+  };
+
   return (
     <div className="container">
       <CompanyHeader />
@@ -271,7 +271,6 @@ const Interns = () => {
             Interns
           </h2>
 
-          {/* Search and Filter Inputs */}
           <div style={{ marginBottom: '1.5rem', display: 'flex', gap: '0.8rem', alignItems: 'center', flexWrap: 'wrap' }}>
             <input
               type="text"
@@ -339,7 +338,6 @@ const Interns = () => {
             </button>
           </div>
 
-          {/* Interns Grid */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem' }}>
             {filteredInterns.length === 0 ? (
               <p className="no-data">No interns found.</p>
@@ -385,7 +383,6 @@ const Interns = () => {
         </div>
       </div>
 
-      {/* Intern Details Modal */}
       {selectedIntern && (
         <div
           style={{
@@ -445,8 +442,25 @@ const Interns = () => {
               </button>
             </p>
             <p style={{ color: '#4b5563', marginBottom: '0.25rem', fontSize: '0.875rem' }}>
-              <strong>Cover Letter:</strong> {selectedIntern.coverLetter.substring(0, 100)}...
+              <strong>Cover Letter:</strong> {isCoverLetterExpanded ? selectedIntern.coverLetter : truncateCoverLetter(selectedIntern.coverLetter)}
             </p>
+            {selectedIntern.coverLetter.length > 100 && (
+              <button
+                onClick={toggleCoverLetter}
+                className="btn btn-light"
+                style={{
+                  padding: '0.3rem 0.8rem',
+                  fontSize: '0.75rem',
+                  marginBottom: '0.25rem',
+                  width: '130px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                {isCoverLetterExpanded ? 'Read Less' : 'Read More'}
+              </button>
+            )}
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', marginTop: '1.5rem' }}>
               <button
                 style={{
@@ -469,7 +483,6 @@ const Interns = () => {
         </div>
       )}
 
-      {/* Mobile Overlay */}
       {isSidebarOpen && (
         <div
           className={`mobile-overlay ${isSidebarOpen ? 'active' : ''}`}

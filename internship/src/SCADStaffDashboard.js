@@ -14,6 +14,8 @@ import { FaIndustry } from "react-icons/fa";
 import VideoCallDashboard from "./videoCallSCAD";
 import SCADHome from "./SCADHome.js";
 import SCADMail from "./Mail.js";
+import UpcomingWorkshops from "./SCADworkshops.js";
+import NotificationSystem from "./Components/NotificationsStudent.js";
 import {
   Settings,
   Building,
@@ -632,8 +634,7 @@ export default function SCADStaffDashboard() {
               padding: "1.5rem",
               borderRadius: "0.5rem",
               boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-              maxWidth: "20rem",
-              width: "100%",
+          
             }}
           >
             <div
@@ -679,11 +680,11 @@ export default function SCADStaffDashboard() {
               }}
             >
               <a
-                href="/pdfs/company-details.docx"
+                href="/pdfs/company-details.pdf"
                 download
                 style={{
                   padding: "0.5rem 1rem",
-                  background: "#3b82f6",
+                  background: "#2a9d8f",
                   color: "#fff",
                   borderRadius: "0.25rem",
                   display: "flex",
@@ -691,8 +692,7 @@ export default function SCADStaffDashboard() {
                   cursor: "pointer",
                   textDecoration: "none",
                 }}
-                onMouseOver={(e) => (e.target.style.background = "#2563eb")}
-                onMouseOut={(e) => (e.target.style.background = "#3b82f6")}
+              
               >
                 <Download size={16} style={{ marginRight: "0.5rem" }} />
                 Download
@@ -702,32 +702,11 @@ export default function SCADStaffDashboard() {
         );
       case "report":
         return (
-          <div
-            style={{
-              background: "#fff",
-              padding: "2rem",
-              borderRadius: "0.5rem",
-              boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-              maxWidth: "50rem",
-              width: "100%",
-              lineHeight: "1.6",
-              fontFamily: "Georgia, serif",
-            }}
-          >
+          <div>
             <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "1.5rem",
-              }}
-            >
+             style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
               <h2
-                style={{
-                  fontSize: "1.5rem",
-                  fontWeight: "bold",
-                  color: "#1f2937",
-                }}
+               style={{ fontSize: "1.25rem", fontWeight: "600", color: "#1f2937", margin: 0 }}
               >
                 Internship Report – {selectedItem.student}
               </h2>
@@ -740,7 +719,10 @@ export default function SCADStaffDashboard() {
             </div>
 
             {/* Basic Info */}
-            <div style={{ marginBottom: "1.5rem", color: "#374151" }}>
+            <div style={{ fontSize: "0.875rem", color: "#6b7280" , marginBottom:"0.5rem" ,background: '#f9fafb',
+                        padding: '1.25rem',
+                        borderRadius: '0.5rem',
+                        border: '1px solid #e5e7eb'  }}>
               <p>
                 <strong>Major:</strong> {selectedItem.major}
               </p>
@@ -773,42 +755,24 @@ export default function SCADStaffDashboard() {
 
             {/* Report Content */}
             <div style={{ color: "#1f2937" }}>
-              <h3
-                style={{
-                  fontSize: "1.2rem",
-                  fontWeight: "bold",
-                  marginBottom: "0.5rem",
-                }}
-              >
-                Introduction
-              </h3>
-              <p style={{ marginBottom: "1rem", textAlign: "justify" }}>
+               <h3 style={{ fontSize: "1rem", fontWeight: "600", marginBottom: "0.5rem", color: "#1f2937" }}>
+                    Introduction
+                  </h3>
+              <p style={{ fontSize: "0.875rem", color: "#4b5563", lineHeight: 1.5 , marginBottom:"0.5rem" }}>
                 {selectedItem.introduction}
               </p>
 
-              <h3
-                style={{
-                  fontSize: "1.2rem",
-                  fontWeight: "bold",
-                  marginBottom: "0.5rem",
-                }}
-              >
-                Body
-              </h3>
-              <p style={{ marginBottom: "1rem", textAlign: "justify" }}>
+              <h3 style={{ fontSize: "1rem", fontWeight: "600", marginBottom: "0.5rem", color: "#1f2937" }}>
+                    Body
+                  </h3>
+              <p style={{ fontSize: "0.875rem", color: "#4b5563", lineHeight: 1.5 , marginBottom:"0.5rem" }}>
                 {selectedItem.body}
               </p>
 
-              <h3
-                style={{
-                  fontSize: "1.2rem",
-                  fontWeight: "bold",
-                  marginBottom: "0.5rem",
-                }}
-              >
-                Helpful Course
-              </h3>
-              <p style={{ marginBottom: "1rem" }}>
+               <h3 style={{ fontSize: "1rem", fontWeight: "600", marginBottom: "0.5rem", color: "#1f2937" }}>
+                    Helpful Courses
+                  </h3>
+              <p style={{ fontSize: "0.875rem", color: "#4b5563", lineHeight: 1.5 }}>
                 {selectedItem.helpfulCourse}
               </p>
             </div>
@@ -817,37 +781,14 @@ export default function SCADStaffDashboard() {
 
       case "evaluation":
         return (
-          <div
-            style={{
-              background: "#fff",
-              padding: "2rem",
-              borderRadius: "0.5rem",
-              boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-              maxWidth: "50rem",
-              width: "100%",
-              lineHeight: "1.6",
-              fontFamily: "Georgia, serif",
-              maxHeight: "80vh", // Limits the height of the modal
-              overflowY: "auto", // Enables scrolling if content overflows
-            }}
-          >
+          <div>
             <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "1.5rem",
-              }}
+             style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}
             >
               <h2
-                style={{
-                  fontSize: "1.5rem",
-                  fontWeight: "bold",
-                  color: "#1f2937",
-                  marginBottom: "0",
-                }}
+               style={{ fontSize: "1.25rem", fontWeight: "600", color: "#1f2937", margin: 0 }}
               >
-                Internship Report – {selectedItem.student}
+                Internship Evaluation – {selectedItem.student}
               </h2>
               <button
                 onClick={closeModal}
@@ -864,7 +805,10 @@ export default function SCADStaffDashboard() {
             </div>
 
             {/* Basic Info */}
-            <div style={{ marginBottom: "1.5rem", color: "#374151" }}>
+            <div style={{ fontSize: "0.875rem", color: "#6b7280" , marginBottom:"0.5rem" ,background: '#f9fafb',
+                        padding: '1.25rem',
+                        borderRadius: '0.5rem',
+                        border: '1px solid #e5e7eb' }}>
               <p>
                 <strong>Major:</strong> {selectedItem.major || "N/A"}
               </p>
@@ -899,43 +843,29 @@ export default function SCADStaffDashboard() {
             <div style={{ color: "#1f2937" }}>
               {/* Strengths and Other Evaluation Fields */}
               <h3
-                style={{
-                  fontSize: "1.2rem",
-                  fontWeight: "bold",
-                  marginBottom: "0.5rem",
-                  marginTop: "1.5rem",
-                }}
+               style={{ fontSize: "1rem", fontWeight: "600", marginBottom: "0.5rem", color: "#1f2937" }}
               >
                 Strengths
               </h3>
-              <p style={{ marginBottom: "1rem", textAlign: "justify" }}>
+              <p style={{ fontSize: "0.875rem", color: "#4b5563", lineHeight: 1.5 , marginBottom:"0.5rem" }}>
                 {selectedItem.strengths || "N/A"}
               </p>
 
               <h3
-                style={{
-                  fontSize: "1.2rem",
-                  fontWeight: "bold",
-                  marginBottom: "0.5rem",
-                }}
+               style={{ fontSize: "1rem", fontWeight: "600", marginBottom: "0.5rem", color: "#1f2937" }}
               >
                 Areas for Improvement
               </h3>
-              <p style={{ marginBottom: "1rem", textAlign: "justify" }}>
+              <p style={{ fontSize: "0.875rem", color: "#4b5563", lineHeight: 1.5 , marginBottom:"0.5rem" }}>
                 {selectedItem.improvementAreas || "N/A"}
               </p>
 
               <h3
-                style={{
-                  fontSize: "1.2rem",
-                  fontWeight: "bold",
-                  marginBottom: "0.5rem",
-                  marginTop: "1.5rem",
-                }}
+               style={{ fontSize: "1rem", fontWeight: "600", marginBottom: "0.5rem", color: "#1f2937" }}
               >
                 Recommendation
               </h3>
-              <p style={{ marginBottom: "1rem" }}>
+              <p style={{ fontSize: "0.875rem", color: "#4b5563", lineHeight: 1.5 , marginBottom:"0.5rem" }}>
                 <span
                   style={{
                     display: "inline-block",
@@ -957,15 +887,11 @@ export default function SCADStaffDashboard() {
               </p>
 
               <h3
-                style={{
-                  fontSize: "1.2rem",
-                  fontWeight: "bold",
-                  marginBottom: "0.5rem",
-                }}
+                style={{ fontSize: "1rem", fontWeight: "600", marginBottom: "0.5rem", color: "#1f2937" }}
               >
                 Additional Comments
               </h3>
-              <p style={{ marginBottom: "1rem", textAlign: "justify" }}>
+              <p style={{ fontSize: "0.875rem", color: "#4b5563", lineHeight: 1.5 , marginBottom:"0.5rem" }}>
                 {selectedItem.additionalComments || "N/A"}
               </p>
             </div>
@@ -980,8 +906,7 @@ export default function SCADStaffDashboard() {
               padding: "1.5rem",
               borderRadius: "0.5rem",
               boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-              maxWidth: "25rem",
-              width: "100%",
+             
             }}
           >
             <div
@@ -1071,15 +996,7 @@ export default function SCADStaffDashboard() {
             >
               <button
                 onClick={closeModal}
-                style={{
-                  padding: "0.5rem 1rem",
-                  background: "#1f2937",
-                  color: "#fff",
-                  borderRadius: "0.25rem",
-                  cursor: "pointer",
-                }}
-                onMouseOver={(e) => (e.target.style.background = "#111827")}
-                onMouseOut={(e) => (e.target.style.background = "#1f2937")}
+                className="modal-close-button"
               >
                 Close
               </button>
@@ -1093,19 +1010,18 @@ export default function SCADStaffDashboard() {
 
   const renderContent = () => {
     switch (activePage) {
+      case "workshops":
+        return (
+         <div style={{ marginTop: "1rem", marginLeft: "1rem" , width: "90%" , height: "90%"}}>
+            <UpcomingWorkshops />
+          </div>
+        );
       case "home":
         return (
-          <div
-            style={{
-              width: "100%",
-              height: "100%",
-              marginTop: "1rem",
-              marginLeft: "1rem",
-              boxSizing: "border-box",
-            }}
-          >
+           <div style={{ marginTop: "1rem", marginLeft: "1rem" , width: "90%" , height: "90%"}}>
             <SCADHome />
-          </div>
+              </div>
+          
         );
       case "messages":
         return (
@@ -1629,6 +1545,8 @@ export default function SCADStaffDashboard() {
             style={{
               animation: "fadeIn 0.3s",
               fontFamily: "Inter, sans-serif",
+              width:"85%",
+              height:"90%"
             }}
           >
             <h2
@@ -1696,7 +1614,6 @@ export default function SCADStaffDashboard() {
                   placeholder="Search by student name..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="headerBtn"
                   style={{
                     padding: "0.75rem 0.75rem 0.75rem 2.5rem",
                     width: "100%",
@@ -1724,7 +1641,6 @@ export default function SCADStaffDashboard() {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="headerBtn"
                 style={{
                   padding: "0.75rem",
                   border: "1px solid #d1d5db",
@@ -1761,7 +1677,6 @@ export default function SCADStaffDashboard() {
               <select
                 value={majorFilter}
                 onChange={(e) => setMajorFilter(e.target.value)}
-                className="headerBtn"
                 style={{
                   padding: "0.75rem",
                   border: "1px solid #d1d5db",
@@ -2235,7 +2150,7 @@ export default function SCADStaffDashboard() {
         };
 
         return (
-          <div style={{ animation: "fadeIn 0.3s" }}>
+          <div style={{ animation: "fadeIn 0.3s" , width:"100%"}}>
             <h2
               style={{
                 fontSize: "1.75rem",
@@ -2302,7 +2217,7 @@ export default function SCADStaffDashboard() {
                   }}
                 />
               </div>
-              <div style={{ flex: "0 0 auto" }}>
+              <div style={{ flex: "0 0 auto"  }}>
                 <select
                   value={majorFilter}
                   onChange={(e) => setMajorFilter(e.target.value)}
@@ -2400,369 +2315,357 @@ export default function SCADStaffDashboard() {
                   boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
                   overflow: "hidden",
                   border: "1px solid #e5e7eb",
+                
                 }}
               >
                 <div style={{ overflowX: "auto", maxWidth: "100%" }}>
-                  <table
-                    style={{
-                      width: "100%",
-                      borderCollapse: "separate",
-                      borderSpacing: 0,
-                      fontSize: "0.875rem",
-                    }}
-                  >
-                    <thead>
-                      <tr
-                        style={{
-                          background:
-                            "linear-gradient(90deg, #f9fafb 0%, #f3f4f6 100%)",
-                          textTransform: "uppercase",
-                          letterSpacing: "0.05em",
-                        }}
-                      >
-                        <th
-                          style={{
-                            padding: "1rem 1.5rem",
-                            textAlign: "left",
-                            color: "#1f2937",
-                            fontWeight: "600",
-                            borderBottom: "1px solid #e5e7eb",
-                          }}
-                        >
-                          Student
-                        </th>
-                        <th
-                          style={{
-                            padding: "1rem 1.5rem",
-                            textAlign: "left",
-                            color: "#1f2937",
-                            fontWeight: "600",
-                            borderBottom: "1px solid #e5e7eb",
-                          }}
-                        >
-                          Company
-                        </th>
-                        <th
-                          style={{
-                            padding: "1rem 1.5rem",
-                            textAlign: "left",
-                            color: "#1f2937",
-                            fontWeight: "600",
-                            borderBottom: "1px solid #e5e7eb",
-                          }}
-                        >
-                          Internship Title
-                        </th>
-                        <th
-                          style={{
-                            padding: "1rem 1.5rem",
-                            textAlign: "left",
-                            color: "#1f2937",
-                            fontWeight: "600",
-                            borderBottom: "1px solid #e5e7eb",
-                          }}
-                        >
-                          Status
-                        </th>
-                        <th
-                          style={{
-                            padding: "1rem 1.5rem",
-                            textAlign: "left",
-                            color: "#1f2937",
-                            fontWeight: "600",
-                            borderBottom: "1px solid #e5e7eb",
-                          }}
-                        >
-                          Actions
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredReports.map((report, index) => (
-                        <tr
-                          key={report.id}
-                          style={{
-                            background: index % 2 === 0 ? "#fff" : "#fafafa",
-                            transition: "background-color 0.3s ease",
-                          }}
-                          onMouseEnter={(e) =>
-                            (e.currentTarget.style.background = "#f1f5f9")
-                          }
-                          onMouseLeave={(e) =>
-                            (e.currentTarget.style.background =
-                              index % 2 === 0 ? "#fff" : "#fafafa")
-                          }
-                        >
-                          <td
-                            style={{
-                              padding: "1.25rem 1.5rem",
-                              borderBottom: "1px solid #e5e7eb",
-                              color: "#374151",
-                              fontWeight: "500",
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                              whiteSpace: "nowrap",
-                              minWidth: "0",
-                            }}
-                          >
-                            <div
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "0.5rem",
-                              }}
-                            >
-                              <User size={20} />
-                              <span>{report.student}</span>
-                            </div>
-                          </td>
-                          <td
-                            style={{
-                              padding: "1.25rem 1.5rem",
-                              borderBottom: "1px solid #e5e7eb",
-                              color: "#374151",
-                              fontWeight: "500",
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                              whiteSpace: "nowrap",
-                              minWidth: "0",
-                            }}
-                          >
-                            <div
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "0.5rem",
-                              }}
-                            >
-                              <Building size={20} />
-                              <span>{report.company}</span>
-                            </div>
-                          </td>
-                          <td
-                            style={{
-                              padding: "1.25rem 1.5rem",
-                              borderBottom: "1px solid #e5e7eb",
-                              color: "#374151",
-                              fontWeight: "500",
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                              whiteSpace: "nowrap",
-                              minWidth: "0",
-                            }}
-                          >
-                            <div
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "0.5rem",
-                              }}
-                            >
-                              <FiBriefcase size={20} />
-                              <span>{report.internshipTitle}</span>
-                            </div>
-                          </td>
-                          <td
-                            style={{
-                              padding: "1.25rem 1.5rem",
-                              borderBottom: "1px solid #e5e7eb",
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                              whiteSpace: "nowrap",
-                              minWidth: "0",
-                            }}
-                          >
-                            <span
-                              style={{
-                                padding: "0.375rem 0.75rem",
-                                borderRadius: "9999px",
-                                fontSize: "0.75rem",
-                                fontWeight: "500",
-                                ...(report.status === "Accepted"
-                                  ? { background: "#d1fae5", color: "#065f46" }
-                                  : report.status === "Rejected"
-                                  ? { background: "#fee2e2", color: "#991b1b" }
-                                  : report.status === "Flagged"
-                                  ? { background: "#fefcbf", color: "#975a16" }
-                                  : {
-                                      background: "#dbeafe",
-                                      color: "#1e40af",
-                                    }),
-                              }}
-                            >
-                              {report.status}
-                            </span>
-                            {(report.status === "Rejected" ||
-                              report.status === "Flagged") &&
-                              report.comment && (
-                                <div
-                                  style={{
-                                    marginTop: "0.25rem",
-                                    fontSize: "0.75rem",
-                                    color: "#6b7280",
-                                    maxWidth: "100%",
-                                    overflow: "hidden",
-                                    textOverflow: "ellipsis",
-                                    whiteSpace: "nowrap",
-                                  }}
-                                >
-                                  Comment: {report.comment}
-                                </div>
-                              )}
-                          </td>
-                          <td
-                            style={{
-                              padding: "1.25rem 1.5rem",
-                              borderBottom: "1px solid #e5e7eb",
-                              display: "flex",
-                              gap: "0.75rem",
-                              alignItems: "center",
-                              minWidth: "0",
-                            }}
-                          >
-                            <button
-                              className="uniform-action-button"
-                              style={{
-                                background: "#2a9d8f",
-                                color: "#fff",
-                                border: "none",
-                                borderRadius: "0.375rem",
-                                cursor: "pointer",
-                                transition: "all 0.3s ease",
-                                fontWeight: "500",
-                                padding: "0.5rem 1rem",
-                              }}
-                              onClick={() => openModal("report", report)}
-                              onMouseOver={(e) => {
-                                e.target.style.background = "#30b3a3";
-                                e.target.style.transform = "scale(1.05)";
-                                e.target.style.boxShadow =
-                                  "0 2px 8px rgba(0, 0, 0, 0.15)";
-                              }}
-                              onMouseOut={(e) => {
-                                e.target.style.background = "#2a9d8f";
-                                e.target.style.transform = "scale(1)";
-                                e.target.style.boxShadow = "none";
-                              }}
-                            >
-                              View Report
-                            </button>
-                            <button
-                              className="uniform-action-button"
-                              style={{
-                                background: "#4a90e2",
-                                color: "#fff",
-                                border: "none",
-                                borderRadius: "0.375rem",
-                                cursor: "pointer",
-                                transition: "all 0.3s ease",
-                                fontWeight: "500",
-                                padding: "0.5rem 1rem",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                              }}
-                              onClick={() => openModal("evaluation", report)}
-                              onMouseOver={(e) => {
-                                e.target.style.background = "#5a9ff3";
-                                e.target.style.transform = "scale(1.05)";
-                                e.target.style.boxShadow =
-                                  "0 2px 8px rgba(0, 0, 0, 0.15)";
-                              }}
-                              onMouseOut={(e) => {
-                                e.target.style.background = "#4a90e2";
-                                e.target.style.transform = "scale(1)";
-                                e.target.style.boxShadow = "none";
-                              }}
-                            >
-                              View Evaluation
-                            </button>
-                            {(report.status === "Rejected" ||
-                              report.status === "Flagged") && (
-                              <div
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: "0.5rem",
-                                  minWidth: "0",
-                                }}
-                              >
-                                <input
-                                  type="text"
-                                  placeholder="Add a comment..."
-                                  style={{
-                                    marginLeft: "50px",
-                                    padding: "0.5rem",
-                                    border: "1px solid #d1d5db",
-                                    borderRadius: "0.375rem",
-                                    fontSize: "0.875rem",
-                                    width: "150px",
-                                    boxSizing: "border-box",
-                                    flexShrink: 0,
-                                  }}
-                                  onKeyPress={(e) => {
-                                    if (
-                                      e.key === "Enter" &&
-                                      e.target.value.trim()
-                                    ) {
-                                      handleAddComment(
-                                        report.id,
-                                        e.target.value.trim()
-                                      );
-                                      e.target.value = "";
-                                    }
-                                  }}
-                                  ref={(el) =>
-                                    (inputRefs.current[report.id] = el)
-                                  } // Assign unique ref
-                                />
-                                <button
-                                  className="uniform-action-button"
-                                  style={{
-                                    background: "#2a9d8f",
-                                    color: "#fff",
-                                    border: "none",
-                                    borderRadius: "0.375rem",
-                                    cursor: "pointer",
-                                    transition: "all 0.3s ease",
-                                    fontWeight: "500",
-                                    padding: "0.5rem",
-                                    width: "40px",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                  }}
-                                  onClick={() => {
-                                    const input = inputRefs.current[report.id];
-                                    if (input && input.value.trim()) {
-                                      handleAddComment(
-                                        report.id,
-                                        input.value.trim()
-                                      );
-                                      input.value = "";
-                                    }
-                                  }}
-                                  onMouseOver={(e) => {
-                                    e.target.style.background = "#30b3a3";
-                                    e.target.style.transform = "scale(1.05)";
-                                    e.target.style.boxShadow =
-                                      "0 2px 8px rgba(0, 0, 0, 0.15)";
-                                  }}
-                                  onMouseOut={(e) => {
-                                    e.target.style.background = "#2a9d8f";
-                                    e.target.style.transform = "scale(1)";
-                                    e.target.style.boxShadow = "none";
-                                  }}
-                                >
-                                  <FaPaperPlane size={16} />
-                                </button>
-                              </div>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+  <table
+  style={{
+    width: "100%",
+    borderCollapse: "separate",
+    borderSpacing: 0,
+    fontSize: "0.875rem",
+  }}
+>
+  <thead>
+    <tr
+      style={{
+        background: "linear-gradient(90deg, #f9fafb 0%, #f3f4f6 100%)",
+        textTransform: "uppercase",
+        letterSpacing: "0.05em",
+      }}
+    >
+      <th
+        style={{
+          padding: "1rem 1.5rem",
+          textAlign: "left",
+          color: "#1f2937",
+          fontWeight: "600",
+          borderBottom: "1px solid #e5e7eb",
+        }}
+      >
+        Student
+      </th>
+      <th
+        style={{
+          padding: "1rem 1.5rem",
+          textAlign: "left",
+          color: "#1f2937",
+          fontWeight: "600",
+          borderBottom: "1px solid #e5e7eb",
+        }}
+      >
+        Company
+      </th>
+      <th
+        style={{
+          padding: "1rem 1.5rem",
+          textAlign: "left",
+          color: "#1f2937",
+          fontWeight: "600",
+          borderBottom: "1px solid #e5e7eb",
+        }}
+      >
+        Internship Title
+      </th>
+      <th
+        style={{
+          padding: "1rem 1.5rem",
+          textAlign: "left",
+          color: "#1f2937",
+          fontWeight: "600",
+          borderBottom: "1px solid #e5e7eb",
+        }}
+      >
+        Status
+      </th>
+      <th
+        style={{
+          padding: "1rem 1.5rem",
+          textAlign: "left",
+          color: "#1f2937",
+          fontWeight: "600",
+          borderBottom: "1px solid #e5e7eb",
+        }}
+      >
+        Actions
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    {filteredReports.map((report, index) => (
+      <tr
+        key={report.id}
+        style={{
+          background: index % 2 === 0 ? "#fff" : "#fafafa",
+          transition: "background-color 0.3s ease",
+        }}
+        onMouseEnter={(e) => (e.currentTarget.style.background = "#f1f5f9")}
+        onMouseLeave={(e) =>
+          (e.currentTarget.style.background = index % 2 === 0 ? "#fff" : "#fafafa")
+        }
+      >
+        <td
+          style={{
+            padding: "1.25rem 1.5rem",
+            borderBottom: "1px solid #e5e7eb",
+            color: "#374151",
+            fontWeight: "500",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            minWidth: "0",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+            }}
+          >
+            <User size={20} />
+            <span>{report.student}</span>
+          </div>
+        </td>
+        <td
+          style={{
+            padding: "1.25rem 1.5rem",
+            borderBottom: "1px solid #e5e7eb",
+            color: "#374151",
+            fontWeight: "500",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            minWidth: "0",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+            }}
+          >
+            <Building size={20} />
+            <span>{report.company}</span>
+          </div>
+        </td>
+        <td
+          style={{
+            padding: "1.25rem 1.5rem",
+            borderBottom: "1px solid #e5e7eb",
+            color: "#374151",
+            fontWeight: "500",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            minWidth: "0",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+            }}
+          >
+            <FiBriefcase size={20} />
+            <span>{report.internshipTitle}</span>
+          </div>
+        </td>
+        <td
+          style={{
+            padding: "1.25rem 1.5rem",
+            borderBottom: "1px solid #e5e7eb",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            minWidth: "0",
+          }}
+        >
+          <span
+            style={{
+              padding: "0.375rem 0.75rem",
+              borderRadius: "9999px",
+              fontSize: "0.75rem",
+              fontWeight: "500",
+              ...(report.status === "Accepted"
+                ? { background: "#d1fae5", color: "#065f46" }
+                : report.status === "Rejected"
+                ? { background: "#fee2e2", color: "#991b1b" }
+                : report.status === "Flagged"
+                ? { background: "#fefcbf", color: "#975a16" }
+                : {
+                    background: "#dbeafe",
+                    color: "#1e40af",
+                  }),
+            }}
+          >
+            {report.status}
+          </span>
+          {(report.status === "Rejected" || report.status === "Flagged") &&
+            report.comment && (
+              <div
+                style={{
+                  marginTop: "0.25rem",
+                  fontSize: "0.75rem",
+                  color: "#6b7280",
+                  maxWidth: "100%",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                Comment: {report.comment}
+              </div>
+            )}
+        </td>
+        <td
+          style={{
+            padding: "1.25rem 1.5rem",
+            borderBottom: "1px solid #e5e7eb",
+            minWidth: "0",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "0.75rem",
+              alignItems: "flex-start",
+            }}
+          >
+            <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
+              <button
+                className="uniform-action-button"
+                style={{
+                  background: "#2a9d8f",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "0.375rem",
+                  cursor: "pointer",
+                  transition: "all 0.3s ease",
+                  fontWeight: "500",
+                  padding: "0.5rem 1rem",
+                }}
+                onClick={() => openModal("report", report)}
+                onMouseOver={(e) => {
+                  e.target.style.background = "#30b3a3";
+                  e.target.style.transform = "scale(1.05)";
+                  e.target.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.15)";
+                }}
+                onMouseOut={(e) => {
+                  e.target.style.background = "#2a9d8f";
+                  e.target.style.transform = "scale(1)";
+                  e.target.style.boxShadow = "none";
+                }}
+              >
+                View Report
+              </button>
+              <button
+                className="uniform-action-button"
+                style={{
+                  background: "#4a90e2",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "0.375rem",
+                  cursor: "pointer",
+                  transition: "all 0.3s ease",
+                  fontWeight: "500",
+                  padding: "0.5rem 1rem",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+                onClick={() => openModal("evaluation", report)}
+                onMouseOver={(e) => {
+                  e.target.style.background = "#5a9ff3";
+                  e.target.style.transform = "scale(1.05)";
+                  e.target.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.15)";
+                }}
+                onMouseOut={(e) => {
+                  e.target.style.background = "#4a90e2";
+                  e.target.style.transform = "scale(1)";
+                  e.target.style.boxShadow = "none";
+                }}
+              >
+                View Evaluation
+              </button>
+            </div>
+            {(report.status === "Rejected" || report.status === "Flagged") && (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.5rem",
+                  width: "100%",
+                  marginTop: "0.5rem",
+                }}
+              >
+                <input
+                  type="text"
+                  placeholder="Add a comment..."
+                  style={{
+                    padding: "0.5rem",
+                    border: "1px solid #d1d5db",
+                    borderRadius: "0.375rem",
+                    fontSize: "0.875rem",
+                    flex: 1,
+                    boxSizing: "border-box",
+                  }}
+                  onKeyPress={(e) => {
+                    if (e.key === "Enter" && e.target.value.trim()) {
+                      handleAddComment(report.id, e.target.value.trim());
+                      e.target.value = "";
+                    }
+                  }}
+                  ref={(el) => (inputRefs.current[report.id] = el)}
+                />
+                <button
+                  className="uniform-action-button"
+                  style={{
+                    background: "#2a9d8f",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "0.375rem",
+                    cursor: "pointer",
+                    transition: "all 0.3s ease",
+                    fontWeight: "500",
+                    padding: "0.5rem",
+                    width: "40px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                  onClick={() => {
+                    const input = inputRefs.current[report.id];
+                    if (input && input.value.trim()) {
+                      handleAddComment(report.id, input.value.trim());
+                      input.value = "";
+                    }
+                  }}
+                  onMouseOver={(e) => {
+                    e.target.style.background = "#30b3a3";
+                    e.target.style.transform = "scale(1.05)";
+                    e.target.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.15)";
+                  }}
+                  onMouseOut={(e) => {
+                    e.target.style.background = "#2a9d8f";
+                    e.target.style.transform = "scale(1)";
+                    e.target.style.boxShadow = "none";
+                  }}
+                >
+                  <FaPaperPlane size={16} />
+                </button>
+              </div>
+            )}
+          </div>
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
                 </div>
               </div>
             )}
@@ -3104,7 +3007,6 @@ export default function SCADStaffDashboard() {
                       }}
                     >
                       <span
-                        className="list-bullet"
                         style={{
                           width: "0.5rem",
                           height: "0.5rem",
@@ -3191,71 +3093,7 @@ export default function SCADStaffDashboard() {
                   )}
               </div>
 
-              {/* Student Distribution by Major */}
-              <div
-                style={{
-                  background: "#fff",
-                  borderRadius: "0.5rem",
-                  boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-                  padding: "1.5rem",
-                }}
-              >
-                <div
-                  style={{
-                    marginBottom: "1rem",
-                    fontSize: "1.25rem",
-                    fontWeight: "600",
-                    color: "#1f2937",
-                  }}
-                >
-                  Student Distribution by Major
-                </div>
-                {statistics.studentStatsByMajor &&
-                  Object.entries(statistics.studentStatsByMajor).map(
-                    ([major, count], index) => (
-                      <div
-                        key={index}
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          marginBottom: "1rem",
-                          fontSize: "0.875rem",
-                          color: "#4b5563",
-                        }}
-                      >
-                        <div>
-                          <span>{major}</span>
-                          <span style={{ marginLeft: "1rem" }}>{count}</span>
-                        </div>
-                        <div
-                          style={{
-                            width: "60%",
-                            height: "0.5rem",
-                            background: "#e5e7eb",
-                            borderRadius: "9999px",
-                            overflow: "hidden",
-                          }}
-                        >
-                          <div
-                            style={{
-                              height: "100%",
-                              background:
-                                index % 4 === 0
-                                  ? "#3b82f6"
-                                  : index % 4 === 1
-                                  ? "#10b981"
-                                  : index % 4 === 2
-                                  ? "#a855f7"
-                                  : "#f59e0b",
-                              width: `${(count / 45) * 100}%`, // 45 is the max count in studentStatsByMajor
-                            }}
-                          ></div>
-                        </div>
-                      </div>
-                    )
-                  )}
-              </div>
+
             </div>
 
             {/* Generate Report Button */}
@@ -3427,16 +3265,33 @@ export default function SCADStaffDashboard() {
       {showModal && (
         <div
           style={{
-            position: "fixed",
-            inset: 0,
-            background: "rgba(0, 0, 0, 0.5)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 50,
+               position: "fixed",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 1002,
           }}
         >
-          {renderModalContent()}
+          <div
+            style={{
+             background: "#fff",
+                padding: "1.5rem",
+                borderRadius: "0.5rem",
+                width: "90%",
+                maxWidth: "600px",
+                maxHeight: "80vh",
+                overflowY: "auto",
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+                borderLeft: "4px solid #2a9d8f",
+            }}
+          >
+            {renderModalContent()}
+          </div>
         </div>
       )}
     </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SideBarCompany from './Components/SideBarCompany';
 import { Mail, Home, LogOut, User, Menu } from 'lucide-react';
@@ -56,11 +56,13 @@ const EvaluationManager = () => {
       type: 'system'
     }
   ]);
+  const formRef = useRef(null);
 
   useEffect(() => {
     const fetchedStudents = [
       { id: 1, name: 'John Ramzy', program: 'Computer Science', internship: 'Software Developer', yearOfStudy: '3rd Year' },
-      { id: 2, name: 'Menna Ibrahim', program: 'Data Science', internship: 'Data Analyst', yearOfStudy: '4th Year' }
+      { id: 2, name: 'Menna Ibrahim', program: 'Data Science', internship: 'Data Analyst', yearOfStudy: '4th Year' },
+      { id: 3, name: 'Esraa Mahmoud ', program: 'Software Engineering', internship: 'Frontend Developer', yearOfStudy: '3rd Year' }
     ];
     setStudents(fetchedStudents);
 
@@ -80,6 +82,23 @@ const EvaluationManager = () => {
         comments: 'Would happily hire again',
         date: '2023-05-15',
         internshipTitle: 'Software Developer',
+        yearOfStudy: '3rd Year'
+      },
+      {
+        id: 2,
+        studentId: 3,
+        studentName: 'Sara Mahmoud',
+        companyName: 'InnovateTech',
+        supervisor: 'Ahmed Ali',
+        startDate: '2023-05-01',
+        endDate: '2023-07-31',
+        rating: 5,
+        strengths: 'Strong UI/UX design skills, highly collaborative',
+        areasForImprovement: 'Needs more experience with backend integration',
+        recommendation: 'yes',
+        comments: 'Exceptional team player, highly recommended',
+        date: '2023-08-01',
+        internshipTitle: 'Frontend Developer',
         yearOfStudy: '3rd Year'
       }
     ];
@@ -123,6 +142,9 @@ const EvaluationManager = () => {
   const handleEdit = (evaluation) => {
     setFormData(evaluation);
     setIsEditing(true);
+    if (formRef.current) {
+      formRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   };
 
   const handleDelete = (id) => {
@@ -158,14 +180,14 @@ const EvaluationManager = () => {
 
   return (
     <div className="container">
-      <CompanyHeader  />
+      <CompanyHeader />
 
       <div className="layout">
         <SideBarCompany onHoverChange={setIsSidebarHovered} />
         <div className={`content ${isSidebarHovered && window.innerWidth > 768 ? 'sidebar-expanded' : ''}`}>
-          <div className="card">
+          <div className="card" ref={formRef} >
             <h3 className="section-title">{isEditing ? 'Update Evaluation' : 'Create New Evaluation'}</h3>
-            <form onSubmit={handleSubmit} className="form"  >
+            <form  onSubmit={handleSubmit} className="form">
               <div className="form-group">
                 <label className="form-label">Student</label>
                 <select 
@@ -308,7 +330,6 @@ const EvaluationManager = () => {
                     <div className="evaluation-header">
                       <h4 className="evaluation-title">
                         {evaluation.studentName}, {evaluation.yearOfStudy} {students.find(s => s.id == evaluation.studentId)?.program || 'Unknown'}
-                       
                       </h4>
                       <span className="evaluation-date">{evaluation.date}</span>
                     </div>
@@ -341,7 +362,7 @@ const EvaluationManager = () => {
                       )}
                     </div>
                     <div className="evaluation-actions">
-                      <button  style={{width:"100px"}} onClick={() => handleEdit(evaluation)} className="btn btn-light">
+                      <button style={{width:"100px"}} onClick={() => handleEdit(evaluation)} className="btn btn-light">
                         Edit
                       </button>
                       <button style={{width:"100px"}} onClick={() => handleDelete(evaluation.id)} className="btn btn-danger">

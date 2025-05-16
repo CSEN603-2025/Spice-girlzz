@@ -251,22 +251,21 @@ function SCADHome() {
   }, []);
 
   return (
-    <div>
-      <main>
-        <div className="profileContent">
+    <div className>
+      <main >
+        <div className>
           <div style={{ animation: "fadeIn 0.3s" }}>
             <h2
               style={{
-                marginTop: "20px",
-                fontSize: "1.5rem",
-                fontWeight: "bold",
-                marginBottom: "1.5rem",
-                color: "#1f2937",
-              }}
+                  fontSize: "1.5rem",
+                  fontWeight: "bold",
+                  marginBottom: "1.5rem",
+                  color: "#1f2937",
+                }}
             >
               Welcome to InternHub!
             </h2>
-            <div style={{ animation: "fadeIn 0.3s", width: "1700px" }}>
+            <div style={{ animation: "fadeIn 0.3s", width: "1200px" }}>
               <h3
                 style={{
                   fontSize: "1.3rem",
@@ -284,7 +283,7 @@ function SCADHome() {
                   padding: "2rem",
                   borderRadius: "0.5rem",
                   boxShadow: "0 6px 12px rgba(0, 0, 0, 0.1)",
-                  width: "70%",
+                  width: "91%",
                 }}
               >
                 <div
@@ -401,18 +400,9 @@ function SCADHome() {
                 )}
               </div>
             </div>
-            <h3
-              style={{
-                fontSize: "1.3rem",
-                fontWeight: "bold",
-                marginBottom: "1.5rem",
-                color: "rgb(63, 53, 53)",
-              }}
-            >
-              Available Interns
-            </h3>
             <div
               style={{
+                width:"1100px",
                 background: "#fff",
                 padding: "1.5rem",
                 borderRadius: "0.375rem",
@@ -440,7 +430,7 @@ function SCADHome() {
                   style={{
                     fontSize: "0.9rem",
                     padding: "0.75rem 1.5rem",
-                    width: "350px",
+                    width: "300px",
                     backgroundColor: "#f3f4f6",
                     color: "#1f2937",
                     border: "1px solid #d1d5db",
@@ -501,12 +491,12 @@ function SCADHome() {
         </div>
         <section className="clients-section">
           <div className="client-logos">
-            <SiNetflix style={{ color: "#E50914", fontSize: "2rem" }} />
-            <SiVisa style={{ color: "#1A1F71", fontSize: "2rem" }} />
-            <SiVodafone style={{ color: "#E60000", fontSize: "2rem" }} />
-            <SiMeta style={{ color: "#0668E1", fontSize: "2rem" }} />
-            <FaApple style={{ color: "#000000", fontSize: "2rem" }} />
-            <SiSiemens style={{ color: "#000000", fontSize: "4rem" }} />
+            <SiNetflix style={{ color: "#E50914", fontSize: "2.5rem" }} />
+            <SiVisa style={{ color: "#1A1F71", fontSize: "4rem" }} />
+            <SiVodafone style={{ color: "#E60000", fontSize: "2.5rem" }} />
+            <SiMeta style={{ color: "#0668E1", fontSize: "3rem" }} />
+            <FaApple style={{ color: "#000000", fontSize: "3rem" }} />
+            <SiSiemens style={{ color: "#000000", fontSize: "5.5rem" }} />
           </div>
         </section>
         <div className="profileContent">
@@ -658,24 +648,11 @@ function SCADHome() {
               <strong>Description:</strong> {selectedInternship.description}
             </p>
             <div className="modal-footer">
-              <button
-                onClick={() => setShowVideoModal(true)}
-                className="quickButton"
-                aria-label="Open internship requirements video guide"
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
+               <button
+                className="modal-close-button"
+                onClick={() => setSelectedInternship(null)}
               >
-                <MdOutlinePlayCircle
-                  style={{
-                    marginRight: "8px",
-                    color: "#ef4444",
-                    fontSize: "1.25rem",
-                  }}
-                />
-                <span>Quick Guide: Internship Requirements</span>
+                Close
               </button>
             </div>
           </div>

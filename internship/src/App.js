@@ -43,6 +43,7 @@ import FacultyCompEvaluations from "./FacultyCompEvaluations";
 import SCADHome from './SCADHome';
 import Report from "./Report";
 import EvaluationStudent from "./EvaluationStudent";
+import FacultyReportEval from "./FacultyReportEval";
 
 import { IconName } from "lucide-react";
 import { PDFDocument } from "pdf-lib";
@@ -116,10 +117,12 @@ function App() {
 
       <Route path="/faculty" element={<FacultyLayout />}>
         <Route index element={<FacultyStatistics />} />
-        <Route path="reports" element={<FacultyReport />} />
+       
         <Route path="internships" element={<FacultyHomePage />} />
         <Route path="mail" element={<FacultyMail />} />
-        <Route path="eval" element={<FacultyCompEvaluations />} />
+      
+        <Route path="reportseval" element={<FacultyReportEval />} />
+
 
       </Route>
         <Route path="/staff/SCADHome" element={<SCADHome />} />

@@ -34,7 +34,7 @@ export default function FacultyStatistics({ isSidebarOpen }) {
   const [statistics] = useState(initialStatistics);
 
   return (
-    <div style={{ maxWidth: "100%" }} className="container">
+    <div style={{ maxWidth: "100%" }} >
       <h2 className="title">Real-Time Statistics</h2>
       <div className="cardHolder">
         <div className="card">

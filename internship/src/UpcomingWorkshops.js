@@ -481,12 +481,14 @@ function UpcomingWorkshops() {
         />
         <main
           style={{
-            flex: 1,
-            padding: '1.5rem',
-            overflowY: 'auto',
-            marginLeft: window.innerWidth > 768 ? sidebarWidth : '0',
-            width: window.innerWidth > 768 ? `calc(100% - ${sidebarWidth})` : '100%',
+             flex: 1,
+            padding: "1.5rem",
+            overflowY: "auto",
+            marginLeft: window.innerWidth > 768 ? sidebarWidth : "0",
+            width: window.innerWidth > 768 ? `calc(100% - ${sidebarWidth})` : "100%",
             transition: "margin-left 0.3s ease-in-out, width 0.3s ease-in-out",
+            boxSizing: "border-box",
+            backgroundColor: "#f9fafb",
           }}
         >
           <div className="profileContent">
@@ -574,44 +576,47 @@ function UpcomingWorkshops() {
                        <div>{workshop.image}</div>
                       
                       <div className="flex justify-between items-center mb-2">
-                        <h4 className="text-lg font-bold text-gray-800">
-                          {workshop.title.toUpperCase()}
-                        </h4>
+                       <h3 className="program-title">{workshop.title}</h3>
                       </div>
           
-                      <div className="flex justify-between text-gray-600 text-sm mb-4">
-                        <span>{workshop.organizer}</span>
-                        <span>{workshop.location}</span>
-                        <span>{formatDate(workshop.date)}</span>
-                      </div>
+                    <div className="company-info">
+                        <span className="company-name">{workshop.organizer}</span>
+                        <span className="company-location">{workshop.location}</span>
+                        <span className="post-date">{formatDate(workshop.date)}</span>
+                     </div>
                       <div className="flex gap-2 flex-wrap">
                         <button
                           className="bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700 text-sm"
                           onClick={() => openDetailsPopup(workshop)}
                         >
-                          VIEW DETAILS
+                          View Details
                         </button>
                         <button
                           className="bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700 text-sm"
                           onClick={() => openPopup(workshop.id)}
                         >
-                          JOIN
+                          Join
                         </button>
                         <div className="flex items-center gap-2 w-full">
                           <span className="text-red-500 font-bold text-sm">
                             {workshop.registered} 🔴
                           </span>
-                          {attendedWorkshops.includes(workshop.id) && ratedWorkshops[workshop.id] && (
+                         
+                        </div>
+                        <div>
+
+                           {attendedWorkshops.includes(workshop.id) && ratedWorkshops[workshop.id] && (
                             <button
                               className="bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700 text-sm w-full"
                               onClick={() =>
                                 generateCertificate('John Doe', workshop.title, workshop.date)
                               }
                             >
-                              DOWNLOAD CERTIFICATE
+                              Download Certificate
                             </button>
                           )}
-                        </div>
+
+                          </div>
                       </div>
                     </div>
                   ))}
