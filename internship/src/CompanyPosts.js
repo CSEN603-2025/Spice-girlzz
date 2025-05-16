@@ -142,36 +142,46 @@ const JobPostManager = () => {
   };
 
   return (
-    <div className="container">
+    <div className="container" >
       <CompanyHeader />
-      <div className="layout">
+      <div className="layout" >
         <SideBarCompany onHoverChange={setIsSidebarHovered} />
         <div className={`content ${isSidebarHovered && window.innerWidth > 768 ? 'sidebar-expanded' : ''}`}>
-          <div className="card">
-            <h3 className="section-title">Create New Internship Post</h3>
-            <div className="form-preview">
-              <div className="preview-field">
-                <label>Title:</label>
-                <div className="preview-value">Software Engineering Intern</div>
-              </div>
-              <div className="preview-field">
-                <label>Duration:</label>
-                <div className="preview-value">3 months</div>
-              </div>
-              <div className="preview-field">
-                <label>Payment:</label>
-                <div className="preview-value">Paid ($20/hour)</div>
-              </div>
-              <button 
-                onClick={openModal} 
-                className="btn btn-primary create-post-btn"
-              >
-                + Create New Post
-              </button>
-            </div>
-          </div>
+         <div className="card">
+  <h3 className="section-title" style={{ marginBottom: '0.5rem' }} >Create New Internship Post</h3>
+  <div className="form-preview">
+    <div className="form-group">
+      <label>Title:</label>
+      <input
+        type="text"
+        placeholder="Enter internship title"
+        className="form-input"
+      />
+    </div>
+    <div className="form-group">
+      <label>Duration:</label>
+      <input
+        type="text"
+        placeholder="e.g. 3 months"
+        className="form-input"
+      />
+    </div>
+    <div className="form-group">
+      <label>
+        <input type="checkbox" className="form-checkbox" /> Paid Internship
+      </label>
+    </div>
+ 
+    <button 
+      onClick={openModal} 
+      className="btn btn-primary create-post-btn"
+    >
+      + Create New Post
+    </button>
+  </div>
+</div>
 
-          <div className="card">
+          <div className="card" >
             <h3 className="section-title">Internship Posts</h3>
             <div className="search-filter">
               <input
@@ -202,7 +212,14 @@ const JobPostManager = () => {
                 </select>
               </div>
             </div>
-            <div className="cardHolder" style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
+            <div className="cardHolder" s style={{ 
+    display: 'flex', 
+    flexWrap: 'wrap', 
+    gap: '0px', 
+    justifyContent: 'flex-start', 
+    alignItems: 'flex-start',
+    width: '100%' 
+  }}>
               {filteredInternships.length === 0 ? (
                 <p className="no-data">No internship posts found.</p>
               ) : (

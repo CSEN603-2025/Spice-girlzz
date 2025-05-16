@@ -289,16 +289,7 @@ function FacultyHomePage() {
 
   return (
     <div className="container">
-      <main
-        style={{
-          padding: "1.5rem",
-          overflowY: "auto",
-          width: "100%",
-          boxSizing: "border-box",
-          backgroundColor: "#f9fafb",
-          minHeight: "100vh",
-        }}
-      >
+
         <div className="profileContent">
           <div style={{ animation: "fadeIn 0.3s" }}>
             <h2
@@ -502,7 +493,6 @@ function FacultyHomePage() {
             </div>
           )}
         </div>
-      </main>
 
       {selectedInternship && (
         <div className="modal-overlay">
@@ -532,37 +522,14 @@ function FacultyHomePage() {
               <strong>Description:</strong> {selectedInternship.description}
             </p>
             <div className="modal-footer">
-              <button
-                onClick={() => setShowVideoModal(true)}
-                className="quickButton"
-                aria-label="Open internship requirements video guide"
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <MdOutlinePlayCircle
-                  style={{
-                    marginRight: "8px",
-                    color: "#ef4444",
-                    fontSize: "1.25rem",
-                  }}
-                />
-                <span>Quick Guide: Internship Requirements</span>
-              </button>
+  
               <button
                 className="modal-close-button"
                 onClick={() => setSelectedInternship(null)}
               >
                 Close
               </button>
-              <button
-                className="modal-button"
-                onClick={() => handleApply(selectedInternship)}
-              >
-                Apply
-              </button>
+
             </div>
           </div>
         </div>

@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import Header from './CompanyHeader';
 import SideBar from './Components/SideBarCompany';
 import './StudentHomePage.css'; // Import StudentHomePage.css for shared styles
+import './CompanyStyles.css';
 import { Mail, Upload, Paperclip, User, Phone, Home, LogOut, Edit, MapPin, Globe, MessageSquare, Briefcase, Activity, BookOpen, Clipboard, Menu } from 'lucide-react';
 import CompanyLogo from './technology-background.png';
 
@@ -14,6 +15,8 @@ function ProfileCompany() {
   const formRef = useRef(null);
   const [clickedButtons, setClickedButtons] = useState({});
   const [sidebarWidth, setSidebarWidth] = useState('4rem');
+    const [isSidebarHovered, setIsSidebarHovered] = useState(false);
+  
   const [documents, setDocuments] = useState({
     certificates: [],
     companyProfile: [],
@@ -164,27 +167,19 @@ function ProfileCompany() {
     <div style={styles.container}>
       <Header />
       {/* Layout */}
-      <div style={{ ...styles.layout, marginTop: '4rem', minHeight: 'calc(100vh - 4rem)' }}>
-        {/* Sidebar */}
-        <div style={styles.sidebar}>
-          <SideBar
-            setActivePage={(page) =>
-              navigate(`/company${page === "home" ? "" : "/" + page}`, { state: { email } })
-            }
-            isOpen={isSidebarOpen}
-            setSidebarWidth={setSidebarWidth}
-          />
-        </div>
+      <div style={{ ...styles.layout, display:'flex' ,marginTop: '4rem', minHeight: 'calc(100vh - 4rem)'  }}>
+        <SideBar onHoverChange={setIsSidebarHovered}
+                  isOpen={isSidebarOpen}
+          setSidebarWidth={setSidebarWidth}
+
+        />
+
+       
 
         {/* Profile Content */}
         <div
-          style={{
-            ...styles.profileContent,
-            marginLeft: window.innerWidth > 768 ? sidebarWidth : '0',
-            width: window.innerWidth > 768 ? `calc(100% - ${sidebarWidth})` : '100%',
-            transition: 'margin-left 0.3s ease-in-out, width 0.3s ease-in-out',
-            boxSizing: 'border-box',
-          }}
+        className={`content ${isSidebarHovered && window.innerWidth > 768 ? 'sidebar-expanded' : ''}`}
+
         >
           <div style={styles.profileHeader}>
             <div style={styles.headerContent}>
@@ -527,7 +522,7 @@ function ProfileCompany() {
         </div>
 
         {/* Overlay for mobile */}
-        {isSidebarOpen && (
+        {/* {isSidebarOpen && (
           <div
             style={{
               position: 'fixed',
@@ -539,7 +534,20 @@ function ProfileCompany() {
             }}
             onClick={() => setIsSidebarOpen(false)}
           />
-        )}
+        )} */}
+        {isSidebarOpen && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            top: "4rem",
+            background: "rgba(0, 0, 0, 0.5)",
+            zIndex: 999,
+            display: window.innerWidth <= 768 ? "block" : "none",
+          }}
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
       </div>
     </div>
   );

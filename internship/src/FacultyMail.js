@@ -40,7 +40,7 @@ const FacultyMail = () => {
   const closeMail = () => setSelectedMail(null);
 
   return (
-    <div className="content">
+    <div >
       <div className="card">
         <h3 className="section-title">Your Messages</h3>
         <div className="mail-list">

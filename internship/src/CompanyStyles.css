@@ -154,6 +154,7 @@ body {
 
 .content.sidebar-expanded {
   transform: translateX(12rem); /* Slide right when sidebar expands (16rem - 4rem) */
+
 }
 
 @media (max-width: 768px) {

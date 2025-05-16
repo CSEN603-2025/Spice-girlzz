@@ -544,37 +544,14 @@ const toggleSidebar = () => {
               <strong>Description:</strong> {selectedInternship.description}
             </p>
             <div className="modal-footer">
-              <button
-                onClick={() => setShowVideoModal(true)}
-                className="quickButton"
-                aria-label="Open internship requirements video guide"
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <MdOutlinePlayCircle
-                  style={{
-                    marginRight: "8px",
-                    color: "#ef4444",
-                    fontSize: "1.25rem",
-                  }}
-                />
-                <span>Quick Guide: Internship Requirements</span>
-              </button>
+
               <button
                 className="modal-close-button"
                 onClick={() => setSelectedInternship(null)}
               >
                 Close
               </button>
-              <button
-                className="modal-button"
-                onClick={() => handleApply(selectedInternship)}
-              >
-                Apply
-              </button>
+
             </div>
           </div>
         </div>

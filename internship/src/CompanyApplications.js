@@ -97,8 +97,7 @@ const Applications = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarHovered, setIsSidebarHovered] = useState(false);
   const [clickedButtons, setClickedButtons] = useState({});
-    const [CV_content] = useState(initialCV);
-  
+  const [CV_content] = useState(initialCV);
 
   useEffect(() => {
     const fetchedInternships = [
@@ -334,8 +333,7 @@ const Applications = () => {
 
   return (
     <div className="container">
-            <CompanyHeader  />
-
+      <CompanyHeader />
 
       <div className="layout">
         <SideBarCompany onHoverChange={setIsSidebarHovered} />
@@ -398,7 +396,7 @@ const Applications = () => {
             <h3 className="section-title">Applicant Details</h3>
             <p><strong>Name:</strong> {selectedApplicant.applicantName}</p>
             <p><strong>Email:</strong> {selectedApplicant.email}</p>
-                       <p style={{ color: '#4b5563', marginBottom: '0.25rem', fontSize: '0.875rem' }}>
+            <p style={{ color: '#4b5563', marginBottom: '0.25rem', fontSize: '0.875rem' }}>
               <strong>CV:</strong>
               <button
                 onClick={() => generateStatisticsReport(CV_content)}
@@ -448,9 +446,18 @@ const Applications = () => {
             )}
             <p><strong>Cover Letter:</strong> {isCoverLetterExpanded ? selectedApplicant.coverLetter : truncateCoverLetter(selectedApplicant.coverLetter)}</p>
             {selectedApplicant.coverLetter.length > 100 && (
-              <button 
+              <button
                 onClick={toggleCoverLetter}
-                className="btn btn-light" style={{width:"130px"}}
+                className="btn btn-light"
+                style={{
+                  padding: '0.3rem 0.8rem',
+                  fontSize: '0.75rem',
+                  marginBottom: '0.25rem',
+                  width: '130px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
               >
                 {isCoverLetterExpanded ? 'Read Less' : 'Read More'}
               </button>
@@ -459,7 +466,8 @@ const Applications = () => {
             <p><strong>Status:</strong> {selectedApplicant.status.charAt(0).toUpperCase() + selectedApplicant.status.slice(1)}</p>
             <div className="form-group">
               <label className="form-label">Update Status</label>
-              <select style={{width:"180px"}}
+              <select
+                style={{ width: "180px" }}
                 value={selectedApplicant.status}
                 onChange={(e) => updateStatus(selectedApplicant.id, e.target.value)}
                 className="form-select"
@@ -472,9 +480,10 @@ const Applications = () => {
                 <option value="internship complete">Internship Complete</option>
               </select>
             </div>
-            <button style={{width:"90px"}}
+            <button
+              style={{ width: "90px" }}
               onClick={() => setSelectedApplicant(null)}
-              className="btn btn-danger" 
+              className="btn btn-danger"
             >
               Close
             </button>
