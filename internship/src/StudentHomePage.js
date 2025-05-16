@@ -9,6 +9,7 @@ import { FaApple } from "react-icons/fa6";
 import { SiSiemens } from "react-icons/si";
 import { SiNetflix, SiVisa } from 'react-icons/si';
 import { MdOutlinePlayCircle } from "react-icons/md";
+import { FaStar } from "react-icons/fa";
 
 function StudentHomePage() {
   const [activePage, setActivePage] = useState("home");
@@ -29,7 +30,7 @@ function StudentHomePage() {
   const [showVideoModal, setShowVideoModal] = useState(false);
 
   const navigate = useNavigate();
-const location = useLocation;
+  const location = useLocation();
   const storedProfile = JSON.parse(sessionStorage.getItem("studentProfile") || "{}");
   const email = (location.state?.email || storedProfile.email || "").toLowerCase();
 
@@ -41,6 +42,15 @@ const location = useLocation;
     "Pharmacy": "/videos/pharmacy-internships.mp4",
     "": "/videos/general-internships.mp4", // Fallback for unset major
   };
+
+    const [studentProfile, setStudentProfile] = useState({
+    name: "...",
+    isFirstLogin: true,
+    hasProfile: false,
+    major: "",
+    jobInterests: [],
+    id: "",
+  });
 
   useEffect(() => {
     sessionStorage.setItem('appliedInternships', JSON.stringify(appliedInternships));
@@ -145,6 +155,103 @@ const location = useLocation;
     },
   ];
 
+  const dataAnalysisCompanies = [
+    {
+      id: 1,
+      title: "Schneider Electric",
+      company: "Schneider Electric",
+      location: "France",
+      image: "/imgs/schnieder.png",
+      industry: "Energy Management",
+      feedback: {
+        studentName: "Ahmed Mostafa",
+        feedbackText: "Great learning environment with supportive mentors!",
+        rating: 4.5,
+      },
+    },
+    {
+      id: 2,
+      title: "Etisalat",
+      company: "Etisalat",
+      location: "UAE",
+      image: "/imgs/etisalat.png",
+      industry: "Telecom",
+      feedback: {
+        studentName: "Sarah Johnson",
+        feedbackText: "Challenging but rewarding experience!",
+        rating: 4.0,
+      },
+    },
+    {
+      id: 3,
+      title: "Toyota",
+      company: "Toyota",
+      location: "Japan",
+      image: "/imgs/toyota.png",
+      industry: "Automotive",
+      feedback: {
+        studentName: "Mohamed Ali",
+        feedbackText: "Amazing team and innovative projects!",
+        rating: 4.8,
+      },
+    },
+    {
+      id: 4,
+      title: "Microsoft",
+      company: "Microsoft",
+      location: "USA",
+      image: "/imgs/Microsoft_Logo_512px.png",
+      industry: "Technology",
+      feedback: {
+        studentName: "Emma Brown",
+        feedbackText: "Fun and creative workplace!",
+        rating: 4.2,
+      },
+    },
+  ];
+
+  const graphicDesignerCompanies = [
+    {
+      id: 5,
+      title: "Adobe",
+      company: "Adobe",
+      location: "USA",
+      image: "/imgs/adobe.png",
+      industry: "Software",
+      feedback: {
+        studentName: "Lisa Carter",
+        feedbackText: "Incredible opportunities for creative design!",
+        rating: 4.7,
+      },
+    },
+    {
+      id: 6,
+      title: "Google",
+      company: "Google",
+      location: "USA",
+      image: "/imgs/search.png",
+      industry: "Technology",
+      feedback: {
+        studentName: "Omar Khaled",
+        feedbackText: "Innovative and inspiring design culture!",
+        rating: 4.9,
+      },
+    },
+    {
+      id: 7,
+      title: "Pinterest",
+      company: "Pinterest",
+      location: "USA",
+      image: "/imgs/pinterest.png",
+      industry: "Social Media",
+      feedback: {
+        studentName: "Nour Salem",
+        feedbackText: "Fun and visually-driven workplace!",
+        rating: 4.3,
+      },
+    },
+  ];
+
   const topInternships = [
     {
       id: 7,
@@ -239,7 +346,7 @@ const location = useLocation;
       company: internship.company,
       studentId: studentProfile.id || "student_" + Date.now(),
       studentName: studentProfile.name || "Unknown",
-      skills: studentProfile.jobInterests.join(', ') || internship.skillsRequired, // Use jobInterests as skills
+      skills: studentProfile.jobInterests.join(', ') || internship.skillsRequired,
       applicationStatus: "pending",
       applicationDate: new Date().toISOString().split('T')[0],
     };
@@ -268,30 +375,31 @@ const location = useLocation;
     setVisibleCards((prev) => Math.min(prev + 3, filteredInternships.length));
   };
 
-  const filterInternships = (internships) => {
-    return internships.filter((internship) => {
+  const filterInternships = (items) => {
+    return items.filter((item) => {
       const matchesSearch =
-        internship.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        internship.company.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesIndustry = filterIndustry ? internship.industry === filterIndustry : true;
-      const matchesDuration = filterDuration ? internship.duration === filterDuration : true;
-      const matchesPaid = filterPaid ? internship.isPaid === filterPaid : true;
+        item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.company.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesIndustry = filterIndustry ? item.industry === filterIndustry : true;
+      const matchesDuration = "duration" in item && filterDuration ? item.duration === filterDuration : true;
+      const matchesPaid = "isPaid" in item && filterPaid ? item.isPaid === filterPaid : true;
       return matchesSearch && matchesIndustry && matchesDuration && matchesPaid;
     });
   };
 
+  // Determine which companies to show based on job interests
+  const selectedCompanies = studentProfile.jobInterests.includes("Graphic Design")
+    ? graphicDesignerCompanies
+    : studentProfile.jobInterests.includes("Data Analysis")
+    ? dataAnalysisCompanies
+    : [];
+
   const filteredInternships = filterInternships(allInternships);
   const filteredTopInternships = filterInternships(topInternships);
+  const filteredCompanies = filterInternships(selectedCompanies);
   const internshipsToShow = filteredInternships.slice(0, visibleCards);
 
-  const [studentProfile, setStudentProfile] = useState({
-    name: "...",
-    isFirstLogin: true,
-    hasProfile: false,
-    major: "",
-    jobInterests: [], // Added to align with ProfileStudent.js
-    id: "", // Added for unique student ID
-  });
+
 
   useEffect(() => {
     const savedProfile = sessionStorage.getItem("studentProfile");
@@ -311,6 +419,10 @@ const location = useLocation;
 
   const scrollToSection = () => {
     document.getElementById('available').scrollIntoView({ behavior: 'smooth' });
+  };
+
+    const scrollToSection2 = () => {
+    document.getElementById('suggested').scrollIntoView({ behavior: 'smooth' });
   };
 
   const handleProfileSetup = () => {
@@ -335,15 +447,31 @@ const location = useLocation;
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  // Function to render star rating
+  const renderStarRating = (rating) => {
+    const stars = [];
+    for (let i = 1; i <= 5; i++) {
+      stars.push(
+        <FaStar
+          key={i}
+          style={{
+            color: i <= Math.floor(rating) ? '#FFD700' : '#D1D5DB',
+            fontSize: '0.9rem',
+          }}
+        />
+      );
+    }
+    return stars;
+  };
+
   return (
     <div className="container">
       <Header toggleSidebar={toggleSidebar} />
       <div className="layout" style={{ marginTop: "4rem", minHeight: "calc(100vh - 4rem)" }}>
         <SideBar
-           setActivePage={(page) =>
+          setActivePage={(page) =>
             navigate(`/student${page === "home" ? "" : "/" + page}`, { state: { email } })
           }
-
           isOpen={isSidebarOpen}
           setSidebarWidth={setSidebarWidth}
         />
@@ -373,14 +501,14 @@ const location = useLocation;
                   ? `Welcome Back, ${studentProfile.name}!`
                   : `Welcome, ...!`}
               </h2>
-                           <div className="homeBtns">
-                    <button onClick={scrollToSection} className="actionButton">
-                      Browse Internships
-                    </button>
-                        <button onClick={() => navigate("/student/suggested")} className="actionButton">
-                     Browse Companies
-                    </button>
-                    </div>
+              <div className="homeBtns">
+                <button onClick={scrollToSection} className="actionButton">
+                  Browse Internships
+                </button>
+                <button onClick={scrollToSection2} className="actionButton">
+                  Browse Companies
+                </button>
+              </div>
               <div
                 style={{
                   background: "#fff",
@@ -391,16 +519,19 @@ const location = useLocation;
               >
                 {studentProfile.isFirstLogin || !studentProfile.hasProfile ? (
                   <>
-                    <p style={{ color: "#746c70", marginBottom: "1rem" }}>
+                    <p className="prompt-message">
                       Let's get started with your profile setup!
                     </p>
-                    <button className="actionButton" onClick={handleProfileSetup}>
-                      Set up your profile!
+                    <button className="prompt-button" onClick={handleProfileSetup}>
+                      Set Up Profile
+                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
                     </button>
                   </>
                 ) : (
                   <>
-                    <p style={{ color: "#746c70", marginBottom: "1rem" }}>
+                    <p className="prompt-message">
                       Explore available internships and start applying!
                     </p>
                     <div
@@ -432,6 +563,11 @@ const location = useLocation;
                         <option value="FMCG">FMCG</option>
                         <option value="Cosmetics">Cosmetics</option>
                         <option value="Tech">Tech</option>
+                        <option value="Energy Management">Energy Management</option>
+                        <option value="Automotive">Automotive</option>
+                        <option value="Technology">Technology</option>
+                        <option value="Software">Software</option>
+                        <option value="Social Media">Social Media</option>
                       </select>
                       <select
                         value={filterDuration}
@@ -465,7 +601,6 @@ const location = useLocation;
                         Clear Filters
                       </button>
                     </div>
-       
                   </>
                 )}
               </div>
@@ -481,13 +616,16 @@ const location = useLocation;
               <SiSiemens style={{ color: "#000000", fontSize: "5.5rem" }} />
             </div>
           </section>
-             <section id="available">
-
-            </section>
-          
+          <section id="available">
           <div className="profileContent">
-            
-            <h2 style={{ fontSize: "1.5rem", fontWeight: "bold", marginBottom: "1.5rem", color: "#1f2937" }}>
+            <h2
+              style={{
+                fontSize: "1.5rem",
+                fontWeight: "bold",
+                marginBottom: "1.5rem",
+                color: "#1f2937",
+              }}
+            >
               Top Internships Postings!
             </h2>
             <div className="cardHolder">
@@ -508,7 +646,6 @@ const location = useLocation;
                           <span className="pin-icon">📌</span>
                           <span>{internship.applicants} students have applied already</span>
                         </div>
-
                         <button
                           className="actionButton"
                           onClick={() => setSelectedInternship(internship)}
@@ -523,56 +660,159 @@ const location = useLocation;
                 <p style={{ color: "#4b5563" }}>No internships match your filters.</p>
               )}
             </div>
-             
           </div>
-        
           <div className="profileContent">
-           
-              <h2 style={{ fontSize: "1.5rem", fontWeight: "bold", marginBottom: "1.5rem", color: "#1f2937" }}>
-                Available Internships
-              </h2>
-              <div className="cardHolder">
-                {internshipsToShow.length > 0 ? (
-                  internshipsToShow.map((internship) => (
-                    <div className="card" key={internship.id}>
-                      <div className="card-content">
-                        <div className="card-header">
-                          <h3 className="program-title">{internship.title}</h3>
-                          <div className="company-info">
-                            <span className="company-name">{internship.company}</span>
-                            <span className="company-location">{internship.location}</span>
-                            <span className="post-date">{internship.posted}</span>
-                          </div>
-                        </div>
-                        <div className="card-footer">
-                          <div className="alumni-count">
-                            <span className="pin-icon">📌</span>
-                            <span>{internship.applicants} students have applied already</span>
-                          </div>
-                          <button
-                            className="actionButton"
-                            onClick={() => setSelectedInternship(internship)}
-                          >
-                            View Details
-                          </button>
+            <h2
+              style={{
+                fontSize: "1.5rem",
+                fontWeight: "bold",
+                marginBottom: "1.5rem",
+                color: "#1f2937",
+              }}
+            >
+              Available Internships
+            </h2>
+            <div className="cardHolder">
+              {internshipsToShow.length > 0 ? (
+                internshipsToShow.map((internship) => (
+                  <div className="card" key={internship.id}>
+                    <div className="card-content">
+                      <div className="card-header">
+                        <h3 className="program-title">{internship.title}</h3>
+                        <div className="company-info">
+                          <span className="company-name">{internship.company}</span>
+                          <span className="company-location">{internship.location}</span>
+                          <span className="post-date">{internship.posted}</span>
                         </div>
                       </div>
+                      <div className="card-footer">
+                        <div className="alumni-count">
+                          <span className="pin-icon">📌</span>
+                          <span>{internship.applicants} students have applied already</span>
+                        </div>
+                        <button
+                          className="actionButton"
+                          onClick={() => setSelectedInternship(internship)}
+                        >
+                          View Details
+                        </button>
+                      </div>
                     </div>
-                  ))
-                ) : (
-                  <p style={{ color: "#4b5563" }}>No internships match your filters.</p>
-                )}
-              </div>
-              {visibleCards < filteredInternships.length && (
-                <div className="load-more-btn">
-                  <button onClick={loadMore}>Load More Internships</button>
-                </div>
+                  </div>
+                ))
+              ) : (
+                <p style={{ color: "#4b5563" }}>No internships match your filters.</p>
               )}
-           
+            </div>
+            {visibleCards < filteredInternships.length && (
+              <div className="load-more-btn">
+                <button onClick={loadMore}>Load More Internships</button>
+              </div>
+            )}
+            
           </div>
+          </section>
+          <section id="suggested">
+          <div className="profileContent">
+            <h2
+              style={{
+                fontSize: "1.5rem",
+                fontWeight: "bold",
+                marginBottom: "1.5rem",
+                color: "#1f2937",
+              }}
+            >
+              Suggested Companies
+            </h2>
+            <div className="cardHolder-company">
+              {filteredCompanies.length > 0 ? (
+                filteredCompanies.map((company) => (
+                  <div className="card-company" key={company.id}>
+                    <div className="card-content">
+                      <div className="card-header-company">
+                        <div>
+                          <div className="header-company">
+                               <h3 className="program-title-company">{company.title}</h3>
+                                   <div className={`company-logo-company ${company.title.toLowerCase()}`}>
+                                         <img src={company.image} alt={`${company.title} logo`} className="company-logo-img" />
+                                     </div>
+                           </div>
+                          <div className="company-info-company">
+                            <span>📍 {company.location}</span>
+                          </div>
+                          <div className="company-metrics">
+                            <div className="metric-column">
+                              <div className="metric-item">
+                                <strong>GUC Alumni:</strong> {Math.floor(Math.random() * 50 + 10)} interns
+                              </div>
+                              <div className="metric-item">
+                                <strong>Intern Satisfaction:</strong> {Math.floor(Math.random() * 20 + 80)}%
+                              </div>
+                            </div>
+                            <div className="metric-column">
+                              <div className="metric-item">
+                                <strong>Job Interests:</strong> {studentProfile.jobInterests.join(", ")}
+                              </div>
+                              <div className="metric-item">
+                                <strong>Industry:</strong> {company.industry}
+                              </div>
+                              
+                            </div>
+                          </div>
+                        </div>
+                     
+                      </div>
+                      
+                      {company.feedback && (
+                        <div className="feedback-section">
+                          <div className="feedback-box">
+                            <div className="feedback-header">
+                              <div className="student-pic"></div>
+                              <div>
+                                <span className="student-name">{company.feedback.studentName}</span>
+                                <div className="star-rating">
+                                  {renderStarRating(company.feedback.rating)}
+                                  <span className="rating-text"> ({company.feedback.rating}/5)</span>
+                                </div>
+                              </div>
+                            </div>
+                            <p className="feedback-text">{company.feedback.feedbackText}</p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))
+              ) : (
+               <div className="profile-prompt-card">
+  <div className="prompt-content">
+    <h3 className="prompt-title">Enhance your profile</h3>
+    <p className="prompt-message">
+      Add job interests like "Data Analysis" or "Graphic Design" to discover relevant companies and opportunities
+    </p>
+    <button 
+      className="prompt-button" 
+      onClick={handleProfileSetup}
+      aria-label="Set up your profile"
+    >
+      Set Up Profile
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    </button>
+  </div>
+</div>
+              )}
+              
+            </div>
+            
+            
+          </div>
+          </section>
+          
         </main>
       </div>
-
+      
       {selectedInternship && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -601,28 +841,27 @@ const location = useLocation;
               <strong>Description:</strong> {selectedInternship.description}
             </p>
             <div className="modal-footer">
-                                    {/* Quick Guide Button */}
-{studentProfile.hasProfile && (
-  <button
-    onClick={() => setShowVideoModal(true)}
-    className="quickButton"
-    aria-label="Open internship requirements video guide"
-    style={{
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center"
-    }}
-  >
-    <MdOutlinePlayCircle 
-      style={{ 
-        marginRight: "8px", 
-        color: "#ef4444",
-        fontSize: "1.25rem",
-      }} 
-    />
-    <span>Quick Guide: Internship Requirements</span>
-  </button>
-)}
+              {studentProfile.hasProfile && (
+                <button
+                  onClick={() => setShowVideoModal(true)}
+                  className="quickButton"
+                  aria-label="Open internship requirements video guide"
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <MdOutlinePlayCircle
+                    style={{
+                      marginRight: "8px",
+                      color: "#ef4444",
+                      fontSize: "1.25rem",
+                    }}
+                  />
+                  <span>Quick Guide: Internship Requirements</span>
+                </button>
+              )}
               <button
                 className="modal-close-button"
                 onClick={() => setSelectedInternship(null)}
@@ -639,7 +878,6 @@ const location = useLocation;
           </div>
         </div>
       )}
-
       {showVideoModal && (
         <div className="modal-overlay" role="dialog" aria-labelledby="video-modal-title">
           <div className="modal-content">
@@ -667,7 +905,6 @@ const location = useLocation;
           </div>
         </div>
       )}
-
       {isSidebarOpen && (
         <div
           style={{

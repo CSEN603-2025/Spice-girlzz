@@ -403,6 +403,142 @@
   margin: 0 auto;
 }
 
+.cardHolder-company{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Increased min width for larger cards */
+  gap: 20px; /* Increased gap for better spacing */
+  padding: 15px;
+  max-width: 1200px;
+  margin: 0 auto;
+  height: auto; /* Remove fixed height */
+}
+
+.card-company{
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  padding: 14px;
+  transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  width: auto; /* Full width of grid cell */
+  height: auto; /* Remove fixed height */
+  min-height: 280px; /* Reduced minimum height */
+}
+
+.card-company:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.card-header-company{
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.header-company{
+    display: flex;
+  flex-direction: row;
+  gap: 10rem;
+}
+
+.program-title-company{
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.company-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.metric-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.metrics-info{
+  display: grid;
+   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  
+}
+
+.metric-item {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  background-color: #f3f4f6;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  color: #4b5563;
+}
+
+.metric-item strong {
+  color: #4b5563;
+  font-weight: 500;
+  margin-right: 0.25rem;
+}
+
+.company-info-company {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.company-logo-company {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.company-logo-company img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.company-logo-company.schneider,
+.company-logo-company.etisalat,
+.company-logo-company.toyota {
+  width: 120px;
+  height: 120px;
+}
+
+.company-logo-company svg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.company-info .company-name {
+font-size: 0.8rem;
+  color: #2a9d8f;
+}
+
+  .company-location {
+      display: flex;
+  align-items: center;
+  gap: 5px;
+  }
+
+  .company-location:before {
+  content: "📍";
+  font-size: 0.8em;
+}
+
+
 .card {
   background: white;
   border-radius: 10px;
@@ -414,10 +550,12 @@
   min-height: 200px;
 }
 
+
 .card:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
+
 
 .card-content {
   display: flex;
@@ -432,12 +570,16 @@
   padding-bottom: 15px;
 }
 
+
+
 .program-title {
   font-size: 1.25rem;
   font-weight: bold;
   color: #1f2937;
   margin: 0 0 0.5rem;
 }
+
+
 
 .company-info {
   display: flex;
@@ -446,14 +588,9 @@
   color: #636e72;
 }
 
-.company-info .company-name {
-  font-size: 0.875rem;
-  color: #2a9d8f;
-}
 
-  .company-location {
-    color: #636e72;
-  }
+
+
 
   .status {
     color: #e50914;
@@ -510,6 +647,83 @@
   background-color: #35beae;
 }
 
+/* Feedback section styles */
+.feedback-section {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.feedback-box {
+  background-color: #f9fafb;
+  padding: 1rem;
+  border-radius: 0.375rem;
+  border: 1px solid #e5e7eb;
+  position: relative;
+}
+
+.feedback-box::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 20px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid #e5e7eb;
+}
+
+.feedback-box::after {
+  content: "";
+  position: absolute;
+  top: -7px;
+  left: 21px;
+  width: 0;
+  height: 0;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-bottom: 7px solid #f9fafb;
+}
+
+.feedback-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.student-pic {
+  width: 32px;
+  height: 32px;
+  background-color: #d1d5db;
+  border-radius: 50%;
+}
+
+.student-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.star-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.rating-text {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-left: 0.25rem;
+}
+
+.feedback-text {
+  font-size: 0.875rem;
+  color: #4b5563;
+  line-height: 1.5;
+}
+
 /* Modal styles */
 .modal-overlay {
   position: fixed;
@@ -526,7 +740,7 @@
 }
 
 .modal-content {
-  position: relative;
+  position: fixed;
   background: #fff;
   padding: 1.5rem;
   border-radius: 0.5rem;
@@ -534,8 +748,6 @@
   max-width: 24rem;
   width: 100%;
   margin: 0 auto;
-  max-height: 80vh;
-  height: 500px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -580,9 +792,8 @@
 
 .modal-button-group {
   display: flex;
-  flex-direction: column;
   gap: 0.5rem;
-  margin-top: 1rem;
+
 }
 
 .modal-button {
@@ -594,6 +805,8 @@
   cursor: pointer;
   font-size: 0.875rem;
   transition: background 0.2s ease;
+  height: auto;
+  line-height: 1.25;
 }
 
 .modal-button:hover {
@@ -612,9 +825,10 @@
 
 .modal-footer {
   display: flex;
-  justify-content: flex-end;
+  flex-direction: row;
   gap: 0.5rem;
-  margin-top: 1.5rem;
+  align-items: center;
+  margin-top: 1rem;
 }
 
 .modal-close-button {
@@ -623,10 +837,11 @@
   color: #fff;
   border-radius: 0.25rem;
   border: none;
-  max-height: 100px;
   cursor: pointer;
   font-size: 0.875rem;
   transition: background 0.2s ease;
+  height: auto;
+  line-height: 1.25;
 }
 
 .modal-close-button:hover {
@@ -793,6 +1008,169 @@
 .show-all:hover {
   text-decoration: underline;
 }
+
+.editButton{
+  background-color: #2a9d8f;
+  color: #fff;
+  padding: 0.5rem 0.5rem;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: 0.88rem;
+  transition: all 0.4s ease;
+}
+.editButton:hover {
+  background-color: #30b3a3;
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.appeal{
+  background-color: #3b82f6;
+  color: #fff;
+  padding: 0.5rem 0.5rem;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: 0.88rem;
+  transition: all 0.4s ease;
+}
+
+.appeal:hover {
+  background-color: #5a96f7;
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.download{
+  background-color: #474747;
+  color: #fff;
+  padding: 0.5rem 0.5rem;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: 0.88rem;
+  transition: all 0.4s ease;
+}
+
+.download:hover {
+  background-color: #995cfc;
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.clear{
+ background-color: #f63b3b;
+  color: #fff;
+  padding: 0.5rem 0.5rem;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: 0.88rem;
+  transition: all 0.4s ease;
+}
+
+.clear:hover {
+  background-color: #ff6262;
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.containerReports{
+
+  font-family: "Inter", sans-serif;
+  background-color: #f3f4f6;
+
+  min-height: 100vh;
+  display: flex;
+  flex-direction: row;
+
+}
+
+/* Profile Prompt Card */
+.profile-prompt-card {
+  display: flex;
+  gap: 16px;
+  padding: 20px;
+  background-color: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin-bottom: 24px;
+}
+
+.prompt-icon {
+  display: flex;
+  align-items: flex-start;
+  padding-top: 2px;
+}
+
+.prompt-icon svg {
+  color: #2a9d8f;
+}
+
+.prompt-content {
+  flex: 1;
+}
+
+.prompt-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 8px;
+}
+
+.prompt-message {
+  font-size: 0.9375rem;
+  color: #475569;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.prompt-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: #2a9d8f;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.prompt-button:hover {
+  background-color: #3ab9ab;
+  transform: translateY(-1px);
+}
+
+.prompt-button svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.2s ease;
+}
+
+.prompt-button:hover svg {
+  transform: translateX(2px);
+}
+
+.card-image {
+  width: 100%;
+  height: 150px; /* Fixed height for all images */
+  object-fit: cover; /* Maintain aspect ratio, crop if needed */
+  object-position: center; /* Center the image */
+}
+
 /* Animation keyframes */
 @keyframes fadeIn {
   from { opacity: 0; }
