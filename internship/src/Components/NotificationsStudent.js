@@ -4,11 +4,11 @@ import { X, CheckCircle, AlertCircle, Info, PhoneIncoming } from 'lucide-react';
 import "./Notifications.css";
 
 const NotificationSystem = () => {
-  const [notification, setNotification] = useState(null); // Single notification state
+  const [notification, setNotification] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const timeoutRef = useRef(null); // Store timeout ID
-  const intervalRef = useRef(null); // Store interval ID
+  const timeoutRef = useRef(null);
+  const intervalRef = useRef(null);
 
   // Retrieve email
   const storedProfile = JSON.parse(sessionStorage.getItem("studentProfile") || "{}");
@@ -106,7 +106,6 @@ const NotificationSystem = () => {
     },
   ];
 
-  // Get appropriate icon based on notification type
   const getIcon = (type) => {
     switch (type) {
       case 'success': return <CheckCircle size={18} />;
@@ -116,58 +115,44 @@ const NotificationSystem = () => {
     }
   };
 
-  // Function to generate a random notification
   const generateNotification = () => {
-    // Select user-specific notifications based on email
-    const userNotifications = email === 'esra@student.guc.edu.eg' 
-      ? EsraNotifs 
-      : email === 'malak@student.guc.edu.eg' 
-      ? MalaksNotifs 
-      : [];
+    let userNotifications = [];
 
-    // Only Malak gets call notifications
-    const notificationPool = email === 'malak@student.guc.edu.eg' && Math.random() < 0.5 && userNotifications.length > 0 
-      ? userNotifications 
-      : email === 'malak@student.guc.edu.eg' 
-      ? callNotifications 
-      : userNotifications;
+    if (email === 'esra@student.guc.edu.eg') {
+      userNotifications = EsraNotifs;
+    } else if (email === 'malak@student.guc.edu.eg') {
+      userNotifications = MalaksNotifs;
+    }
 
-    // Exit if no notifications available
+    let notificationPool = userNotifications;
+    if (email === 'malak@student.guc.edu.eg' && Math.random() < 0.5) {
+      notificationPool = callNotifications;
+    }
+
     if (notificationPool.length === 0) return;
 
-    // Randomly select a notification
     const randomIndex = Math.floor(Math.random() * notificationPool.length);
     const newNotification = {
       ...notificationPool[randomIndex],
-      id: Date.now() + Math.random(), // Unique ID
+      id: Date.now() + Math.random(),
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     };
 
     setNotification(newNotification);
   };
 
-  // Manage notifications and auto-dismiss
   useEffect(() => {
-    if (!isStudent) return; // Skip if not a student
+    if (!isStudent) return;
 
-    // Clear any existing timeout or interval
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-    }
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    if (intervalRef.current) clearInterval(intervalRef.current);
 
-    // Set up interval to generate notifications
     intervalRef.current = setInterval(() => {
       if (!notification) {
         generateNotification();
       }
-    }, 10000); // Check every 10 seconds
+    }, 10000);
 
-    // Auto-dismiss logic when notification changes
     if (notification) {
       const timeoutDuration = notification.type === 'call' ? 5000 : 3000;
       timeoutRef.current = setTimeout(() => {
@@ -176,147 +161,89 @@ const NotificationSystem = () => {
       }, timeoutDuration);
     }
 
-    // Cleanup on unmount
     return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-        timeoutRef.current = null;
-      }
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
   }, [isStudent, notification, email]);
-    const interval = setInterval(() => {
-      const randomIndex = Math.floor(Math.random() * otherNotifications.length);
-      const newNotification = { 
-        ...otherNotifications[randomIndex], 
-        id: Date.now() + Math.random(), // Unique ID
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      };
 
-      setNotifications(prev => [...prev, newNotification]);
-
-      // Auto-dismiss non-call notifications after 5 seconds
-      setTimeout(() => {
-        setNotifications(prev => prev.filter(notif => notif.id !== newNotification.id));
-      }, 5000);
-    }, 10000); // Every 10 seconds
-
-    return () => clearInterval(interval);
-  }, [isStudent]);
-
-  // Interval for company notifications
   useEffect(() => {
-    if (!isCompany) return; // Skip if not company
+    if (!isCompany) return;
 
     const interval = setInterval(() => {
       const randomIndex = Math.floor(Math.random() * companyNotifications.length);
       const newNotification = { 
         ...companyNotifications[randomIndex], 
-        id: Date.now() + Math.random(), // Unique ID
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        id: Date.now() + Math.random(),
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
 
-      setNotifications(prev => [...prev, newNotification]);
+      setNotification(newNotification);
 
-      // Auto-dismiss non-call notifications after 5 seconds
       setTimeout(() => {
-        setNotifications(prev => prev.filter(notif => notif.id !== newNotification.id));
+        setNotification(null);
       }, 5000);
-    }, 15000); // Every 15 seconds
+    }, 15000);
 
     return () => clearInterval(interval);
   }, [isCompany]);
 
   const handleDismiss = () => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-    }
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
     setNotification(null);
   };
 
-  
-
   const handleAcceptCall = () => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-    }
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
     navigate('/student/startcall', { state: { email } });
     setNotification(null);
   };
 
   const handleRejectCall = () => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-    }
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
     setNotification(null);
   };
 
-  // Handle company notification applications button click
-  const handleApplicationsClick = (id) => {
+  const handleApplicationsClick = () => {
     navigate('/company/applicants', { state: { email } });
-    handleDismiss(id);
+    setNotification(null);
   };
 
-  // Render notifications for both student and company users
   if (!isStudent && !isCompany) return null;
 
   return (
     <div className="notification-container">
       {notification && (
-        <div
-          key={notification.id}
-          className={`notification notification-${notification.type}`}
-        >
-          <div className="notification-icon">
-            {getIcon(notification.type)}
-          </div>
+        <div key={notification.id} className={`notification notification-${notification.type}`}>
+          <div className="notification-icon">{getIcon(notification.type)}</div>
           <div className="notification-content">
             <div className="notification-header">
               <h4 className="notification-title">{notification.message}</h4>
               <span className="notification-time">{notification.time}</span>
             </div>
             <p className="notification-details">{notification.details}</p>
+
             {notification.type === 'call' && (
               <div className="call-actions">
-                <button
-                  className="call-action accept"
-                  onClick={handleAcceptCall}
-                >
-                  <CheckCircle size={14} />
-                  Accept
+                <button className="call-action accept" onClick={handleAcceptCall}>
+                  <CheckCircle size={14} /> Accept
                 </button>
-                <button
-                  className="call-action reject"
-                  onClick={handleRejectCall}
-                >
-                  <X size={14} />
-                  Reject
+                <button className="call-action reject" onClick={handleRejectCall}>
+                  <X size={14} /> Reject
                 </button>
               </div>
             )}
+
             {isCompany && (
               <div className="call-actions">
-                <button
-                  className="call-action applications"
-                  onClick={() => handleApplicationsClick(notif.id)}
-                >
-                  <CheckCircle size={14} />
-                  Applications
+                <button className="call-action applications" onClick={handleApplicationsClick}>
+                  <CheckCircle size={14} /> Applications
                 </button>
               </div>
             )}
           </div>
-          <button 
-            className="notification-close"
-            onClick={handleDismiss}
-            aria-label="Dismiss notification"
-          >
+
+          <button className="notification-close" onClick={handleDismiss} aria-label="Dismiss notification">
             <X size={16} />
           </button>
         </div>

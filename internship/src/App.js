@@ -43,17 +43,15 @@ import FacultyCompEvaluations from "./FacultyCompEvaluations";
 import SCADHome from './SCADHome';
 import Report from "./Report";
 import EvaluationStudent from "./EvaluationStudent";
-import FacultyLayout from "./FacultyLayout";
-import FacultyStatistics from "./FacultyStatistics";
-import FacultyReport from "./FacultyReport";
+
 import { IconName } from "lucide-react";
 import { PDFDocument } from "pdf-lib";
-import UpcomingWorkshops from "./UpcomingWorkshops";
-import NotificationSystem from "./Components/NotificationsStudent";
+
+
 import Assessment from "./Assessment";
-import ProfileStudent from "./ProfileStudent";
+
 import Mail from "./Mail";
-import SCADHome from "./SCADHome";
+
 
 function App() {
   const [appliedInternships, setAppliedInternships] = useState(() => {
@@ -125,10 +123,9 @@ function App() {
 
       </Route>
         <Route path="/staff/SCADHome" element={<SCADHome />} />
-        <Route path="/faculty" element={<FacultyLayout />}>
-          <Route path="reports" element={<FacultyReport />} />
-          <Route path="statistics" element={<FacultyStatistics />} />
-        </Route>
+      
+      
+        
         <Route path="/student/report" element={<Report />} />
         <Route path="/student/evaluation" element={<EvaluationStudent />} />
         <Route path="/student/assessments" element={<Assessment />} />
